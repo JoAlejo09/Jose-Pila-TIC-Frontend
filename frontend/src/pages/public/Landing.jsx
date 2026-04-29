@@ -1,15 +1,10 @@
-import Navbar from "../../components/layout/Navbar";
 import { Link } from "react-router-dom";
 import Button from "../../components/ui/Button";
 
 const Landing = () => {
   return (
     <div className="bg-gray-50">
-
-      {/* NAVBAR */}
-      <Navbar />
-
-      {/* HERO */}
+              {/* HERO */}
       <section className="text-center py-28 px-6">
   <h1 className="text-5xl md:text-6xl font-bold text-gray-800 mb-6 leading-tight">
     Mejora tu rendimiento académico una nueva forma de refuerzo académico
