@@ -21,6 +21,7 @@ const Registro = () =>{
         
     });
     const [error, setError] = useState("");
+    const [success, setSuccess] = useState(""); 
     const [loading, setLoading] = useState(false);
 
     const handleChange = (e)=>{
@@ -38,13 +39,16 @@ const Registro = () =>{
         if (!form.nombre || !form.apellido || !form.email || !form.password) {
             return setError("Todos los campos son obligatorios");
         }
-        if (form.password !== form.confirmPassword) {
+        if (form.password !== form.confirmpassword) {
             return setError("Las contraseñas no coinciden");
 }
         try{
             setLoading(true);
-            await registerUserRequest(form);
-            navigate("/login");
+            const res = await registerUserRequest(form);
+            setSuccess(res.msg);
+            setTimeout(() => {
+                navigate("/login");
+            },2000);
         }catch(err){
             setError(err.response?.data?.message || "Error al registrar usuario");
         }finally{
@@ -62,6 +66,11 @@ const Registro = () =>{
                     {error}
                 </p>
                 )}
+                {success &&
+                (<p className="text-green-600 text-sm mb-3 text-center">
+                    {success}
+                </p>)
+                }
                 <form onSubmit={handleSubmit} className="space-y-3">
                     <input 
                         type="text"
@@ -95,9 +104,9 @@ const Registro = () =>{
                         className="w-full border p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                     />
                     <PasswordInput
-                        name="confirmPassword"
+                        name="confirmpassword"
                         placeholder="Confirmar contraseña"
-                        value={form.confirmPassword}
+                        value={form.confirmpassword}
                         onChange={handleChange}
                         className="w-full border p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                     />
