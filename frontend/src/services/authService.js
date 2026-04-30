@@ -20,7 +20,7 @@ const validarTokenRequest = async(token)=>{
     return res.data;
 }
 const nuevoPasswordRequest = async(token,data)=>{
-    const res = await axios.post(`${API}/user/recuperar/${token}`,{data});
+    const res = await axios.post(`${API}/user/recuperar/${token}`,data);
     return res.data;
 }
 

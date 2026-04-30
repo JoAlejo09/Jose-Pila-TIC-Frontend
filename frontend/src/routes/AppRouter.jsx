@@ -6,6 +6,8 @@ import VerificarCuenta from "../pages/auth/VerificarCuenta.jsx";
 import PublicLayout from "../components/layout/general/PublicLayout.jsx";
 import PrivateLayout from "../components/layout/general/PrivateLayout.jsx";
 import PrivateRoute from "./PrivateRoute.jsx";
+import RecuperarPassword from "../pages/auth/RecuperarPassword.jsx";
+import ResetPassword from "../pages/auth/ResetPassword.jsx";
 
 
 const AppRouter = ()=>{
@@ -18,6 +20,8 @@ const AppRouter = ()=>{
             <Route path="/registro" element={<Registro/>}/>
             <Route path="/confirmar/:token" element={<VerificarCuenta/>}/>
             <Route path="/login" element={<Login/>}/>
+            <Route path="/recuperar-password" element={<RecuperarPassword/>}/>
+            <Route path="/reset-password/:token" element={<ResetPassword/>}/>
             </Route>
             {/*Paginas Privadas */}
             <Route

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { loginUserRequest } from "../../services/authService";
 
 import Card from "../../components/ui/Card.jsx";
@@ -73,6 +73,12 @@ const Login =() => {
                     value={form.password}
                     onChange={handleChange}
                     />
+                    <div className="text-right">
+                        <Link to="/recuperar-password"
+                        className="text-sm text-primary hover:underline">
+                            ¿Olvidaste la contraseña?
+                        </Link>
+                    </div>
                     <div className="flex justify-center mt-2">
                     <Button type="submit" disabled={loading} className="w-48">
                         {loading ? "Ingresando...":"Ingresar"}
