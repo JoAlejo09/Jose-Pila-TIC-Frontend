@@ -24,9 +24,7 @@ const AppRouter = ()=>{
             <Route path="/reset-password/:token" element={<ResetPassword/>}/>
             </Route>
             {/*Paginas Privadas */}
-            <Route
-                element={
-                    <PrivateRoute>
+            <Route element={<PrivateRoute>
                         <PrivateLayout/>
                     </PrivateRoute>
                 }
