@@ -1,5 +1,5 @@
 import {useAuth} from "../../../context/useAuth.js";
-import {menuPorRol} from "../../../config/menuConfig.js"
+import menuPorRol from "../../../config/menuConfig.js"
 import { Link } from "react-router-dom";
 
 const Sidebar = () =>{

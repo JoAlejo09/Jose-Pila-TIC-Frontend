@@ -41,7 +41,6 @@ const Login = () => {
 
       login(data);
 
-      // 🔥 redirigir directo
       navigate("/dashboard");
 
     } catch (error) {

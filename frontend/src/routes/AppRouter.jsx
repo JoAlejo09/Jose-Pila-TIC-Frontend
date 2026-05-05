@@ -8,6 +8,7 @@ import PrivateLayout from "../components/layout/general/PrivateLayout.jsx";
 import PrivateRoute from "./PrivateRoute.jsx";
 import RecuperarPassword from "../pages/auth/RecuperarPassword.jsx";
 import ResetPassword from "../pages/auth/ResetPassword.jsx";
+import Dashboard from "../pages/dashboard/Dashboard.jsx";
 
 
 const AppRouter = ()=>{
@@ -29,7 +30,7 @@ const AppRouter = ()=>{
                     </PrivateRoute>
                 }
                 >
-                    <Route path="/dashboard" element={<h1>Perfil</h1>}/>
+                    <Route path="/dashboard" element={<Dashboard/>}/>
                 </Route>
          </Routes>
         </BrowserRouter>

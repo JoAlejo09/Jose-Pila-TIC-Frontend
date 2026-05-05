@@ -5,6 +5,7 @@ import { registerUserRequest } from "../../services/authService.js";
 import Card from "../../components/ui/Card.jsx";
 import Button from "../../components/ui/Button.jsx";
 import PasswordInput from "../../components/ui/PasswordInput.jsx";
+import Input from "../../components/ui/Input.jsx";
 
 
 const Registro = () =>{
@@ -72,29 +73,29 @@ const Registro = () =>{
                 </p>)
                 }
                 <form onSubmit={handleSubmit} className="space-y-3">
-                    <input 
+                    <Input 
                         type="text"
                         name="nombre"
                         placeholder="Nombre"
                         value={form.nombre}
                         onChange={handleChange}
-                        className="w-full border p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"/>
+                        className=""/>
 
-                    <input
+                    <Input
                         type="text"
                         name="apellido"
                         placeholder="Apellido"
                         value={form.apellido}
                         onChange={handleChange}
-                        className="w-full border p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"/>
+                        className=""/>
 
-                    <input
+                    <Input
                         type="email"
                         name="email"
                         placeholder="Correo electrónico"
                         value={form.email}
                         onChange={handleChange}
-                        className="w-full border p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"/>
+                        className=""/>
 
                     <PasswordInput
                         name="password"
