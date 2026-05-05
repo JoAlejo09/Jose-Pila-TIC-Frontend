@@ -8,6 +8,9 @@ const RolRoute = ({rolesPermitidos}) =>{
     if(!auth?.token){
         return <Navigate to="/login"/> 
     }
+    if(!rol){
+        return <Navigate to="/dashboard"/>
+    }
     if (!rolesPermitidos.includes(rol)){
         return <Navigate to="/dashboard"/>
     }

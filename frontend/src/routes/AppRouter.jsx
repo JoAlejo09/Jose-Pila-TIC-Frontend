@@ -3,12 +3,13 @@ import Login from "../pages/auth/Login.jsx";
 import Registro from "../pages/auth/Registro.jsx";
 import Landing from "../pages/public/Landing.jsx";
 import VerificarCuenta from "../pages/auth/VerificarCuenta.jsx";
-import PublicLayout from "../components/layout/general/PublicLayout.jsx";
-import PrivateLayout from "../components/layout/general/PrivateLayout.jsx";
+import PublicLayout from "../components/layout/PublicLayout.jsx";
+import PrivateLayout from "../components/layout/PrivateLayout.jsx";
 import PrivateRoute from "./PrivateRoute.jsx";
 import RecuperarPassword from "../pages/auth/RecuperarPassword.jsx";
 import ResetPassword from "../pages/auth/ResetPassword.jsx";
 import Dashboard from "../pages/dashboard/Dashboard.jsx";
+import RolRoute from "./RolRoute.jsx";
 
 
 const AppRouter = ()=>{
@@ -28,10 +29,13 @@ const AppRouter = ()=>{
             <Route element={<PrivateRoute>
                         <PrivateLayout/>
                     </PrivateRoute>
-                }
-                >
-                    <Route path="/dashboard" element={<Dashboard/>}/>
+                }                >
+                <Route path="/dashboard" element={<Dashboard/>}/>
+
+                <Route element={<RolRoute rolesPermitidos={["admin"]}/>}>
+                    <Route path="/dashboard/admin/usuarios" element={<h1>Usuarios</h1>}/>
                 </Route>
+            </Route>
          </Routes>
         </BrowserRouter>
     )

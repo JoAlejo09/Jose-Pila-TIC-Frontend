@@ -1,17 +1,20 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const PrivateNavbar = () =>{
+const PrivateNavbar = ({toggleSidebar}) =>{
     const [open, setOpen] = useState(false);
     const navigate = useNavigate();
 
-    //cerrar sesion
     const handleLogout = () =>{
         localStorage.removeItem("token");
         navigate("/");
     }  
     return(
         <nav className="flex justify-between items-center px-8 py-4 bg-white shadow">
+          <button onClick={toggleSidebar}
+            className="text-x1">
+               ☰
+            </button>
             <h1 onClick={()=> navigate("/dashboard")}
                 className="text-x1 font-bold text-primary cursor-ponter">
                 RefAcademy
