@@ -2,26 +2,30 @@ import axios from "../api/axios"
 
 const registerUserRequest = async (data) =>{
 
-    const res = await axios.post("/user/registrar",data);
+    const res = await axios.post("/auth/registrar",data);
     return res.data;
 }
 const loginUserRequest = async(data)=>
 {
-    const res = await axios.post("/user/login",data);
+    const res = await axios.post("/auth/login",data);
     return res.data
 }
 const recuperarPasswordRequest = async(email)=>{
-    const res = await axios.post("/user/recuperar",{email});
+    const res = await axios.post("/auth/recuperar",{email});
     return res.data
 }
 const validarTokenRequest = async(token)=>{
-    const res = await axios.get(`/user/recuperar/${token}`);
+    const res = await axios.get(`/auth/recuperar/${token}`);
     return res.data;
 }
 const nuevoPasswordRequest = async(token,data)=>{
-    const res = await axios.post(`/user/recuperar/${token}`,data);
+    const res = await axios.post(`/auth/recuperar/${token}`,data);
+    return res.data;
+}
+const getUsuariosRequest = async(search="")=>{
+    const res = await axios.get(`/users?search=${search}`);
     return res.data;
 }
 
 export {registerUserRequest, loginUserRequest, recuperarPasswordRequest,
-        validarTokenRequest, nuevoPasswordRequest}
+        validarTokenRequest, nuevoPasswordRequest,getUsuariosRequest}
