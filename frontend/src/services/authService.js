@@ -22,10 +22,7 @@ const nuevoPasswordRequest = async(token,data)=>{
     const res = await axios.post(`/auth/recuperar/${token}`,data);
     return res.data;
 }
-const getUsuariosRequest = async(search="")=>{
-    const res = await axios.get(`/users?search=${search}`);
-    return res.data;
-}
+
 
 export {registerUserRequest, loginUserRequest, recuperarPasswordRequest,
-        validarTokenRequest, nuevoPasswordRequest,getUsuariosRequest}
+        validarTokenRequest, nuevoPasswordRequest}

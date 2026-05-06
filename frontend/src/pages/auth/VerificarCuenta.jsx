@@ -17,7 +17,7 @@ const VerificarCuenta = () =>{
 
         const verificarCuenta = async() =>{
             try{
-                const res = await axios.get(`${API}/user/confirmar/${token}`);
+                const res = await axios.get(`${API}/auth/confirmar/${token}`);
                 setMensaje(res.data.msg);
                 setTimeout(() => {
                     navigate("/login");
