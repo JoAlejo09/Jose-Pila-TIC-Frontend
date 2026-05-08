@@ -8,6 +8,7 @@ import PrivateLayout from "../components/layout/PrivateLayout.jsx";
 import PrivateRoute from "./PrivateRoute.jsx";
 import RecuperarPassword from "../pages/auth/RecuperarPassword.jsx";
 import ResetPassword from "../pages/auth/ResetPassword.jsx";
+import CambiarPassword from "../pages/auth/CambiarPassword.jsx";
 import Dashboard from "../pages/dashboard/Dashboard.jsx";
 import Usuarios from "../pages/admin/Usuarios.jsx";
 import RolRoute from "./RolRoute.jsx";
@@ -32,6 +33,7 @@ const AppRouter = ()=>{
                     </PrivateRoute>
                 }                >
                 <Route path="/dashboard" element={<Dashboard/>}/>
+                <Route path="/cambiar-password" element={<CambiarPassword/>}/>
 
                 <Route element={<RolRoute rolesPermitidos={["admin"]}/>}>
                     <Route path="/dashboard/admin/usuarios" element={<Usuarios/>}/>

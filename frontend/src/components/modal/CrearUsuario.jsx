@@ -1,120 +1,157 @@
-import { useState } from "react";
-import { crearUsuarioRequest } from "../../services/userService";
+import { useEffect,useState } from "react";
+import { crearUsuarioRequest, actualizarUsuarioRequest } from "../../services/userService";
 
-const ModalCrearUsuario = ({ onClose, onUsuarioCreado }) => {
-
+const ModalCrearUsuario = ({ onClose, onUsuarioCreado, modo="crear", usuarioSeleccionado }) => {
   const [form, setForm] = useState({
-    nombre: "",
-    apellido: "",
-    email: "",
-    password: "",
-    rol: "estudiante",
+    nombre:"",
+    apellido:"",
+    email:"",
+    password:"",
+    rol:"estudiante",
   });
-
-  const handleChange = (e) => {
+  useEffect(()=>{
+    if (modo === "editar" && usuarioSeleccionado){
+      setForm({
+        nombre: usuarioSeleccionado.nombre || "",
+        apellido: usuarioSeleccionado.apellido || "",
+        email: usuarioSeleccionado.email || "",
+        password: "",
+        rol: usuarioSeleccionado.rol || "estudiante",
+      });
+    }
+  }, [modo, usuarioSeleccionado]);
+  const handleChange = (e) =>{
     setForm({
       ...form,
       [e.target.name]: e.target.value,
     });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e)=>{
     e.preventDefault();
-
-    try {
-
-      await crearUsuarioRequest(form);
-
+    try{
+      if(modo === "crear"){
+        await crearUsuarioRequest(form);
+      }else{
+        await actualizarUsuarioRequest(usuarioSeleccionado._id, form);
+      }
       onUsuarioCreado();
-
       onClose();
-
-    } catch (error) {
-      console.error(error);
+    }catch(error){
+      console.error(error)
     }
   };
 
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+ return (
 
-      <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
 
-        <h2 className="text-xl font-bold mb-4">
-          Crear Usuario
-        </h2>
+    <div className="bg-white w-full max-w-md rounded-xl shadow-xl p-6">
 
-        <form onSubmit={handleSubmit} className="space-y-3">
+      <h2 className="text-2xl font-bold mb-6 text-center">
 
-          <input
-            type="text"
-            name="nombre"
-            placeholder="Nombre"
-            value={form.nombre}
-            onChange={handleChange}
-            className="w-full border p-2 rounded"
-          />
+        {modo === "crear"
+          ? "Crear Usuario"
+          : "Editar Usuario"}
 
-          <input
-            type="text"
-            name="apellido"
-            placeholder="Apellido"
-            value={form.apellido}
-            onChange={handleChange}
-            className="w-full border p-2 rounded"
-          />
+      </h2>
 
-          <input
-            type="email"
-            name="email"
-            placeholder="Correo"
-            value={form.email}
-            onChange={handleChange}
-            className="w-full border p-2 rounded"
-          />
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-4"
+      >
 
-          <input
-            type="password"
-            name="password"
-            placeholder="Contraseña"
-            value={form.password}
-            onChange={handleChange}
-            className="w-full border p-2 rounded"
-          />
+        <input
+          type="text"
+          name="nombre"
+          placeholder="Nombre"
+          value={form.nombre}
+          onChange={handleChange}
+          className="w-full border border-gray-300 p-3 rounded-lg outline-none focus:ring-2 focus:ring-green-500"
+        />
 
-          <select
-            name="rol"
-            value={form.rol}
-            onChange={handleChange}
-            className="w-full border p-2 rounded"
+        <input
+          type="text"
+          name="apellido"
+          placeholder="Apellido"
+          value={form.apellido}
+          onChange={handleChange}
+          className="w-full border border-gray-300 p-3 rounded-lg outline-none focus:ring-2 focus:ring-green-500"
+        />
+
+        <input
+          type="email"
+          name="email"
+          placeholder="Correo"
+          value={form.email}
+          onChange={handleChange}
+          className="w-full border border-gray-300 p-3 rounded-lg outline-none focus:ring-2 focus:ring-green-500"
+        />
+
+        <input
+          type="password"
+          name="password"
+          placeholder={
+            modo === "editar"
+              ? "Nueva contraseña (opcional)"
+              : "Contraseña"
+          }
+          value={form.password}
+          onChange={handleChange}
+          className="w-full border border-gray-300 p-3 rounded-lg outline-none focus:ring-2 focus:ring-green-500"
+        />
+
+        <select
+          name="rol"
+          value={form.rol}
+          onChange={handleChange}
+          className="w-full border border-gray-300 p-3 rounded-lg outline-none focus:ring-2 focus:ring-green-500"
+        >
+
+          <option value="estudiante">
+            Estudiante
+          </option>
+
+          <option value="tutor">
+            Tutor
+          </option>
+
+          <option value="admin">
+            Admin
+          </option>
+
+        </select>
+
+        <div className="flex justify-end gap-3 pt-2">
+
+          <button
+            type="button"
+            onClick={onClose}
+            className="bg-gray-400 hover:bg-gray-500 text-white px-5 py-2 rounded-lg"
           >
-            <option value="estudiante">Estudiante</option>
-            <option value="tutor">Tutor</option>
-            <option value="admin">Admin</option>
-          </select>
+            Cancelar
+          </button>
 
-          <div className="flex justify-end gap-2 pt-2">
+          <button
+            type="submit"
+            className="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg"
+          >
 
-            <button
-              type="button"
-              onClick={onClose}
-              className="bg-gray-400 text-white px-4 py-2 rounded"
-            >
-              Cancelar
-            </button>
+            {modo === "crear"
+              ? "Crear"
+              : "Actualizar"}
 
-            <button
-              type="submit"
-              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-            >
-              Crear
-            </button>
+          </button>
 
-          </div>
+        </div>
 
-        </form>
-      </div>
+      </form>
+
     </div>
-  );
-};
 
+  </div>
+
+);
+
+}
 export default ModalCrearUsuario;

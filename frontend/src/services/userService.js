@@ -15,6 +15,10 @@ const crearUsuarioRequest = async (data)=>{
   const res = await axios.post("/user", data);
   return res.data;
 }
+const actualizarUsuarioRequest = async (id, data)=>{
+  const res = await axios.put(`/user/${id}`,data);
+  return res.data;
+}
 export {getUsuariosRequest, desactivarUsuarioRequest,activarUsuarioRequest,
-  crearUsuarioRequest
+  crearUsuarioRequest, actualizarUsuarioRequest
 }

@@ -1,27 +1,17 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import {
-  useNavigate,
-  useParams
-} from "react-router-dom";
-
-import {
-  validarTokenRequest,
-  nuevoPasswordRequest
+  cambiarPasswordRequest
 } from "../../services/authService.js";
 
 import Card from "../../components/ui/Card.jsx";
 import Button from "../../components/ui/Button.jsx";
 import PasswordInput from "../../components/ui/PasswordInput.jsx";
 
-const ResetPassword = () => {
+const CambiarPassword = () => {
 
     const navigate = useNavigate();
-
-    const { token } = useParams();
-
-    const [valido, setValido] =
-        useState(false);
 
     const [msg, setMsg] =
         useState("");
@@ -40,31 +30,6 @@ const ResetPassword = () => {
 
     });
 
-    // VALIDAR TOKEN
-    useEffect(() => {
-
-        const validar = async () => {
-
-            try {
-
-                await validarTokenRequest(token);
-
-                setValido(true);
-
-            } catch (error) {
-
-                console.log(error);
-
-                setError("Token inválido");
-
-            }
-
-        };
-
-        validar();
-
-    }, [token]);
-
     // CAMBIOS INPUT
     const handleChange = (e) => {
 
@@ -79,7 +44,7 @@ const ResetPassword = () => {
 
     };
 
-    // ENVIAR NUEVO PASSWORD
+    // ENVIAR PASSWORD
     const handleSubmit = async (e) => {
 
         e.preventDefault();
@@ -117,8 +82,7 @@ const ResetPassword = () => {
             setLoading(true);
 
             const res =
-                await nuevoPasswordRequest(
-                    token,
+                await cambiarPasswordRequest(
                     form
                 );
 
@@ -126,7 +90,7 @@ const ResetPassword = () => {
 
             setTimeout(() => {
 
-                navigate("/login");
+                navigate("/dashboard");
 
             }, 2000);
 
@@ -138,7 +102,7 @@ const ResetPassword = () => {
 
                 error.response?.data?.msg ||
 
-                "Error al actualizar contraseña"
+                "Error al cambiar contraseña"
 
             );
 
@@ -150,29 +114,6 @@ const ResetPassword = () => {
 
     };
 
-    // TOKEN INVALIDO
-    if (!valido) {
-
-        return (
-
-            <div className="min-h-screen flex items-center justify-center">
-
-                <Card className="w-full max-w-md">
-
-                    <p className="text-red-500 text-center">
-
-                        {error}
-
-                    </p>
-
-                </Card>
-
-            </div>
-
-        );
-
-    }
-
     return (
 
         <div className="min-h-screen flex items-center justify-center px-4">
@@ -181,14 +122,14 @@ const ResetPassword = () => {
 
                 <h2 className="text-2xl font-bold mb-4 text-center">
 
-                    Nueva Contraseña
+                    Cambiar Contraseña
 
                 </h2>
 
                 <p className="text-sm text-gray-500 text-center mb-4">
 
-                    Ingresa una nueva contraseña
-                    para recuperar tu cuenta.
+                    Debes actualizar tu contraseña
+                    antes de continuar.
 
                 </p>
 
@@ -256,4 +197,4 @@ const ResetPassword = () => {
 
 };
 
-export default ResetPassword;
+export default CambiarPassword;

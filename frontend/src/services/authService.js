@@ -22,7 +22,24 @@ const nuevoPasswordRequest = async(token,data)=>{
     const res = await axios.post(`/auth/recuperar/${token}`,data);
     return res.data;
 }
+const reenviarConfirmacionRequest = async(email)=>{
+    const res = await axios.post("/auth/reenviar-confirmacion",{email});
+    return res.data;
+}
+const cambiarPasswordRequest = async (data) => {
 
+    const res = await axios.patch(
+
+        "/auth/cambiar-password",
+
+        data
+
+    );
+
+    return res.data;
+
+};
 
 export {registerUserRequest, loginUserRequest, recuperarPasswordRequest,
-        validarTokenRequest, nuevoPasswordRequest}
+        validarTokenRequest, nuevoPasswordRequest, reenviarConfirmacionRequest,
+        cambiarPasswordRequest}
