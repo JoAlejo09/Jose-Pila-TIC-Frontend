@@ -14,6 +14,7 @@ const menuPorRol={
     },
   ],
 estudiante: [
+    { label: "Mi Perfil", path: "/mi-perfil" },
     { label: "Evaluación", path: "/dashboard/evaluacion" },
     { label: "Resultados", path: "/dashboard/resultados" },
     { label: "Recomendaciones", path: "/dashboard/recomendaciones" },
