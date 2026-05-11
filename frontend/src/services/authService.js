@@ -27,17 +27,8 @@ const reenviarConfirmacionRequest = async(email)=>{
     return res.data;
 }
 const cambiarPasswordRequest = async (data) => {
-
-    const res = await axios.patch(
-
-        "/auth/cambiar-password",
-
-        data
-
-    );
-
+    const res = await axios.patch("/auth/cambiar-password", data);
     return res.data;
-
 };
 
 export {registerUserRequest, loginUserRequest, recuperarPasswordRequest,

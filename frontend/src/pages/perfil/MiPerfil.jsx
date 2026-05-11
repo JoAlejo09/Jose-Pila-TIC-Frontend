@@ -1,111 +1,103 @@
 import { useEffect, useState } from "react";
 import {
   obtenerPerfilRequest,
-  actualizarPerfilRequest
+  actualizarPerfilRequest,
+  actualizarFotoPerfilRequest
 } from "../../services/perfilService.js";
 
 const MiPerfil = () => {
-    const [perfil, setPerfil] =
-          useState(null);
-    const [form, setForm] =
-      useState({});
-    const [loading, setLoading] =
-      useState(true);
-    const [error, setError] =
-      useState("");
-    const [msg, setMsg] =
-      useState("");
-    const [editando, setEditando] =
-      useState(false);
 
-    useEffect(()=>{
-        const cargarPerfil =
-          async()=>{
-            try{
-                const data =
-                  await obtenerPerfilRequest();
+    const [perfil, setPerfil] = useState(null);
+    const [form, setForm] = useState({});
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+    const [msg, setMsg] = useState("");
+    const [editando, setEditando] = useState(false);
+    const [mostrarMenuFoto, setMostrarMenuFoto] = useState(false);
+    const [cargarFoto, setCargarFoto] = useState(false);
+    useEffect(() => {
+        const cargarPerfil = async () => {
+            try {
+                const data = await obtenerPerfilRequest();
                 setPerfil(data);
                 setForm({
-                    nombre:
-                      data.usuario.nombre || "",
-                    apellido:
-                      data.usuario.apellido || "",
-                    telefono:
-                      data.perfil?.telefono || "",
-                    direccion:
-                      data.perfil?.direccion || "",
+                    nombre: data.usuario.nombre || "",
+                    apellido: data.usuario.apellido || "",
+                    telefono: data.perfil?.telefono || "",
+                    direccion: data.perfil?.direccion || "",
                     fechaNacimiento:
-                      data.perfil?.fechaNacimiento
-                        ? data.perfil.fechaNacimiento
-                            .split("T")[0]
-                        : "",
-                    institucion:
-                      data.perfil?.institucion || "",
-                    curso:
-                      data.perfil?.curso || "",
-                    nivelAcademico:
-                      data.perfil?.nivelAcademico || "",
-                    especialidad:
-                      data.perfil?.especialidad || "",
-                    experiencia:
-                      data.perfil?.experiencia || "",
-                    titulacion:
-                      data.perfil?.titulacion || "",
-                    descripcion:
-                      data.perfil?.descripcion || ""
+                        data.perfil?.fechaNacimiento
+                            ? data.perfil.fechaNacimiento.split("T")[0]
+                            : "",
+                    institucion: data.perfil?.institucion || "",
+                    nivelAcademico: data.perfil?.nivelAcademico || "",
+                    especialidad: data.perfil?.especialidad || "",
+                    experiencia: data.perfil?.experiencia || "",
+                    titulacion: data.perfil?.titulacion || "",
+                    descripcion: data.perfil?.descripcion || ""
                 });
-            }catch(error){
+            } catch (error) {
                 console.log(error);
-                setError(
-                  "Error al cargar perfil"
-                );
-            }finally{
+                setError("Error al cargar perfil");
+            } finally {
                 setLoading(false);
             }
         };
         cargarPerfil();
-    },[]);
-
-    const handleChange = (e)=>{
+    }, []);
+    const handleChange = (e) => {
         setForm({
             ...form,
-            [e.target.name]:
-              e.target.value
+            [e.target.name]: e.target.value
         });
     };
-
-    const handleSubmit =
-      async(e)=>{
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
         setMsg("");
-        try{
-            const res =
-              await actualizarPerfilRequest(form);
+        try {
+            const res = await actualizarPerfilRequest(form);
             setMsg(res.msg);
-            const data =
-              await obtenerPerfilRequest();
+            const data = await obtenerPerfilRequest();
             setPerfil(data);
             setEditando(false);
-        }catch(error){
+        } catch (error) {
             console.log(error);
             setError(
-              error.response?.data?.msg ||
-              "Error al actualizar perfil"
+                error.response?.data?.msg ||
+                "Error al actualizar perfil"
             );
         }
     };
-
-    if(loading){
-        return(
+    const handleFotoChange = async (e) => {
+        try {
+            const file = e.target.files[0];
+            if (!file) return;
+            setCargarFoto(true);
+            const res = await actualizarFotoPerfilRequest(file);
+            const data = await obtenerPerfilRequest();
+            setPerfil(data);
+            setMsg(res.msg);
+        } catch (error) {
+            console.log(error);
+            setError(
+                error.response?.data?.msg ||
+                "Error al subir la foto"
+            );
+        } finally {
+            setCargarFoto(false);
+            setMostrarMenuFoto(false);
+        }
+    };
+    if (loading) {
+        return (
             <p className="text-center mt-10">
                 Cargando perfil...
             </p>
         );
     }
-
-    if(error){
-        return(
+    if (error) {
+        return (
             <p className="text-center mt-10 text-red-500">
                 {error}
             </p>
@@ -118,33 +110,62 @@ const MiPerfil = () => {
                 <h1 className="text-2xl font-bold">
                     Mi Perfil
                 </h1>
-                <div className="flex flex-col items-center mb-6">
+                {/* FOTO PERFIL */}
+                <div className="flex flex-col items-center mb-6 relative">
                     <img
-                    src={perfil?.perfil?.fotoPerfil}
-                    alt="Foto Perfil"
-                    className=" w-32 h-32 rounded-full object-cover border-4 border-blue-200 shadow-lg"/>
+                        src={perfil?.perfil?.fotoPerfil}
+                        alt="Foto Perfil"
+                        className="w-32 h-32 rounded-full object-cover border-4 border-gray-300 shadow cursor-pointer hover:opacity-80 transition"
+                        onClick={() =>
+                            setMostrarMenuFoto(!mostrarMenuFoto)
+                        }
+                    />
+                    {cargarFoto && (
+                        <p className="mt-2 text-sm text-blue-600">
+                            Subiendo imagen...
+                        </p>
+                    )}
+                    {mostrarMenuFoto && (
+                        <div className="absolute top-36 bg-white shadow-lg rounded-lg border w-48 z-50">
+                            {/* CAMBIAR FOTO */}
+                            <label className="block px-4 py-3 hover:bg-gray-100 cursor-pointer">
+                                Cambiar foto
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    className="hidden"
+                                    onChange={handleFotoChange}
+                                />
+                            </label>
+                            {/* ELIMINAR FOTO */}
+                            <button
+                                type="button"
+                                className="w-full text-left px-4 py-3 hover:bg-gray-100 text-red-500"
+                            >
+                                Eliminar foto
+                            </button>
+                        </div>
+                    )}
                 </div>
                 {!editando && (
                     <button
-                        onClick={()=>
-                          setEditando(true)
-                        }
-                       className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+                        onClick={() => setEditando(true)}
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
                     >
                         Editar Perfil
                     </button>
                 )}
             </div>
-
             {msg && (
                 <p className="text-green-600 mb-4">
                     {msg}
                 </p>
             )}
-           <form
+            <form
                 onSubmit={handleSubmit}
                 className="bg-white shadow rounded p-6 space-y-4"
             >
+                {/* NOMBRE */}
                 <div>
                     <label className="font-semibold">
                         Nombre
@@ -163,7 +184,7 @@ const MiPerfil = () => {
                         </p>
                     )}
                 </div>
-
+                {/* APELLIDO */}
                 <div>
                     <label className="font-semibold">
                         Apellido
@@ -182,7 +203,7 @@ const MiPerfil = () => {
                         </p>
                     )}
                 </div>
-
+                {/* EMAIL */}
                 <div>
                     <label className="font-semibold">
                         Email
@@ -191,7 +212,7 @@ const MiPerfil = () => {
                         {perfil?.usuario?.email}
                     </p>
                 </div>
-
+                {/* ROL */}
                 <div>
                     <label className="font-semibold">
                         Rol
@@ -200,10 +221,33 @@ const MiPerfil = () => {
                         {perfil?.usuario?.rol}
                     </p>
                 </div>
-
-                {perfil?.usuario?.rol ===
-                  "estudiante" && (
+                {/* ESTUDIANTE */}
+                {perfil?.usuario?.rol === "estudiante" && (
                     <>
+                        {/* AÑO ESCOLAR BLOQUEADO */}
+                        <div>
+                            <label className="font-semibold">
+                                Año Escolar
+                            </label>
+                            <input
+                                type="text"
+                                disabled
+                                value={
+                                    perfil?.perfil?.anioEscolar === "primero"
+                                        ? "Primero de Bachillerato"
+                                        : perfil?.perfil?.anioEscolar === "segundo"
+                                        ? "Segundo de Bachillerato"
+                                        : perfil?.perfil?.anioEscolar === "tercero"
+                                        ? "Tercero de Bachillerato"
+                                        : "No registrado"
+                                }
+                                className="w-full border p-2 rounded mt-1 bg-gray-100 text-gray-500 cursor-not-allowed"
+                            />
+                            <p className="text-xs text-gray-500 mt-1">
+                                El año escolar solo puede ser modificado por el administrador.
+                            </p>
+                        </div>
+                        {/* TELEFONO */}
                         <div>
                             <label className="font-semibold">
                                 Teléfono
@@ -218,12 +262,11 @@ const MiPerfil = () => {
                                 />
                             ) : (
                                 <p className="mt-1">
-                                    {perfil?.perfil?.telefono ||
-                                     "No registrado"}
+                                    {perfil?.perfil?.telefono || "No registrado"}
                                 </p>
                             )}
                         </div>
-
+                        {/* DIRECCION */}
                         <div>
                             <label className="font-semibold">
                                 Dirección
@@ -238,12 +281,11 @@ const MiPerfil = () => {
                                 />
                             ) : (
                                 <p className="mt-1">
-                                    {perfil?.perfil?.direccion ||
-                                     "No registrada"}
+                                    {perfil?.perfil?.direccion || "No registrada"}
                                 </p>
                             )}
                         </div>
-
+                        {/* FECHA NACIMIENTO */}
                         <div>
                             <label className="font-semibold">
                                 Fecha de Nacimiento
@@ -252,9 +294,7 @@ const MiPerfil = () => {
                                 <input
                                     type="date"
                                     name="fechaNacimiento"
-                                    value={
-                                      form.fechaNacimiento || ""
-                                    }
+                                    value={form.fechaNacimiento || ""}
                                     onChange={handleChange}
                                     className="w-full border p-2 rounded mt-1"
                                 />
@@ -268,7 +308,7 @@ const MiPerfil = () => {
                                 </p>
                             )}
                         </div>
-
+                        {/* INSTITUCION */}
                         <div>
                             <label className="font-semibold">
                                 Institución
@@ -283,32 +323,11 @@ const MiPerfil = () => {
                                 />
                             ) : (
                                 <p className="mt-1">
-                                    {perfil?.perfil?.institucion ||
-                                     "No registrada"}
+                                    {perfil?.perfil?.institucion || "No registrada"}
                                 </p>
                             )}
                         </div>
-
-                        <div>
-                            <label className="font-semibold">
-                                Curso
-                            </label>
-                            {editando ? (
-                                <input
-                                    type="text"
-                                    name="curso"
-                                    value={form.curso}
-                                    onChange={handleChange}
-                                    className="w-full border p-2 rounded mt-1"
-                                />
-                            ) : (
-                                <p className="mt-1">
-                                    {perfil?.perfil?.curso ||
-                                     "No registrado"}
-                                </p>
-                            )}
-                        </div>
-
+                        {/* NIVEL ACADEMICO */}
                         <div>
                             <label className="font-semibold">
                                 Nivel Académico
@@ -323,22 +342,21 @@ const MiPerfil = () => {
                                 />
                             ) : (
                                 <p className="mt-1">
-                                    {perfil?.perfil?.nivelAcademico ||
-                                     "No registrado"}
+                                    {perfil?.perfil?.nivelAcademico || "No registrado"}
                                 </p>
                             )}
                         </div>
                     </>
                 )}
-
-                {perfil?.usuario?.rol ===
-                  "tutor" && (
+                {/* TUTOR */}
+                {perfil?.usuario?.rol === "tutor" && (
                     <>
                         <div>
                             <label className="font-semibold">
                                 Teléfono
                             </label>
                             {editando ? (
+
                                 <input
                                     type="text"
                                     name="telefono"
@@ -348,12 +366,10 @@ const MiPerfil = () => {
                                 />
                             ) : (
                                 <p className="mt-1">
-                                    {perfil?.perfil?.telefono ||
-                                     "No registrado"}
+                                    {perfil?.perfil?.telefono || "No registrado"}
                                 </p>
                             )}
                         </div>
-
                         <div>
                             <label className="font-semibold">
                                 Especialidad
@@ -368,12 +384,10 @@ const MiPerfil = () => {
                                 />
                             ) : (
                                 <p className="mt-1">
-                                    {perfil?.perfil?.especialidad ||
-                                     "No registrada"}
+                                    {perfil?.perfil?.especialidad || "No registrada"}
                                 </p>
                             )}
                         </div>
-
                         <div>
                             <label className="font-semibold">
                                 Experiencia
@@ -388,8 +402,7 @@ const MiPerfil = () => {
                                 />
                             ) : (
                                 <p className="mt-1">
-                                    {perfil?.perfil?.experiencia ||
-                                     "No registrada"}
+                                    {perfil?.perfil?.experiencia || "No registrada"}
                                 </p>
                             )}
                         </div>
@@ -397,7 +410,6 @@ const MiPerfil = () => {
                             <label className="font-semibold">
                                 Titulación
                             </label>
-
                             {editando ? (
                                 <input
                                     type="text"
@@ -408,8 +420,7 @@ const MiPerfil = () => {
                                 />
                             ) : (
                                 <p className="mt-1">
-                                    {perfil?.perfil?.titulacion ||
-                                     "No registrada"}
+                                    {perfil?.perfil?.titulacion || "No registrada"}
                                 </p>
                             )}
                         </div>
@@ -417,7 +428,6 @@ const MiPerfil = () => {
                             <label className="font-semibold">
                                 Descripción
                             </label>
-
                             {editando ? (
                                 <textarea
                                     name="descripcion"
@@ -427,27 +437,27 @@ const MiPerfil = () => {
                                 />
                             ) : (
                                 <p className="mt-1">
-                                    {perfil?.perfil?.descripcion ||
-                                     "No registrada"}
+                                    {perfil?.perfil?.descripcion || "No registrada"}
                                 </p>
                             )}
                         </div>
                     </>
                 )}
-
                 {editando && (
                     <div className="flex justify-end gap-3 pt-4">
                         <button
                             type="button"
-                            onClick={()=>
-                              setEditando(false)
-                            }
+                            onClick={() => setEditando(false)}
                             className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
-                        >Cancelar</button>
+                        >
+                            Cancelar
+                        </button>
                         <button
                             type="submit"
                             className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
-                        >Actualizar</button>
+                        >
+                            Actualizar
+                        </button>
                     </div>
                 )}
             </form>
