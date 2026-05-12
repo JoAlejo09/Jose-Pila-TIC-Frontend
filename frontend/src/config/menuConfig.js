@@ -1,10 +1,7 @@
-import { Users, BarChart3, User, ClipboardCheck, GraduationCap, BookOpen, School, LibraryBig, 
-//FolderKanban
-} from "lucide-react";
+import { Users, BarChart3, User, ClipboardCheck, BookOpen, School, LibraryBig, Lightbulb, TrendingUp } from "lucide-react";
 
 const menuPorRol = {
   admin: [
-    // USUARIOS
     {
       label:"Usuarios",
       icon: Users,
@@ -15,7 +12,6 @@ const menuPorRol = {
         }
       ]
     },
-    // GESTIÓN ACADÉMICA
     {
       label:"Gestión Académica",
       icon: LibraryBig,
@@ -38,7 +34,6 @@ const menuPorRol = {
         }
       ]
     },
-    // REPORTES
     {
       label:"Reportes",
       icon: BarChart3,
@@ -49,47 +44,46 @@ const menuPorRol = {
         }
       ]
     }
-  ],
 
+  ],
   estudiante: [
     {
       label:"Mi Perfil",
       icon: User,
       path:"/mi-perfil"
     },
-
     {
-      label:"Evaluación",
+      label:"Materias",
+      icon: BookOpen,
+      path:"/dashboard/estudiante/materias"
+    },
+    {
+      label:"Evaluaciones",
       icon: ClipboardCheck,
-      path:"/dashboard/evaluacion"
+      path:"/dashboard/estudiante/evaluaciones"
     },
-
     {
-      label:"Resultados",
-      icon: GraduationCap,
-      path:"/dashboard/resultados"
+      label:"Mi Progreso",
+      icon: TrendingUp,
+      path:"/dashboard/estudiante/progreso"
     },
-
     {
       label:"Recomendaciones",
-      icon: BookOpen,
-      path:"/dashboard/recomendaciones"
+      icon: Lightbulb,
+      path:"/dashboard/estudiante/recomendaciones"
     }
   ],
   tutor: [
-
     {
       label:"Mi Perfil",
       icon: User,
       path:"/mi-perfil"
     },
-
     {
       label:"Tutorías",
       icon: BookOpen,
       path:"/dashboard/tutorias"
     },
-
     {
       label:"Estudiantes",
       icon: School,
@@ -97,5 +91,4 @@ const menuPorRol = {
     }
   ]
 };
-
 export default menuPorRol;

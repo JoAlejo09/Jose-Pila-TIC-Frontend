@@ -16,6 +16,10 @@ import Temas from "../pages/admin/Temas.jsx";
 import Recursos from "../pages/admin/Recurso.jsx";
 import MiPerfil from "../pages/perfil/MiPerfil.jsx";
 
+import MateriasEstudiante from "../pages/estudiante/MateriasEstudiante.jsx";
+import TemasEstudiante from "../pages/estudiante/TemaEstudiante.jsx";
+import RecursosEstudiante from "../pages/estudiante/RecursoEstudiante.jsx";
+
 import RolRoute from "./RolRoute.jsx";
 
 
@@ -45,6 +49,11 @@ const AppRouter = ()=>{
                     <Route path="/dashboard/admin/materias" element={<Materias/>}/>
                     <Route path="/dashboard/admin/temas" element={<Temas/>}/>
                     <Route path="/dashboard/admin/recursos" element={<Recursos/>}/>
+                </Route>
+                <Route element = {<RolRoute rolesPermitidos={["estudiante"]}/>}>
+                 <Route path="/dashboard/estudiante/materias" element={<MateriasEstudiante/>}/>
+               <Route path="/dashboard/estudiante/temas/:materiaId" element={<TemasEstudiante/>} />
+                 <Route path="/dashboard/estudiante/recursos/:temaId" element={<RecursosEstudiante/>}/>
                 </Route>
                 <Route path="/mi-perfil" element={<MiPerfil/>}/>
             </Route>
