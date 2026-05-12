@@ -233,11 +233,11 @@ const MiPerfil = () => {
                                 type="text"
                                 disabled
                                 value={
-                                    perfil?.perfil?.anioEscolar === "primero"
+                                    perfil?.perfil?.nivelAcademico === "1ro BGU"
                                         ? "Primero de Bachillerato"
-                                        : perfil?.perfil?.anioEscolar === "segundo"
+                                        : perfil?.perfil?.nivelAcademico === "2do BGU"
                                         ? "Segundo de Bachillerato"
-                                        : perfil?.perfil?.anioEscolar === "tercero"
+                                        : perfil?.perfil?.nivelAcademico === "3ro BGU"
                                         ? "Tercero de Bachillerato"
                                         : "No registrado"
                                 }

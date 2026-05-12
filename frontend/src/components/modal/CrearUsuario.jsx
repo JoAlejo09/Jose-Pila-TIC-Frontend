@@ -9,7 +9,7 @@ const ModalCrearUsuario = ({ onClose, onUsuarioCreado, modo = "crear", usuarioSe
     email:"",
     password:"",
     rol:"estudiante",
-    anioEscolar:""
+    nivelAcademico:""
   });
 
   // CARGAR DATOS EDITAR
@@ -22,7 +22,7 @@ const ModalCrearUsuario = ({ onClose, onUsuarioCreado, modo = "crear", usuarioSe
         email: usuarioSeleccionado.email || "",
         password:"",
         rol: usuarioSeleccionado.rol || "estudiante",
-        anioEscolar: usuarioSeleccionado.anioEscolar || ""
+        nivelAcademico: usuarioSeleccionado.nivelAcademico || ""
       });
     }
   }, [modo, usuarioSeleccionado]);
@@ -36,7 +36,7 @@ const ModalCrearUsuario = ({ onClose, onUsuarioCreado, modo = "crear", usuarioSe
       setForm({
         ...form,
         rol:value,
-        anioEscolar:""
+        nivelAcademico:""
       });
       return;
     }
@@ -52,7 +52,7 @@ const ModalCrearUsuario = ({ onClose, onUsuarioCreado, modo = "crear", usuarioSe
     try{
       if(
         form.rol === "estudiante" &&
-        !form.anioEscolar
+        !form.nivelAcademico
       ){
         return alert(
           "Seleccione un año escolar"
@@ -136,15 +136,15 @@ const ModalCrearUsuario = ({ onClose, onUsuarioCreado, modo = "crear", usuarioSe
 
         { form.rol === "estudiante" && (
             <select
-              name="anioEscolar"
-              value={form.anioEscolar}
+              name="nivelAcademico"
+              value={form.nivelAcademico}
               onChange={handleChange}
               className="w-full border border-gray-300 p-3 rounded-lg outline-none focus:ring-2 focus:ring-green-500"
             >
               <option value=""> Seleccione año escolar </option>
-              <option value="primero"> Primero de Bachillerato </option>
-              <option value="segundo"> Segundo de Bachillerato </option>
-              <option value="tercero"> Tercero de Bachillerato </option>
+              <option value="1ro BGU"> Primero de Bachillerato </option>
+              <option value="2do BGU"> Segundo de Bachillerato </option>
+              <option value="3ro BGU"> Tercero de Bachillerato </option>
             </select>
           )
         }

@@ -16,7 +16,7 @@ const Registro = () => {
         password:"",
         confirmpassword:"",
         rol:"estudiante",
-        anioEscolar:""
+        nivelAcademico:""
     });
 
     const [error, setError] = useState("");
@@ -30,7 +30,7 @@ const Registro = () => {
             setForm({
                 ...form,
                 rol:"tutor",
-                anioEscolar:""
+                nivelAcademico:""
             });
             return;
         }
@@ -55,7 +55,7 @@ const Registro = () => {
         // VALIDAR AÑO ESCOLAR SOLO ESTUDIANTE
         if(
             form.rol === "estudiante" &&
-            !form.anioEscolar
+            !form.nivelAcademico
         ){
             return setError("Seleccione un año escolar");
         }
@@ -155,21 +155,21 @@ const Registro = () => {
                     {
                         form.rol === "estudiante" && (
                             <select
-                                name="anioEscolar"
-                                value={form.anioEscolar}
+                                name="nivelAcademico"
+                                value={form.nivelAcademico}
                                 onChange={handleChange}
                                 className="w-full border p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                             >
                                 <option value="">
                                     Seleccione año escolar
                                 </option>
-                                <option value="primero">
+                                <option value="1ro BGU">
                                     Primero de Bachillerato
                                 </option>
-                                <option value="segundo">
+                                <option value="2do BGU">
                                     Segundo de Bachillerato
                                 </option>
-                                <option value="tercero">
+                                <option value="3ro BGU">
                                     Tercero de Bachillerato
                                 </option>
                             </select>

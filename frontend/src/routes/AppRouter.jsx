@@ -11,6 +11,9 @@ import ResetPassword from "../pages/auth/ResetPassword.jsx";
 import CambiarPassword from "../pages/auth/CambiarPassword.jsx";
 import Dashboard from "../pages/dashboard/Dashboard.jsx";
 import Usuarios from "../pages/admin/Usuarios.jsx";
+import Materias from "../pages/admin/Materias.jsx";
+import Temas from "../pages/admin/Temas.jsx";
+import Recursos from "../pages/admin/Recurso.jsx";
 import MiPerfil from "../pages/perfil/MiPerfil.jsx";
 
 import RolRoute from "./RolRoute.jsx";
@@ -32,12 +35,16 @@ const AppRouter = ()=>{
             {/*Paginas Privadas */}
             <Route element={<PrivateRoute>
                         <PrivateLayout/>
-                    </PrivateRoute>
-                }                >
+                </PrivateRoute>}>
+
                 <Route path="/dashboard" element={<Dashboard/>}/>
                 <Route path="/cambiar-password" element={<CambiarPassword/>}/>
+                {/*Rutas solo para admin*/}
                 <Route element={<RolRoute rolesPermitidos={["admin"]}/>}>
                     <Route path="/dashboard/admin/usuarios" element={<Usuarios/>}/>
+                    <Route path="/dashboard/admin/materias" element={<Materias/>}/>
+                    <Route path="/dashboard/admin/temas" element={<Temas/>}/>
+                    <Route path="/dashboard/admin/recursos" element={<Recursos/>}/>
                 </Route>
                 <Route path="/mi-perfil" element={<MiPerfil/>}/>
             </Route>
