@@ -19,6 +19,8 @@ import MiPerfil from "../pages/perfil/MiPerfil.jsx";
 import MateriasEstudiante from "../pages/estudiante/MateriasEstudiante.jsx";
 import TemasEstudiante from "../pages/estudiante/TemaEstudiante.jsx";
 import RecursosEstudiante from "../pages/estudiante/RecursoEstudiante.jsx";
+import Evaluaciones from "../pages/estudiante/Evaluaciones.jsx";
+import ResolverCuestionario from "../pages/estudiante/ResolverCuestionario.jsx";
 
 import RolRoute from "./RolRoute.jsx";
 
@@ -52,8 +54,10 @@ const AppRouter = ()=>{
                 </Route>
                 <Route element = {<RolRoute rolesPermitidos={["estudiante"]}/>}>
                  <Route path="/dashboard/estudiante/materias" element={<MateriasEstudiante/>}/>
-               <Route path="/dashboard/estudiante/temas/:materiaId" element={<TemasEstudiante/>} />
+                 <Route path="/dashboard/estudiante/temas/:materiaId" element={<TemasEstudiante/>} />
                  <Route path="/dashboard/estudiante/recursos/:temaId" element={<RecursosEstudiante/>}/>
+                 <Route path="/dashboard/estudiante/evaluaciones" element={<Evaluaciones/>}/>
+                 <Route path="/dashboard/estudiante/evaluaciones:/id" element={<ResolverCuestionario/>}/>
                 </Route>
                 <Route path="/mi-perfil" element={<MiPerfil/>}/>
             </Route>
