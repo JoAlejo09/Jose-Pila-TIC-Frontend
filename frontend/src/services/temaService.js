@@ -20,5 +20,9 @@ const cambiarEstadoTemaRequest = async(id)=>{
     const res = await axios.patch(`/tema/estado/${id}`);
     return res.data
 }
+const obtenerTemasPorMateriaRequest = async(materiaId)=>{
+    const res = await axios.get(`/tema/materia/${materiaId}`)
+    return res.data;
+}
 export { obtenerTemasRequest, obtenerTemaRequest, crearTemaRequest,
-    actualizarTemaRequest, cambiarEstadoTemaRequest};
+    actualizarTemaRequest, cambiarEstadoTemaRequest, obtenerTemasPorMateriaRequest};

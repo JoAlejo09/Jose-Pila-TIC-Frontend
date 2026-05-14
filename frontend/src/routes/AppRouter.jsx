@@ -21,6 +21,7 @@ import TemasEstudiante from "../pages/estudiante/TemaEstudiante.jsx";
 import RecursosEstudiante from "../pages/estudiante/RecursoEstudiante.jsx";
 import Evaluaciones from "../pages/estudiante/Evaluaciones.jsx";
 import ResolverCuestionario from "../pages/estudiante/ResolverCuestionario.jsx";
+import Preguntas from "../pages/admin/Preguntas.jsx";
 
 import RolRoute from "./RolRoute.jsx";
 
@@ -51,6 +52,7 @@ const AppRouter = ()=>{
                     <Route path="/dashboard/admin/materias" element={<Materias/>}/>
                     <Route path="/dashboard/admin/temas" element={<Temas/>}/>
                     <Route path="/dashboard/admin/recursos" element={<Recursos/>}/>
+                    <Route path="/dashboard/admin/preguntas" element={<Preguntas/>}/>
                 </Route>
                 <Route element = {<RolRoute rolesPermitidos={["estudiante"]}/>}>
                  <Route path="/dashboard/estudiante/materias" element={<MateriasEstudiante/>}/>

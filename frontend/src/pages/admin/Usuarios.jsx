@@ -7,7 +7,7 @@ import {
 } from "../../services/userService";
 
 import Input from "../../components/ui/Input";
-import ModalCrearUsuario from "../../components/modal/CrearUsuario";
+import ModalCrearUsuario from "../../components/modal/UsuarioModal.jsx";
 
 const Usuarios = () => {
 
