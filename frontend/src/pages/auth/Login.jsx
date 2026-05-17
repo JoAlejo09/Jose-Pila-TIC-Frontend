@@ -54,7 +54,7 @@ const Login = () => {
         return navigate("/cambiar-password" );
       }
       // VALIDAR PERFIL COMPLETO
-      if (!data.usuario.perfilCompleto) {
+      if (!data.perfilCompleto) {
         return navigate( "/completar-perfil" );
       }
       // DASHBOARD

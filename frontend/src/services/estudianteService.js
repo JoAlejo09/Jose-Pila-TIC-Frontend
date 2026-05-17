@@ -42,5 +42,5 @@ const obtenerResultadoEstudianteIDRequest = async(id)=>{
 
 export { completarPerfilEstudianteRequest, obtenerPerfilEstudianteRequest, actualizarPerfilEstudianteRequest,
         obtenerMateriasEstudianteRequest, obtenerTemasPorMateriaRequest, obtenerRecursosPorTemaRequest,
-        obtenerResultadosEstudianteRequest, . VobtenerResultadoEstudianteIDRequest
+        obtenerResultadosEstudianteRequest,obtenerResultadoEstudianteIDRequest
 };
