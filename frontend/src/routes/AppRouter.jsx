@@ -21,7 +21,9 @@ import MiPerfil from "../pages/perfil/MiPerfil.jsx";
 
 import MateriasEstudiante from "../pages/estudiante/MateriasEstudiante.jsx";
 import TemasEstudiante from "../pages/estudiante/TemaEstudiante.jsx";
-import RecursosEstudiante from "../pages/estudiante/RecursoEstudiante.jsx";
+import RecursosEstudiante from "../pages/estudiante/RecursosEstudiante.jsx";
+import DetalleRecursoEstudiante from "../pages/estudiante/DetalleRecursoEstudiante.jsx";
+
 import Evaluaciones from "../pages/estudiante/Evaluaciones.jsx";
 import ResolverCuestionario from "../pages/estudiante/ResolverCuestionario.jsx";
 
@@ -32,50 +34,151 @@ import PrivateRoute from "./PrivateRoute.jsx";
 import RolRoute from "./RolRoute.jsx";
 
 const AppRouter = () => {
+
     return (
+
         <BrowserRouter>
+
             <Routes>
+
+                {/* RUTAS PUBLICAS */}
                 <Route element={<PublicLayout />}>
-                    <Route path="/" element={<Landing />}/>
-                    <Route path="/registro" element={<Registro />} />
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/confirmar/:token" element={<VerificarCuenta />} />
-                    <Route path="/recuperar-password" element={<RecuperarPassword />} />
-                    <Route path="/reset-password/:token" element={<ResetPassword />}/>
+
+                    <Route
+                        path="/"
+                        element={<Landing />}
+                    />
+
+                    <Route
+                        path="/registro"
+                        element={<Registro />}
+                    />
+
+                    <Route
+                        path="/login"
+                        element={<Login />}
+                    />
+
+                    <Route
+                        path="/confirmar/:token"
+                        element={<VerificarCuenta />}
+                    />
+
+                    <Route
+                        path="/recuperar-password"
+                        element={<RecuperarPassword />}
+                    />
+
+                    <Route
+                        path="/reset-password/:token"
+                        element={<ResetPassword />}
+                    />
+
                 </Route>
 
-                {/*RUTAS PRIVADAS*/}
-                <Route element={ 
-                    <PrivateRoute>
-                        <PrivateLayout />
-                    </PrivateRoute>
-                }>
 
-                    <Route path="/dashboard" element={<Dashboard />}/>
-                    <Route path="/cambiar-password" element={<CambiarPassword />}/>
-                    <Route path="/completar-perfil" element={<CompletarPerfil />} />
-                    <Route path="/mi-perfil" element={<MiPerfil />} />
+                {/* RUTAS PRIVADAS */}
+                <Route
+                    element={
+                        <PrivateRoute>
+                            <PrivateLayout />
+                        </PrivateRoute>
+                    }
+                >
 
-                    {/**/}
-                    <Route element={ <RolRoute rolesPermitidos={["admin"]} />}>
-                        <Route path="/dashboard/admin/usuarios" element={<Usuarios />} />
-                        <Route path="/dashboard/admin/materias" element={<Materias />}/>
-                        <Route path="/dashboard/admin/temas" element={<Temas />} />
-                        <Route path="/dashboard/admin/recursos" element={<Recursos />} />
-                        <Route path="/dashboard/admin/preguntas" element={<Preguntas />} />
+                    <Route
+                        path="/dashboard"
+                        element={<Dashboard />}
+                    />
+
+                    <Route
+                        path="/cambiar-password"
+                        element={<CambiarPassword />}
+                    />
+
+                    <Route
+                        path="/completar-perfil"
+                        element={<CompletarPerfil />}
+                    />
+
+                    <Route
+                        path="/mi-perfil"
+                        element={<MiPerfil />}
+                    />
+
+
+                    {/* ADMIN */}
+                    <Route
+                        element={
+                            <RolRoute
+                                rolesPermitidos={["admin"]}
+                            />
+                        }
+                    >
+
+                        <Route
+                            path="/dashboard/admin/usuarios"
+                            element={<Usuarios />}
+                        />
+
+                        <Route
+                            path="/dashboard/admin/materias"
+                            element={<Materias />}
+                        />
+
+                        <Route
+                            path="/dashboard/admin/temas"
+                            element={<Temas />}
+                        />
+
+                        <Route
+                            path="/dashboard/admin/recursos"
+                            element={<Recursos />}
+                        />
+
+                        <Route
+                            path="/dashboard/admin/preguntas"
+                            element={<Preguntas />}
+                        />
+
                     </Route>
 
-                    <Route element={<RolRoute rolesPermitidos={["estudiante"]} /> } >
-                        <Route path="/dashboard/estudiante/materias" element={<MateriasEstudiante />} />
-                        <Route path="/dashboard/estudiante/temas/:materiaId" element={<TemasEstudiante />}/>
-                        <Route path="/dashboard/estudiante/recursos/:temaId" element={<RecursosEstudiante />} />
-                        <Route path="/dashboard/estudiante/evaluaciones" element={<Evaluaciones />} />
-                        <Route path="/dashboard/estudiante/evaluaciones/:id" element={<ResolverCuestionario />}/>
+
+                    {/* ESTUDIANTE */}
+                    <Route
+                        element={
+                            <RolRoute
+                                rolesPermitidos={["estudiante"]}
+                            />
+                        }
+                    >
+
+                        <Route
+                            path="/dashboard/estudiante/materias"
+                            element={<MateriasEstudiante />}
+                        />
+
+                        <Route
+                            path="/dashboard/estudiante/temas/:materiaId"
+                            element={<TemasEstudiante />}
+                        />
+
+                        <Route
+                            path="/dashboard/estudiante/recursos/:temaId"
+                            element={<RecursosEstudiante />}
+                        />
+
+                        <Route
+                            path="/dashboard/estudiante/recurso/:id"
+                            element={<DetalleRecursoEstudiante />}
+                        />
+
+                        <Route path="/dashboard/estudiante/evaluaciones" element={<Evaluaciones />}/>
+                        <Route path="/dashboard/estudiante/evaluaciones/:id" element={<ResolverCuestionario />} />
                     </Route>
                 </Route>
             </Routes>
         </BrowserRouter>
     );
 };
-
 export default AppRouter;

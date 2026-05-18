@@ -1,6 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
-import { BookMarked, Search, Star } from "lucide-react";
-import { useNavigate, useParams } from "react-router-dom";
+
+import {
+    BookMarked,
+    Search,
+    Star
+} from "lucide-react";
+
+import {
+    useNavigate,
+    useParams
+} from "react-router-dom";
 
 import {
     obtenerTemasPorMateriaRequest,
@@ -34,7 +43,9 @@ const TemasEstudiante = ()=>{
             setLoading(true);
 
             const data =
-                await obtenerTemasPorMateriaRequest(materiaId);
+                await obtenerTemasPorMateriaRequest(
+                    materiaId
+                );
 
             setTemas({
                 favoritos: data.favoritos || [],
@@ -45,7 +56,9 @@ const TemasEstudiante = ()=>{
 
             console.log(error);
 
-            setError("Error al cargar temas");
+            setError(
+                "Error al cargar temas"
+            );
 
         } finally {
 
@@ -64,39 +77,29 @@ const TemasEstudiante = ()=>{
 
 
     // FAVORITOS
-    const toggleFavorito = async(temaId, esFavorito)=>{
+    const toggleFavorito = async(
+        temaId,
+        esFavorito
+    )=>{
 
         try {
 
             if(esFavorito){
 
-                await quitarTemaFavoritoRequest(temaId);
+                await quitarTemaFavoritoRequest(
+                    temaId
+                );
 
             }else{
 
-                await agregarTemaFavoritoRequest(temaId);
+                await agregarTemaFavoritoRequest(
+                    temaId
+                );
 
             }
 
-            setTemas((prev)=>{
-
-                const actualizarLista = (lista)=>
-                    lista.map((tema)=>
-
-                        tema._id === temaId
-                        ? {
-                            ...tema,
-                            esFavorito: !esFavorito
-                        }
-                        : tema
-                    );
-
-                return{
-                    favoritos: actualizarLista(prev.favoritos),
-                    otros: actualizarLista(prev.otros)
-                };
-
-            });
+            // RECARGAR DESDE BACKEND
+            await cargarTemas();
 
         } catch (error) {
 
@@ -107,7 +110,7 @@ const TemasEstudiante = ()=>{
     };
 
 
-    // FILTRAR
+    // FILTRAR TEMAS
     const temasFiltrados = useMemo(()=>{
 
         const todosTemas = [
@@ -115,20 +118,15 @@ const TemasEstudiante = ()=>{
             ...(temas.otros || [])
         ];
 
-        let resultado = todosTemas.filter((tema)=>
+        return todosTemas.filter((tema)=>
 
             tema.nombre
                 .toLowerCase()
-                .includes(busqueda.toLowerCase())
+                .includes(
+                    busqueda.toLowerCase()
+                )
 
         );
-
-        resultado.sort(
-            (a,b)=>
-                b.esFavorito - a.esFavorito
-        );
-
-        return resultado;
 
     },[temas, busqueda]);
 
@@ -199,7 +197,11 @@ const TemasEstudiante = ()=>{
             {/* BUSCADOR */}
             <div className="bg-white rounded-2xl shadow-sm p-5 mb-8">
 
-                <div className="flex items-center gap-3 border border-gray-200 rounded-xl px-4 py-3">
+                <div className="
+                    flex items-center gap-3
+                    border border-gray-200
+                    rounded-xl px-4 py-3
+                ">
 
                     <Search
                         size={20}
@@ -211,9 +213,14 @@ const TemasEstudiante = ()=>{
                         placeholder="Buscar tema..."
                         value={busqueda}
                         onChange={(e)=>
-                            setBusqueda(e.target.value)
+                            setBusqueda(
+                                e.target.value
+                            )
                         }
-                        className="w-full outline-none bg-transparent"
+                        className="
+                            w-full outline-none
+                            bg-transparent
+                        "
                     />
 
                 </div>
@@ -225,9 +232,15 @@ const TemasEstudiante = ()=>{
             {
                 temasFiltrados.length === 0
                 &&
-                <div className="bg-white rounded-2xl shadow-sm p-10 text-center">
+                <div className="
+                    bg-white rounded-2xl
+                    shadow-sm p-10 text-center
+                ">
 
-                    <h2 className="text-2xl font-semibold text-gray-700">
+                    <h2 className="
+                        text-2xl font-semibold
+                        text-gray-700
+                    ">
                         No se encontraron temas
                     </h2>
 
@@ -240,7 +253,12 @@ const TemasEstudiante = ()=>{
 
 
             {/* GRID */}
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div className="
+                grid grid-cols-1
+                md:grid-cols-2
+                xl:grid-cols-3
+                gap-6
+            ">
 
                 {
                     temasFiltrados.map((tema)=>(
@@ -248,9 +266,11 @@ const TemasEstudiante = ()=>{
                         <div
                             key={tema._id}
                             className="
-                                bg-white rounded-2xl shadow-sm
-                                border border-gray-100 p-6
-                                hover:shadow-xl hover:-translate-y-1
+                                bg-white rounded-2xl
+                                shadow-sm border
+                                border-gray-100 p-6
+                                hover:shadow-xl
+                                hover:-translate-y-1
                                 transition-all duration-300
                                 relative
                             "
@@ -269,7 +289,9 @@ const TemasEstudiante = ()=>{
                                     );
 
                                 }}
-                                className="absolute top-5 right-5"
+                                className="
+                                    absolute top-5 right-5
+                                "
                             >
 
                                 <Star
@@ -294,10 +316,12 @@ const TemasEstudiante = ()=>{
                                 className="cursor-pointer"
                             >
 
+                                {/* ICONO */}
                                 <div className="
                                     w-16 h-16 rounded-2xl
-                                    bg-green-100 flex items-center
-                                    justify-center text-green-600 mb-5
+                                    bg-green-100 flex
+                                    items-center justify-center
+                                    text-green-600 mb-5
                                 ">
 
                                     <BookMarked size={32}/>
@@ -305,14 +329,22 @@ const TemasEstudiante = ()=>{
                                 </div>
 
 
-                                <h2 className="text-2xl font-bold text-gray-800 mb-3">
+                                {/* TITULO */}
+                                <h2 className="
+                                    text-2xl font-bold
+                                    text-gray-800 mb-3
+                                ">
 
                                     {tema.nombre}
 
                                 </h2>
 
 
-                                <p className="text-gray-500 leading-relaxed mb-4">
+                                {/* DESCRIPCION */}
+                                <p className="
+                                    text-gray-500
+                                    leading-relaxed mb-4
+                                ">
 
                                     {
                                         tema.descripcion ||
@@ -322,29 +354,17 @@ const TemasEstudiante = ()=>{
                                 </p>
 
 
-                                <span className="
-                                    inline-block bg-slate-100
-                                    text-slate-600 text-xs
-                                    px-3 py-1 rounded-full
-                                ">
-
+                                {/* NIVEL */}
+                                <span className=" inline-block bg-slate-100 text-slate-600 text-xs px-3 py-1 rounded-full ">
                                     {tema.nivelAcademico}
-
                                 </span>
-
                             </div>
-
                         </div>
-
                     ))
                 }
-
             </div>
-
         </div>
-
     );
-
 };
 
 export default TemasEstudiante;
