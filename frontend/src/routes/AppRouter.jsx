@@ -36,128 +36,42 @@ import RolRoute from "./RolRoute.jsx";
 const AppRouter = () => {
 
     return (
-
         <BrowserRouter>
-
             <Routes>
-
                 {/* RUTAS PUBLICAS */}
                 <Route element={<PublicLayout />}>
-
-                    <Route
-                        path="/"
-                        element={<Landing />}
-                    />
-
-                    <Route
-                        path="/registro"
-                        element={<Registro />}
-                    />
-
-                    <Route
-                        path="/login"
-                        element={<Login />}
-                    />
-
-                    <Route
-                        path="/confirmar/:token"
-                        element={<VerificarCuenta />}
-                    />
-
-                    <Route
-                        path="/recuperar-password"
-                        element={<RecuperarPassword />}
-                    />
-
-                    <Route
-                        path="/reset-password/:token"
-                        element={<ResetPassword />}
-                    />
-
+                    <Route path="/" element={<Landing />}/>
+                    <Route path="/registro" element={<Registro />}/>
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/confirmar/:token" element={<VerificarCuenta />} />
+                    <Route path="/recuperar-password" element={<RecuperarPassword />} />
+                    <Route path="/reset-password/:token" element={<ResetPassword />} />
                 </Route>
 
-
                 {/* RUTAS PRIVADAS */}
-                <Route
-                    element={
+                <Route element={
                         <PrivateRoute>
                             <PrivateLayout />
-                        </PrivateRoute>
-                    }
-                >
-
-                    <Route
-                        path="/dashboard"
-                        element={<Dashboard />}
-                    />
-
-                    <Route
-                        path="/cambiar-password"
-                        element={<CambiarPassword />}
-                    />
-
-                    <Route
-                        path="/completar-perfil"
-                        element={<CompletarPerfil />}
-                    />
-
-                    <Route
-                        path="/mi-perfil"
-                        element={<MiPerfil />}
-                    />
-
+                        </PrivateRoute>}>
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/cambiar-password" element={<CambiarPassword />}/>
+                    <Route path="/completar-perfil" element={<CompletarPerfil />} />
+                    <Route path="/mi-perfil" element={<MiPerfil />} />
 
                     {/* ADMIN */}
-                    <Route
-                        element={
-                            <RolRoute
-                                rolesPermitidos={["admin"]}
-                            />
-                        }
-                    >
-
-                        <Route
-                            path="/dashboard/admin/usuarios"
-                            element={<Usuarios />}
-                        />
-
-                        <Route
-                            path="/dashboard/admin/materias"
-                            element={<Materias />}
-                        />
-
-                        <Route
-                            path="/dashboard/admin/temas"
-                            element={<Temas />}
-                        />
-
-                        <Route
-                            path="/dashboard/admin/recursos"
-                            element={<Recursos />}
-                        />
-
-                        <Route
-                            path="/dashboard/admin/preguntas"
-                            element={<Preguntas />}
-                        />
-
+                    <Route element={ <RolRoute rolesPermitidos={["admin"]}/> }>
+                        <Route path="/dashboard/admin/usuarios" element={<Usuarios />}/>
+                        <Route path="/dashboard/admin/materias" element={<Materias />}/>
+                        <Route path="/dashboard/admin/temas" element={<Temas />}/>
+                        <Route path="/dashboard/admin/recursos" element={<Recursos />} />
+                        <Route path="/dashboard/admin/preguntas" element={<Preguntas />}/>
                     </Route>
 
-
                     {/* ESTUDIANTE */}
-                    <Route
-                        element={
-                            <RolRoute
-                                rolesPermitidos={["estudiante"]}
-                            />
-                        }
-                    >
-
-                        <Route
-                            path="/dashboard/estudiante/materias"
-                            element={<MateriasEstudiante />}
-                        />
-
+                    <Route element={ 
+                        <RolRoute rolesPermitidos={["estudiante"]} /> }>
+                        
+                        <Route path="/dashboard/estudiante/materias" element={<MateriasEstudiante />} />
                         <Route
                             path="/dashboard/estudiante/temas/:materiaId"
                             element={<TemasEstudiante />}

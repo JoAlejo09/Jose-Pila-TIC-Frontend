@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { crearPreguntaRequest} from "../../services/preguntaService.js";
+import { crearPreguntaRequest, actualizarPreguntaRequest} from "../../services/preguntaService.js";
 import { getMateriasRequest } from "../../services/materiaService.js";
 import {obtenerTemasPorMateriaRequest} from "../../services/temaService.js";
 
-const PreguntaModal = ({onClose, recargarPreguntas})=>{
+const PreguntaModal = ({onClose, recargarPreguntas, preguntaEditar=null})=>{
 
     const [materias,setMaterias] = useState([]);
     const [temas,setTemas] = useState([]);
@@ -16,8 +16,32 @@ const PreguntaModal = ({onClose, recargarPreguntas})=>{
         explicacion:"",
         nivelDificultad:"facil",
         materia:"",
-        tema:""
+        tema:"",
+        recursoApoyo: {tipo:"", url:""},
+        contenidoFormula:""
     });
+
+    useEffect(()=>{
+        if(preguntaEditar){
+            setFormData({
+                enunciado: preguntaEditar.enunciado || "",
+                tipoPregunta: preguntaEditar.tipoPregunta || "opcion_multiple",
+                opciones: preguntaEditar.opciones?.length > 0
+                    ? preguntaEditar.opciones
+                    :["","","",""],
+                respuestaCorrecta: preguntaEditar.respuestaCorrecta || "",
+                explicacion: preguntaEditar.explicacion || "",
+                nivelDificultad: preguntaEditar.nivelDificultad || "facil",
+                materia: preguntaEditar.materia?._id || "",
+                tema: preguntaEditar.tema?._id || "",
+                recursoApoyo: preguntaEditar.recursoApoyo || {
+                    tipo: "",
+                    url: ""
+                },
+                contenidoFormula: preguntaEditar.contenidoFormula || ""
+            });
+        }
+    },[preguntaEditar]);
 
     useEffect(()=>{
         const obtenerMaterias = async()=>{
@@ -48,6 +72,7 @@ const PreguntaModal = ({onClose, recargarPreguntas})=>{
         obtenerTemas();
     },[formData.materia]);
 
+
     const handleChange = (e)=>{
         setFormData({
             ...formData,
@@ -55,40 +80,66 @@ const PreguntaModal = ({onClose, recargarPreguntas})=>{
         });
     };
 
+
     const handleOpcionChange = (index,valor)=>{
-        const nuevasOpciones =
-            [...formData.opciones];
+        const nuevasOpciones = [...formData.opciones];
         nuevasOpciones[index] = valor;
         setFormData({
             ...formData,
             opciones:nuevasOpciones
         });
     };
+    const handleRecursoChange = (e)=>{
+        setFormData({
+            ...formData,
+            recursoApoyo:{
+                ...formData.recursoApoyo,
+                [e.target.name]:e.target.value
+            }
+        });
+    }
 
     const handleSubmit = async(e)=>{
         e.preventDefault();
         setLoading(true);
+
         try {
-            await crearPreguntaRequest(formData);
+            const payload = {
+                ...formData,
+                opciones: formData.tipoPregunta === "respuesta_corta"
+                ? []
+                : formData.opciones.filter((opcion)=> opcion.trim()!=="")
+            }
+            if(preguntaEditar){
+                await actualizarPreguntaRequest(
+                    preguntaEditar._id,
+                    payload
+                )
+            }else{
+                await crearPreguntaRequest(payload);
+            }
             await recargarPreguntas();
             onClose();
         } catch (error) {
-            console.log(error);
-        } finally {
+            console.log(error)
+        } finally{
             setLoading(false);
         }
     };
-
     return(
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-            <div className="bg-white w-full max-w-4xl rounded-2xl shadow-2xl max-h-[95vh] overflow-y-auto">
-                <div className="flex justify-between items-center border-b border-gray-200 p-6">
-                    <h2 className="text-2xl font-bold text-gray-800">
-                        Nueva Pregunta
+    <div className=" fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+
+        <div className=" bg-white w-full max-w-4xl rounded-2xl shadow-2xl max-h-[95vh] overflow-y-auto">
+                <div className=" flex justify-between items-center border-b border-gray-200 p-6">
+                    <h2 className=" text-2xl font-bold text-gray-800">
+                        { preguntaEditar 
+                            ? "Editar Pregunta"
+                            : "Nueva Pregunta"
+                        }
                     </h2>
                     <button
                         onClick={onClose}
-                        className="text-gray-500 hover:text-gray-700 text-2xl">
+                        className=" text-gray-500 hover:text-gray-700 text-2xl" >
                         ×
                     </button>
                 </div>
@@ -98,7 +149,7 @@ const PreguntaModal = ({onClose, recargarPreguntas})=>{
                     className="p-6 space-y-6"
                 >
                     <div>
-                        <label className="block mb-2 font-medium">
+                        <label className="block mb-2 font-medium ">
                             Enunciado
                         </label>
                         <textarea
@@ -106,42 +157,46 @@ const PreguntaModal = ({onClose, recargarPreguntas})=>{
                             value={formData.enunciado}
                             onChange={handleChange}
                             required
-                            className="w-full border border-gray-300 rounded-xl p-4 min-h-[120px] focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+                            className=" w-full border border-gray-300 rounded-xl p-4 min-h-[120px]"/>
                     </div>
 
                     <div>
                         <label className="block mb-2 font-medium">
                             Tipo de pregunta
                         </label>
+
                         <select
                             name="tipoPregunta"
                             value={formData.tipoPregunta}
                             onChange={handleChange}
                             className="w-full border border-gray-300 rounded-xl p-3">
-                            <option value="opcion_multiple">
-                                Opción múltiple
-                            </option>
-                            <option value="verdadero_falso">
-                                Verdadero/Falso
-                            </option>
-                            <option value="respuesta_corta">
-                                Respuesta corta
-                            </option>
+
+                            <option value="opcion_multiple">Opción múltiple</option>
+                            <option value="verdadero_falso"> Verdadero/Falso</option>
+                            <option value="respuesta_corta"> Respuesta corta </option>
                         </select>
                     </div>
 
-                    {formData.tipoPregunta=== "opcion_multiple"
+                    { (formData.tipoPregunta === "opcion_multiple"
+                        ||
+                       formData.tipoPregunta === "verdadero_falso")
                         &&
                         <div>
-                            <label className="block mb-4 font-medium">
+                            <label className=" block mb-4 font-medium">
                                 Opciones
                             </label>
                             <div className="space-y-3">
-                                {formData.opciones.map((opcion,index)=>(
+                                { ( formData.tipoPregunta === "verdadero_falso" 
+                                    ? ["Verdadero","Falso"]
+                                    : formData.opciones
+                                    ).map((opcion,index)=>(
                                         <input
                                             key={index}
                                             type="text"
                                             value={opcion}
+                                            disabled={
+                                                formData.tipoPregunta === "verdadero_falso"
+                                            }
                                             onChange={(e)=>
                                                 handleOpcionChange(
                                                     index,
@@ -149,7 +204,13 @@ const PreguntaModal = ({onClose, recargarPreguntas})=>{
                                                 )
                                             }
                                             placeholder={`Opción ${index + 1}`}
-                                            className="w-full border border-gray-300 rounded-xl p-3"/>
+                                            className="
+                                            w-full
+                                            border border-gray-300
+                                            rounded-xl
+                                            p-3
+                                            "
+                                        />
                                     ))
                                 }
                             </div>
@@ -157,7 +218,7 @@ const PreguntaModal = ({onClose, recargarPreguntas})=>{
                     }
 
                     <div>
-                        <label className="block mb-2 font-medium">
+                        <label className=" block mb-2 font-medium">
                             Respuesta correcta
                         </label>
                         <input
@@ -177,86 +238,56 @@ const PreguntaModal = ({onClose, recargarPreguntas})=>{
                             name="explicacion"
                             value={formData.explicacion}
                             onChange={handleChange}
-                            className="w-full border border-gray-300 rounded-xl p-4 min-h-[120px]"/>
-                    </div>
-
-                    <div>
-                        <label className="block mb-2 font-medium">
-                            Nivel
-                        </label>
-                        <select
-                            name="nivelDificultad"
-                            value={formData.nivelDificultad}
-                            onChange={handleChange}
-                            className="w-full border border-gray-300 rounded-xl p-3">
-
-                            <option value="facil">Fácil</option>
-                            <option value="medio">Medio</option>
-                            <option value="dificil">Difícil</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label className="block mb-2 font-medium">Materia
-                        </label>
-                        <select
-                            name="materia"
-                            value={formData.materia}
-                            onChange={handleChange}
-                            required
-                            className="w-full border border-gray-300 rounded-xl p-3">
-                            <option value="">Seleccionar materia</option>
-                            {materias.map((materia)=>(
-                                    <option
-                                        key={materia._id}
-                                        value={materia._id}
-                                    >
-                                        {materia.nombre}
-                                    </option>
-                                ))
-                            }
-                        </select>
+                            className="w-full border border-gray-300 rounded-xl p-4 min-h-[120px]"
+                        />
                     </div>
 
                     <div>
                         <label className=" block mb-2 font-medium">
-                            Tema
+                            Fórmula matemática (LaTeX)
                         </label>
-
-                        <select
-                            name="tema"
-                            value={formData.tema}
+                        <textarea
+                            name="contenidoFormula"
+                            value={formData.contenidoFormula}
                             onChange={handleChange}
-                            className="w-full border border-gray-300 rounded-xl p-3">
-                            <option value="">General</option>
+                            placeholder="\frac{a}{b}"
+                            className="w-full border border-gray-300 rounded-xl p-4"
+                        />
 
-                            {temas.map((tema)=>(
-                                    <option
-                                        key={tema._id}
-                                        value={tema._id}>
-                                        {tema.nombre}
-                                    </option>
-                                ))
-                            }
-                        </select>
                     </div>
-                    <div className="flex justify-end gap-4 pt-4">
-                        <button
-                            type="button"
-                            onClick={onClose}
-                            className="px-6 py-3 rounded-xl bg-gray-200 hover:bg-gray-300">
-                            Cancelar
-                        </button>
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium disabled:opacity-50"
-                        >
-                            { loading
-                                ?"Guardando..."
-                                : "Guardar Pregunta"
-                            }
-                        </button>
+
+                    <div className="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <label className="block mb-2 font-medium">
+                                Tipo de recurso
+                            </label>
+                            <select
+                                name="tipo"
+                                value={formData.recursoApoyo.tipo}
+                                onChange={handleRecursoChange}
+                                className=" w-full border border-gray-300 rounded-xl p-3 ">
+
+                                <option value="">Sin recurso</option>
+                                <option value="imagen">Imagen</option>
+                                <option value="video">Video</option>
+                                <option value="pdf">PDF</option>
+                                <option value="enlace">Enlace</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label className="block mb-2 font-medium">
+                                URL recurso
+                            </label>
+
+                            <input
+                                type="text"
+                                name="url"
+                                value={formData.recursoApoyo.url}
+                                onChange={handleRecursoChange}
+                                className=" w-full border border-gray-300 rounded-xl p-3"
+                            />
+                        </div>
                     </div>
                 </form>
             </div>
