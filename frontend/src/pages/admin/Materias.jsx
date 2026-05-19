@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import { getMateriasRequest, cambiarEstadoMateriaRequest } from "../../services/materiaService";
+import { obtenerMateriasRequest, cambiarEstadoMateriaRequest } from "../../services/materiaService";
 import Input from "../../components/ui/Input.jsx";
 import ModalMateria from "../../components/modal/MateriaModal.jsx"
 
@@ -15,7 +15,7 @@ const Materias = ()=>{
     const cargarMaterias = async() =>{
         try {
             setLoading(true);
-            const data = await getMateriasRequest();
+            const data = await obtenerMateriasRequest();
             setMaterias(data);
         } catch (error) {
             console.log(error),

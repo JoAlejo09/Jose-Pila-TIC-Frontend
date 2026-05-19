@@ -1,7 +1,19 @@
-import { Users, BarChart3, User, ClipboardCheck, BookOpen, School, LibraryBig, Lightbulb, TrendingUp } from "lucide-react";
+import {
+  Users,
+  BarChart3,
+  User,
+  ClipboardCheck,
+  BookOpen,
+  School,
+  LibraryBig,
+  Lightbulb,
+  TrendingUp
+} from "lucide-react";
 
 const menuPorRol = {
+
   admin: [
+
     {
       label:"Usuarios",
       icon: Users,
@@ -12,28 +24,50 @@ const menuPorRol = {
         }
       ]
     },
+
     {
       label:"Gestión Académica",
       icon: LibraryBig,
+
       children:[
+
         {
           label:"Materias",
           path:"/dashboard/admin/materias"
         },
+
         {
           label:"Temas",
           path:"/dashboard/admin/temas"
         },
+
         {
           label:"Recursos",
           path:"/dashboard/admin/recursos"
         },
+
+        // SUBMENU ANIDADO
         {
           label:"Evaluaciones",
-          path:"/dashboard/admin/evaluaciones"
+
+          children:[
+
+            {
+              label:"Preguntas",
+              path:"/dashboard/admin/preguntas"
+            },
+
+            {
+              label:"Cuestionarios",
+              path:"/dashboard/admin/cuestionarios"
+            }
+
+          ]
         }
+
       ]
     },
+
     {
       label:"Reportes",
       icon: BarChart3,
@@ -46,49 +80,63 @@ const menuPorRol = {
     }
 
   ],
+
   estudiante: [
+
     {
       label:"Mi Perfil",
       icon: User,
       path:"/mi-perfil"
     },
+
     {
       label:"Materias",
       icon: BookOpen,
       path:"/dashboard/estudiante/materias"
     },
+
     {
       label:"Evaluaciones",
       icon: ClipboardCheck,
       path:"/dashboard/estudiante/evaluaciones"
     },
+
     {
       label:"Mi Progreso",
       icon: TrendingUp,
       path:"/dashboard/estudiante/progreso"
     },
+
     {
       label:"Recomendaciones",
       icon: Lightbulb,
       path:"/dashboard/estudiante/recomendaciones"
     }
+
   ],
+
   tutor: [
+
     {
       label:"Mi Perfil",
       icon: User,
       path:"/mi-perfil"
     },
+
     {
       label:"Tutorías",
       icon: BookOpen,
       path:"/dashboard/tutorias"
     },
+
     {
       label:"Estudiantes",
       icon: School,
       path:"/dashboard/estudiantes"
     }
+
   ]
+
 };
+
 export default menuPorRol;

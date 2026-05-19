@@ -24,5 +24,10 @@ const obtenerTemasPorMateriaRequest = async(materiaId)=>{
     const res = await axios.get(`/tema/materia/${materiaId}`)
     return res.data;
 }
+const obtenerTemasPorMateriaNivelRequest = async(materiaId,nivelAcademico)=>{
+    const res = await axios.get(`/tema/materia/${materiaId}/nivel/${nivelAcademico}`);
+    return res.data;
+}
 export { obtenerTemasRequest, obtenerTemaRequest, crearTemaRequest,
-    actualizarTemaRequest, cambiarEstadoTemaRequest, obtenerTemasPorMateriaRequest};
+         actualizarTemaRequest, cambiarEstadoTemaRequest, obtenerTemasPorMateriaRequest,
+         obtenerTemasPorMateriaNivelRequest};

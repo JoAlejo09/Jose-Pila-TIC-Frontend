@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import {crearTemaRequest, actualizarTemaRequest} from "../../services/temaService.js";
-import { getMateriasRequest } from "../../services/materiaService.js";
+import { obtenerMateriasRequest } from "../../services/materiaService.js";
 
 const ModalTema = ({
     onClose,
@@ -19,7 +19,7 @@ const ModalTema = ({
     useEffect(()=>{
         const cargarMaterias = async()=>{
             try {
-                const data = await getMateriasRequest();
+                const data = await obtenerMateriasRequest();
                 const activas = data.filter((m)=>m.estado);
                 setMaterias(activas)
             } catch (error) {
