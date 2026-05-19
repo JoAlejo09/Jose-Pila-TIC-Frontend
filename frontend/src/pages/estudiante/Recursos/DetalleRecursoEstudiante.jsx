@@ -14,7 +14,7 @@ import {
 
 import {
     obtenerRecursoPorIdRequest
-} from "../../services/estudianteService.js";
+} from "../../../services/estudianteService.js";
 
 const DetalleRecursoEstudiante = ()=>{
 

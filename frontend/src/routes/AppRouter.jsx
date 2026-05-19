@@ -22,10 +22,14 @@ import CompletarPerfil from "../pages/perfil/CompletarPerfil.jsx";
 
 import MateriasEstudiante from "../pages/estudiante/MateriasEstudiante.jsx";
 import TemasEstudiante from "../pages/estudiante/TemaEstudiante.jsx";
-import RecursosEstudiante from "../pages/estudiante/RecursosEstudiante.jsx";
-import DetalleRecursoEstudiante from "../pages/estudiante/DetalleRecursoEstudiante.jsx";
-import Evaluaciones from "../pages/estudiante/Evaluaciones.jsx";
-import ResolverCuestionario from "../pages/estudiante/ResolverCuestionario.jsx";
+import RecursosEstudiante from "../pages/estudiante/Recursos/RecursosEstudiante.jsx";
+import DetalleRecursoEstudiante from "../pages/estudiante/Recursos/DetalleRecursoEstudiante.jsx";
+
+import CuestionariosEstudiante from "../pages/estudiante/Evaluacion/CuestionariosEstudiante.jsx";
+import ResolverCuestionario from "../pages/estudiante/Evaluacion/ResolverCuestionario.jsx";
+
+import ResultadoEstudiante from "../pages/estudiante/Resultado/ResultadoEstudiante.jsx";
+import DetalleResultado from "../pages/estudiante/Resultado/DetalleResultado.jsx";
 
 import PublicLayout from "../components/layout/PublicLayout.jsx";
 import PrivateLayout from "../components/layout/PrivateLayout.jsx";
@@ -36,13 +40,31 @@ import RolRoute from "./RolRoute.jsx";
 const AppRouter = ()=>{
 
     return(
+
         <BrowserRouter>
+
             <Routes>
+
+                {/* ================================= */}
                 {/* PUBLICAS */}
+                {/* ================================= */}
+
                 <Route element={<PublicLayout/>}>
-                    <Route path="/" element={<Landing/>}/>
-                    <Route path="/login" element={<Login/>}/>
-                    <Route path="/registro" element={<Registro/>}/>
+
+                    <Route
+                        path="/"
+                        element={<Landing/>}
+                    />
+
+                    <Route
+                        path="/login"
+                        element={<Login/>}
+                    />
+
+                    <Route
+                        path="/registro"
+                        element={<Registro/>}
+                    />
 
                     <Route
                         path="/confirmar/:token"
@@ -62,7 +84,11 @@ const AppRouter = ()=>{
                 </Route>
 
 
+
+                {/* ================================= */}
                 {/* PRIVADAS */}
+                {/* ================================= */}
+
                 <Route
                     element={
                         <PrivateRoute>
@@ -72,6 +98,7 @@ const AppRouter = ()=>{
                 >
 
                     {/* GENERALES */}
+
                     <Route
                         path="/dashboard"
                         element={<Dashboard/>}
@@ -93,7 +120,11 @@ const AppRouter = ()=>{
                     />
 
 
+
+                    {/* ================================= */}
                     {/* ADMIN */}
+                    {/* ================================= */}
+
                     <Route
                         element={
                             <RolRoute
@@ -102,34 +133,44 @@ const AppRouter = ()=>{
                         }
                     >
 
-                        <Route path="dashboard/admin/usuarios"
+                        <Route
+                            path="dashboard/admin/usuarios"
                             element={<Usuarios/>}
                         />
 
-                        <Route path="dashboard/admin/materias"
+                        <Route
+                            path="dashboard/admin/materias"
                             element={<Materias/>}
                         />
 
-                        <Route path="dashboard/admin/temas"
+                        <Route
+                            path="dashboard/admin/temas"
                             element={<Temas/>}
                         />
 
-                        <Route path="dashboard/admin/recursos"
+                        <Route
+                            path="dashboard/admin/recursos"
                             element={<Recursos/>}
                         />
 
-                        <Route path="dashboard/admin/preguntas"
+                        <Route
+                            path="dashboard/admin/preguntas"
                             element={<Preguntas/>}
                         />
 
-                        <Route path="dashboard/admin/cuestionarios"
+                        <Route
+                            path="dashboard/admin/cuestionarios"
                             element={<Cuestionarios/>}
                         />
 
                     </Route>
 
 
+
+                    {/* ================================= */}
                     {/* ESTUDIANTE */}
+                    {/* ================================= */}
+
                     <Route
                         element={
                             <RolRoute
@@ -137,6 +178,8 @@ const AppRouter = ()=>{
                             />
                         }
                     >
+
+                        {/* MATERIAS */}
 
                         <Route
                             path="dashboard/estudiante/materias"
@@ -148,6 +191,10 @@ const AppRouter = ()=>{
                             element={<TemasEstudiante/>}
                         />
 
+
+
+                        {/* RECURSOS */}
+
                         <Route
                             path="dashboard/estudiante/recursos/:temaId"
                             element={<RecursosEstudiante/>}
@@ -158,14 +205,32 @@ const AppRouter = ()=>{
                             element={<DetalleRecursoEstudiante/>}
                         />
 
+
+
+                        {/* CUESTIONARIOS */}
+
                         <Route
-                            path="dashboard/estudiante/evaluaciones"
-                            element={<Evaluaciones/>}
+                            path="dashboard/estudiante/cuestionarios"
+                            element={<CuestionariosEstudiante/>}
                         />
 
                         <Route
-                            path="dashboard/estudiante/evaluaciones/:id"
+                            path="dashboard/estudiante/cuestionarios/:id"
                             element={<ResolverCuestionario/>}
+                        />
+
+
+
+                        {/* RESULTADOS */}
+
+                        <Route
+                            path="dashboard/estudiante/resultados"
+                            element={<ResultadoEstudiante/>}
+                        />
+
+                        <Route
+                            path="dashboard/estudiante/resultados/:id"
+                            element={<DetalleResultado/>}
                         />
 
                     </Route>

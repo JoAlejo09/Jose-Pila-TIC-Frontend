@@ -76,21 +76,6 @@ const obtenerRecursoPorIdRequest = async(id)=>{
     return res.data;
 };
 
-const obtenerResultadosEstudianteRequest = async()=>{
-    const res = await axios.get(
-        "/estudiante/resultados"
-    );
-
-    return res.data;
-};
-
-const obtenerResultadoEstudianteIDRequest = async(id)=>{
-    const res = await axios.get(
-        `/estudiante/resultados/${id}`
-    );
-
-    return res.data;
-};
 
 export {
     completarPerfilEstudianteRequest,
@@ -107,7 +92,4 @@ export {
 
     obtenerRecursosPorTemaRequest,
     obtenerRecursoPorIdRequest,
-
-    obtenerResultadosEstudianteRequest,
-    obtenerResultadoEstudianteIDRequest
 };

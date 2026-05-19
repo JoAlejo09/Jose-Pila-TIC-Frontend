@@ -1,86 +1,48 @@
 import { useEffect, useState } from "react";
+import { FileText, BookOpen, PlayCircle, ChevronRight } from "lucide-react";
+import { useNavigate, useParams } from "react-router-dom";
 
-import {
-    FileText,
-    BookOpen,
-    PlayCircle,
-    ChevronRight
-} from "lucide-react";
-
-import {
-    useNavigate,
-    useParams
-} from "react-router-dom";
-
-import {
-    obtenerRecursosPorTemaRequest
-} from "../../services/estudianteService.js";
+import { obtenerRecursosPorTemaRequest } from "../../../services/estudianteService.js";
 
 const RecursosEstudiante = ()=>{
-
     const navigate = useNavigate();
-
     const { temaId } = useParams();
 
     const [recursos,setRecursos] = useState([]);
-
     const [loading,setLoading] = useState(true);
-
     const [error,setError] = useState(null);
 
-    // CARGAR RECURSOS
     const cargarRecursos = async()=>{
 
         try {
-
             setLoading(true);
-
-            const data =
-                await obtenerRecursosPorTemaRequest(
-                    temaId
-                );
-
+            const data = await obtenerRecursosPorTemaRequest(temaId);
             setRecursos(data);
 
         } catch (error) {
-
             console.log(error);
-
-            setError(
-                "Error al cargar recursos"
-            );
-
+            setError( "Error al cargar recursos");
         } finally {
-
             setLoading(false);
-
         }
-
     };
 
     useEffect(()=>{
-
         cargarRecursos();
-
     },[temaId]);
 
     // ICONOS
     const obtenerIcono = (tipo)=>{
-
         if(tipo === "pdf"){
             return <FileText className="text-red-500"/>;
         }
-
         if(tipo === "youtube"){
             return <PlayCircle className="text-red-600"/>;
         }
-
         return <BookOpen className="text-blue-500"/>;
-
     };
 
     if(loading){
-
         return(
             <p className="text-center mt-10">
                 Cargando recursos...
