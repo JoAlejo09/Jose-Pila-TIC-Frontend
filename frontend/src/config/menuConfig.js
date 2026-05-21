@@ -14,77 +14,53 @@ import {
 
 const menuPorRol = {
 
-    // =========================================
     // ADMIN
-    // =========================================
-
     admin:[
-
         {
             label:"Usuarios",
             icon:Users,
-
             children:[
                 {
-                    label:"Lista Usuarios",
+                    label:"Usuarios Sistema",
                     path:"/dashboard/admin/usuarios"
                 }
             ]
         },
-
         {
             label:"Gestión Académica",
             icon:LibraryBig,
-
             children:[
-
                 {
                     label:"Materias",
                     path:"/dashboard/admin/materias"
                 },
-
                 {
                     label:"Temas",
                     path:"/dashboard/admin/temas"
                 },
-
                 {
                     label:"Recursos",
                     path:"/dashboard/admin/recursos"
                 },
 
-
-
-                // =========================================
                 // SUBMENU EVALUACIONES
-                // =========================================
-
                 {
                     label:"Evaluaciones",
-
                     children:[
-
                         {
                             label:"Preguntas",
                             path:"/dashboard/admin/preguntas"
                         },
-
                         {
                             label:"Cuestionarios",
                             path:"/dashboard/admin/cuestionarios"
                         }
-
                     ]
                 }
 
             ]
         },
-
-
-
-        // =========================================
         // REPORTES
-        // =========================================
 
         {
             label:"Reportes",
@@ -92,8 +68,8 @@ const menuPorRol = {
 
             children:[
                 {
-                    label:"Ver Reportes",
-                    path:"/dashboard/admin/reportes"
+                    label:"Evaluaciones",
+                    path:"/dashboard/admin/resultados"
                 }
             ]
         }
@@ -133,7 +109,7 @@ const menuPorRol = {
         // =========================================
 
         {
-            label:"Cuestionarios",
+            label:"Evaluaciones",
             icon:ClipboardCheck,
             path:"/dashboard/estudiante/cuestionarios"
         },

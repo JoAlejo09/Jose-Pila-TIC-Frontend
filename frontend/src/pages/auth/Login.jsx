@@ -54,9 +54,11 @@ const Login = () => {
         return navigate("/cambiar-password" );
       }
       // VALIDAR PERFIL COMPLETO
-      if (!data.perfilCompleto) {
-        return navigate( "/completar-perfil" );
-      }
+      if(data.user.rol === "estudiante"
+        && !data.user.perfilCompleto)
+        {
+          return navigate("/completar-perfil")
+        }
       // DASHBOARD
       navigate("/dashboard");
 

@@ -18,7 +18,7 @@ const EstudianteDashboard = ()=>{
             descripcion: "Realiza evaluaciones y mide tu desempeño.",
             icon: ClipboardCheck,
             color:"bg-green-500",
-            ruta:"/dashboard/estudiante/evaluaciones"
+            ruta:"/dashboard/estudiante/cuestionarios"
         },
         {
             titulo:"Mi Progreso",

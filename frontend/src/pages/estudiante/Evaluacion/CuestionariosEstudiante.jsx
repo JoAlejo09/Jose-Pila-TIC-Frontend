@@ -39,7 +39,7 @@ const CuestionariosEstudiantes =()=>{
         <div className="min-h-screen bg-gray-50 p-6">
             <div className="mb-6">
                 <h1 className="text-4xl font-bold text-gray-800">
-                    Cuestionarios Disponibles
+                    Evaluaciones Disponibles
                 </h1>
                 <p className="text-gray-500 mt-2">
                     Resuelve las evaluaciones acorde a tu tema y fortalece tus conocimientos.

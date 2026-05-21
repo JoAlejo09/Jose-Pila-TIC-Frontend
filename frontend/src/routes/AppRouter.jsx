@@ -16,6 +16,7 @@ import Temas from "../pages/admin/Temas.jsx";
 import Recursos from "../pages/admin/Recurso.jsx";
 import Preguntas from "../pages/admin/Preguntas.jsx";
 import Cuestionarios from "../pages/admin/Cuestionario.jsx";
+import ReportesEvaluaciones from "../pages/admin/ReportesEvaluaciones.jsx"
 
 import MiPerfil from "../pages/perfil/MiPerfil.jsx";
 import CompletarPerfil from "../pages/perfil/CompletarPerfil.jsx";
@@ -30,12 +31,14 @@ import ResolverCuestionario from "../pages/estudiante/Evaluacion/ResolverCuestio
 
 import ResultadoEstudiante from "../pages/estudiante/Resultado/ResultadoEstudiante.jsx";
 import DetalleResultado from "../pages/estudiante/Resultado/DetalleResultado.jsx";
+import DetalleResultadoAdmin from "../pages/admin/DetalleResultadoAdmin.jsx";
 
 import PublicLayout from "../components/layout/PublicLayout.jsx";
 import PrivateLayout from "../components/layout/PrivateLayout.jsx";
 
 import PrivateRoute from "./PrivateRoute.jsx";
 import RolRoute from "./RolRoute.jsx";
+
 
 const AppRouter = ()=>{
 
@@ -44,51 +47,19 @@ const AppRouter = ()=>{
         <BrowserRouter>
 
             <Routes>
-
-                {/* ================================= */}
                 {/* PUBLICAS */}
-                {/* ================================= */}
 
                 <Route element={<PublicLayout/>}>
 
-                    <Route
-                        path="/"
-                        element={<Landing/>}
-                    />
-
-                    <Route
-                        path="/login"
-                        element={<Login/>}
-                    />
-
-                    <Route
-                        path="/registro"
-                        element={<Registro/>}
-                    />
-
-                    <Route
-                        path="/confirmar/:token"
-                        element={<VerificarCuenta/>}
-                    />
-
-                    <Route
-                        path="/recuperar-password"
-                        element={<RecuperarPassword/>}
-                    />
-
-                    <Route
-                        path="/reset-password/:token"
-                        element={<ResetPassword/>}
-                    />
-
+                    <Route path="/" element={<Landing/>} />
+                    <Route path="/login" element={<Login/>}/>
+                    <Route path="/registro" element={<Registro/>}/>
+                    <Route path="/confirmar/:token" element={<VerificarCuenta/>}/>
+                    <Route path="/recuperar-password" element={<RecuperarPassword/>}/>
+                    <Route path="/reset-password/:token" element={<ResetPassword/>} />
                 </Route>
 
-
-
-                {/* ================================= */}
                 {/* PRIVADAS */}
-                {/* ================================= */}
-
                 <Route
                     element={
                         <PrivateRoute>
@@ -96,35 +67,13 @@ const AppRouter = ()=>{
                         </PrivateRoute>
                     }
                 >
-
                     {/* GENERALES */}
+                    <Route path="/dashboard" element={<Dashboard/>} />
+                    <Route path="/mi-perfil" element={<MiPerfil/>} />
+                    <Route path="/completar-perfil" element={<CompletarPerfil/>} />
+                    <Route path="/cambiar-password" element={<CambiarPassword/>} />
 
-                    <Route
-                        path="/dashboard"
-                        element={<Dashboard/>}
-                    />
-
-                    <Route
-                        path="/mi-perfil"
-                        element={<MiPerfil/>}
-                    />
-
-                    <Route
-                        path="/completar-perfil"
-                        element={<CompletarPerfil/>}
-                    />
-
-                    <Route
-                        path="/cambiar-password"
-                        element={<CambiarPassword/>}
-                    />
-
-
-
-                    {/* ================================= */}
                     {/* ADMIN */}
-                    {/* ================================= */}
-
                     <Route
                         element={
                             <RolRoute
@@ -132,17 +81,8 @@ const AppRouter = ()=>{
                             />
                         }
                     >
-
-                        <Route
-                            path="dashboard/admin/usuarios"
-                            element={<Usuarios/>}
-                        />
-
-                        <Route
-                            path="dashboard/admin/materias"
-                            element={<Materias/>}
-                        />
-
+                        <Route path="dashboard/admin/usuarios" element={<Usuarios/>}/>
+                        <Route path="dashboard/admin/materias" element={<Materias/>}/>
                         <Route
                             path="dashboard/admin/temas"
                             element={<Temas/>}
@@ -162,7 +102,10 @@ const AppRouter = ()=>{
                             path="dashboard/admin/cuestionarios"
                             element={<Cuestionarios/>}
                         />
-
+                        <Route 
+                            path="dashboard/admin/resultados" element={<ReportesEvaluaciones/>}
+                        />
+                        <Route path="admin/resultados/:id" element={<DetalleResultadoAdmin/>} />
                     </Route>
 
 
