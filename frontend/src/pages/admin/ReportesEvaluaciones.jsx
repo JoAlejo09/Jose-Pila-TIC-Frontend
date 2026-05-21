@@ -56,6 +56,7 @@ const ReportesEvaluaciones = () => {
         if(!confirmar) return;
         try{
             await eliminarResultadoAdminRequest(id);
+            obtenerResultados();
         }catch(error){
             console.log(error)
         }
