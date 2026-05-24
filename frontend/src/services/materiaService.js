@@ -20,6 +20,7 @@ const cambiarEstadoMateriaRequest = async(id)=>{
     const res = await axios.patch(`/materia/estado/${id}`);
     return res.data;
 }
+
 export {obtenerMateriasRequest, obtenerMateriaRequest, crearMateriaRequest,
         actualizarMateriaRequest, cambiarEstadoMateriaRequest
 }

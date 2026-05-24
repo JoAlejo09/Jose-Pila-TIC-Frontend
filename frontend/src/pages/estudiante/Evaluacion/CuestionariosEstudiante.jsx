@@ -92,7 +92,7 @@ const CuestionariosEstudiantes =()=>{
                                 </div>
                                 <div className="flex justify-between">
                                     <span className="font-medium"> Tipo</span>
-                                    <span className="capitalize">{cuestionario.tipoCuestionario}</span>
+                                    <span className="capitalize">{cuestionario.tipoEvaluacion}</span>
                                 </div>
                                 <div className="flex justify-between">
                                     <span className="font-medium">Nivel Académico</span>

@@ -216,7 +216,7 @@ const Cuestionarios = ()=>{
                                     <td className="p-4">
 
                                         {
-                                            cuestionario.tipoEvaluacion
+                                            cuestionario.alcanceEvaluacion
                                             === "tema"
                                                 ? cuestionario.tema?.nombre
                                                 : "General"
@@ -235,7 +235,7 @@ const Cuestionarios = ()=>{
                                         <span
                                             className={`px-3 py-1 rounded-full text-xs font-medium
                                             ${
-                                                cuestionario.tipoEvaluacion
+                                                cuestionario.alcanceEvaluacion
                                                 === "tema"
                                                 ? "bg-purple-100 text-purple-700"
                                                 : "bg-blue-100 text-blue-700"
@@ -243,7 +243,7 @@ const Cuestionarios = ()=>{
                                         >
 
                                             {
-                                                cuestionario.tipoEvaluacion
+                                                cuestionario.alcanceEvaluacion
                                                 === "tema"
                                                     ? "Por Tema"
                                                     : "General"
@@ -255,7 +255,7 @@ const Cuestionarios = ()=>{
 
                                     <td className="p-4 capitalize">
                                         {
-                                            cuestionario.tipoCuestionario
+                                            cuestionario.alcanceEvaluacion
                                         }
                                     </td>
 

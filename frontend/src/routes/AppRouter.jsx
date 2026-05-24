@@ -12,6 +12,7 @@ import Dashboard from "../pages/dashboard/Dashboard.jsx";
 
 import Usuarios from "../pages/admin/Usuarios.jsx";
 import Materias from "../pages/admin/Materias.jsx";
+import Unidades from "../pages/admin/Unidades.jsx";
 import Temas from "../pages/admin/Temas.jsx";
 import Recursos from "../pages/admin/Recurso.jsx";
 import Preguntas from "../pages/admin/Preguntas.jsx";
@@ -22,6 +23,7 @@ import MiPerfil from "../pages/perfil/MiPerfil.jsx";
 import CompletarPerfil from "../pages/perfil/CompletarPerfil.jsx";
 
 import MateriasEstudiante from "../pages/estudiante/MateriasEstudiante.jsx";
+import UnidadesEstudiante from "../pages/estudiante/UnidadesEstudiante.jsx";
 import TemasEstudiante from "../pages/estudiante/TemaEstudiante.jsx";
 import RecursosEstudiante from "../pages/estudiante/Recursos/RecursosEstudiante.jsx";
 import DetalleRecursoEstudiante from "../pages/estudiante/Recursos/DetalleRecursoEstudiante.jsx";
@@ -83,10 +85,8 @@ const AppRouter = ()=>{
                     >
                         <Route path="dashboard/admin/usuarios" element={<Usuarios/>}/>
                         <Route path="dashboard/admin/materias" element={<Materias/>}/>
-                        <Route
-                            path="dashboard/admin/temas"
-                            element={<Temas/>}
-                        />
+                        <Route path="dashboard/admin/unidades" element={<Unidades/>}/>
+                        <Route path="dashboard/admin/temas" element={<Temas/>}/>
 
                         <Route
                             path="dashboard/admin/recursos"
@@ -133,9 +133,11 @@ const AppRouter = ()=>{
                             path="dashboard/estudiante/temas/:materiaId"
                             element={<TemasEstudiante/>}
                         />
-
-
-
+                        {/* UNIDADES*/}
+                        <Route
+                            path="dashboard/estudiante/unidades/:materiaId"
+                            element={<UnidadesEstudiante/>}/>
+                            
                         {/* RECURSOS */}
 
                         <Route

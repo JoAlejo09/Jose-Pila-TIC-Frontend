@@ -2,15 +2,11 @@ import { useEffect, useState } from "react";
 import { crearRecursoRequest, actualizarRecursoRequest } from "../../services/recursoService.js";
 import { obtenerTemasRequest } from "../../services/temaService.js";
 
-const ModalRecurso = ({
-    onClose,
-    onRecursoCreado,
-    modo = "crear",
-    recursoSeleccionado
-})=>{
+const ModalRecurso = ({ onClose, onRecursoCreado, modo = "crear", recursoSeleccionado })=>{
 
     const [temas,setTemas] = useState([]);
     const [error,setError] = useState("");
+    const [loading,setLoading] = useState(false);
     const [form,setForm] = useState({
         tema:"",
         titulo:"",
@@ -21,11 +17,13 @@ const ModalRecurso = ({
         nivelDificultad:"basico"
     });
 
+    // CARGAR TEMAS
     useEffect(()=>{
         const cargarTemas = async()=>{
             try {
                 const data = await obtenerTemasRequest();
-                const activos = data.filter( (tema)=>tema.estado);
+                const activos = data.filter(
+                    (tema)=>tema.estado );
                 setTemas(activos);
             } catch (error) {
                 console.log(error);
@@ -34,6 +32,7 @@ const ModalRecurso = ({
         cargarTemas();
     },[]);
 
+    // EDITAR
     useEffect(()=>{
         if( modo === "editar" && recursoSeleccionado ){
             setForm({
@@ -46,222 +45,280 @@ const ModalRecurso = ({
                 nivelDificultad: recursoSeleccionado.nivelDificultad || "basico"
             });
         }
-    },[modo, recursoSeleccionado]);
+    },[ modo, recursoSeleccionado ]);
 
     // HANDLE CHANGE
     const handleChange = (e)=>{
-        setForm({
-            ...form,
-            [e.target.name]: e.target.value
-        });
+        const {name,value} = e.target;
+        if(name === "tipo"){
+
+            setForm((prev)=>({
+                ...prev,
+                tipo:value,
+                url:"",
+                contenido:""
+            }));
+            return;
+        }
+        setForm((prev)=>({
+            ...prev,
+            [name]:value
+        }));
+
     };
+
+    const validarFormulario = ()=>{
+
+        if( !form.tema.trim() || !form.titulo.trim() || !form.tipo ){
+            return "Campos obligatorios";
+        }
+
+        if( (form.tipo === "pdf"
+            || form.tipo === "youtube")
+            && !form.url.trim() ){ 
+            return "La URL es obligatoria"; }
+        if( form.tipo === "teoria" && !form.contenido.trim() ){
+            return "El contenido es obligatorio";
+        }
+        return null;
+    };
+
     // SUBMIT
     const handleSubmit = async(e)=>{
         e.preventDefault();
         setError("");
+        const errorValidacion = validarFormulario();
+        if(errorValidacion){
+            setError(errorValidacion);
+            return;
+        }
         try {
-            // VALIDAR
-            if(!form.tema || !form.titulo || !form.tipo ){
-                return setError( "Campos obligatorios" );
+            setLoading(true);
+            const payload = {
+                ...form,
+                titulo:form.titulo.trim(),
+                descripcion:form.descripcion.trim(),
+                url:form.url.trim(),
+                contenido:form.contenido.trim()
+            };
+
+            if(form.tipo === "teoria"){
+                payload.url = "";
+            }else{
+                payload.contenido = "";
             }
-            // PDF / YOUTUBE
-            if((form.tipo === "pdf" || form.tipo === "youtube" ) && !form.url){
-                return setError("La URL es obligatoria");
-            }
-            // TEORIA
-            if( form.tipo === "teoria" && !form.contenido ){
-                return setError( "El contenido es obligatorio");
-            }
-            if(modo === "crear"){ await crearRecursoRequest(form);
-            } else {
-                await actualizarRecursoRequest(recursoSeleccionado._id,form);
+            if(modo === "crear"){
+                await crearRecursoRequest(payload);
+            }else{
+                await actualizarRecursoRequest(
+                    recursoSeleccionado._id,
+                    payload
+                );
             }
             onRecursoCreado();
             onClose();
         } catch (error) {
             console.log(error);
-            setError( error.response?.data?.msg || "Error al guardar recurso");
+            setError( error.response?.data?.msg || "Error al guardar recurso" );
+        } finally {
+            setLoading(false);
         }
     };
 
     return(
+        <div className=" fixed inset-0 z-50 flex items-center
+                        justify-center bg-black/50 px-4 ">
+            <div className=" bg-white w-full max-w-2xl rounded-2xl 
+                        shadow-xl p-6 max-h-[90vh] overflow-y-auto
+            ">
 
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-            <div className="bg-white w-full max-w-2xl rounded-xl shadow-xl p-6 max-h-[90vh] overflow-y-auto">
-                <h2 className="text-2xl font-bold mb-6 text-center">
-                    {modo === "crear"
+                <h2 className=" text-2xl font-bold mb-6 text-center ">
+
+                    { modo === "crear"
                         ? "Crear Recurso"
-                        : "Editar Recurso"}
-
+                        : "Editar Recurso"
+                    }
                 </h2>
 
-                {error && (
-
-                    <p className="text-red-500 text-sm mb-4 text-center">
-                        {error}
-                    </p>
-
-                )}
+                { error &&
+                    <div className=" bg-red-100 text-red-700 p-3 rounded-lg mb-5 text-sm ">
+                     {error}
+                    </div>
+                }
 
                 <form
                     onSubmit={handleSubmit}
-                    className="space-y-4"
+                    className="space-y-5"
                 >
 
-                    {/* TEMA */}
-                    <select
-                        name="tema"
-                        value={form.tema}
-                        onChange={handleChange}
-                        className="w-full border border-gray-300 p-3 rounded-lg outline-none focus:ring-2 focus:ring-green-500"
-                    >
+                    <div>
+                        <label className="font-medium text-sm">
+                            Tema
+                        </label>
 
-                        <option value="">
-                            Seleccione un tema
-                        </option>
-
-                        {temas.map((tema)=>(
-
-                            <option
-                                key={tema._id}
-                                value={tema._id}
-                            >
-                                {tema.nombre} - {" "}
-                                {tema.nivelAcademico}
+                        <select
+                            name="tema"
+                            value={form.tema}
+                            onChange={handleChange}
+                            className=" w-full border border-gray-300 p-3
+                                rounded-xl mt-1 focus:ring-2 focus:ring-green-500 outline-none "
+                        >
+                            <option value="">
+                                Seleccione un tema
                             </option>
 
-                        ))}
+                            {
+                                temas.map((tema)=>(
+                                    <option
+                                        key={tema._id}
+                                        value={tema._id}
+                                    >
+                                        {tema.nombre}
+                                        {" - "}
+                                        {tema.nivelAcademico}
+                                    </option>
+                                ))
+                            }
+                        </select>
+                    </div>
 
-                    </select>
+                    <div>
 
-                    {/* TITULO */}
-                    <input
-                        type="text"
-                        name="titulo"
-                        placeholder="Título"
-                        value={form.titulo}
-                        onChange={handleChange}
-                        className="w-full border border-gray-300 p-3 rounded-lg outline-none focus:ring-2 focus:ring-green-500"
-                    />
-
-                    {/* DESCRIPCION */}
-                    <textarea
-                        name="descripcion"
-                        placeholder="Descripción"
-                        value={form.descripcion}
-                        onChange={handleChange}
-                        className="w-full border border-gray-300 p-3 rounded-lg outline-none focus:ring-2 focus:ring-green-500"
-                    />
-
-                    {/* TIPO */}
-                    <select
-                        name="tipo"
-                        value={form.tipo}
-                        onChange={handleChange}
-                        className="w-full border border-gray-300 p-3 rounded-lg outline-none focus:ring-2 focus:ring-green-500"
-                    >
-
-                        <option value="pdf">
-                            PDF
-                        </option>
-
-                        <option value="youtube">
-                            YouTube
-                        </option>
-
-                        <option value="teoria">
-                            Teoría
-                        </option>
-
-                    </select>
-
-                    {/* URL */}
-                    {(form.tipo === "pdf" ||
-                    form.tipo === "youtube") && (
-
+                        <label className="font-medium text-sm">
+                            Título
+                        </label>
                         <input
                             type="text"
-                            name="url"
-                            placeholder={
-                                form.tipo === "pdf"
-                                ? "URL PDF"
-                                : "URL YouTube"
-                            }
-                            value={form.url}
+                            name="titulo"
+                            value={form.titulo}
                             onChange={handleChange}
-                            className="w-full border border-gray-300 p-3 rounded-lg outline-none focus:ring-2 focus:ring-green-500"
+                            placeholder="Título del recurso"
+                            className=" w-full border border-gray-300 p-3 rounded-xl
+                                mt-1 focus:ring-2 focus:ring-green-500 outline-none "
                         />
+                    </div>
 
-                    )}
-
-                    {/* CONTENIDO */}
-                    {form.tipo === "teoria" && (
+                    <div>
+                        <label className="font-medium text-sm">
+                            Descripción
+                        </label>
 
                         <textarea
-                            name="contenido"
-                            placeholder="Contenido teórico..."
-                            value={form.contenido}
+                            name="descripcion"
+                            value={form.descripcion}
                             onChange={handleChange}
-                            rows="8"
-                            className="w-full border border-gray-300 p-3 rounded-lg outline-none focus:ring-2 focus:ring-green-500"
+                            placeholder="Descripción breve..."
+                            rows="3"
+                            className=" w-full border border-gray-300 
+                                        p-3 rounded-xl mt-1 focus:ring-2 focus:ring-green-500 outline-none"
                         />
+                    </div>
 
-                    )}
+                    <div>
+                        <label className="font-medium text-sm">
+                            Tipo de recurso
+                        </label>
 
-                    {/* DIFICULTAD */}
-                    <select
-                        name="nivelDificultad"
-                        value={form.nivelDificultad}
-                        onChange={handleChange}
-                        className="w-full border border-gray-300 p-3 rounded-lg outline-none focus:ring-2 focus:ring-green-500"
-                    >
+                        <select
+                            name="tipo"
+                            value={form.tipo}
+                            onChange={handleChange}
+                            className="w-full border border-gray-300 p-3
+                                       rounded-xl mt-1 focus:ring-2 focus:ring-green-500 outline-none"
+                        >
+                            <option value="pdf"> PDF </option>
+                            <option value="youtube"> YouTube </option>
+                            <option value="teoria"> Teoría </option>
+                        </select>
+                    </div>
 
-                        <option value="basico">
-                            Básico
-                        </option>
+                    {
+                        ( form.tipo === "pdf" || form.tipo === "youtube" ) &&
+                        <div>
+                            <label className="font-medium text-sm">
+                                URL
+                            </label>
 
-                        <option value="intermedio">
-                            Intermedio
-                        </option>
+                            <input
+                                type="text"
+                                name="url"
+                                value={form.url}
+                                onChange={handleChange}
+                                placeholder={
+                                    form.tipo === "pdf"
+                                    ? "https://..."
+                                    : "https://youtube.com/..."
+                                }
+                                className="w-full border border-gray-300 p-3 rounded-xl
+                                           mt-1 focus:ring-2 focus:ring-green-500 outline-none"
+                            />
+                        </div>
+                    }
 
-                        <option value="avanzado">
-                            Avanzado
-                        </option>
+                    { form.tipo === "teoria" &&
+                        <div>
+                            <label className="font-medium text-sm">
+                                Contenido Teórico
+                            </label>
 
-                    </select>
+                            <textarea
+                                name="contenido"
+                                value={form.contenido}
+                                onChange={handleChange}
+                                rows="10"
+                                placeholder="Escriba el contenido..."
+                                className="w-full border border-gray-300 p-3 rounded-xl mt-1 
+                                            focus:ring-2 focus:ring-green-500 outline-none " 
+                            />
+                        </div>
+                    }
+
+                    <div>
+                        <label className="font-medium text-sm">
+                            Nivel de dificultad
+                        </label>
+
+                        <select
+                            name="nivelDificultad"
+                            value={form.nivelDificultad}
+                            onChange={handleChange}
+                            className="w-full border border-gray-300 p-3 rounded-xl mt-1 focus:ring-2 focus:ring-green-500 outline-none "
+                        >
+                            <option value="basico"> Básico </option>
+                            <option value="intermedio"> Intermedio </option>
+                            <option value="avanzado"> Avanzado </option>
+                        </select>
+                    </div>
 
                     {/* BOTONES */}
-                    <div className="flex justify-end gap-3 pt-2">
+                    <div className=" flexjustify-end gap-3 pt-3 ">
 
                         <button
                             type="button"
                             onClick={onClose}
-                            className="bg-gray-400 hover:bg-gray-500 text-white px-5 py-2 rounded-lg"
+                            className=" bg-gray-400 hover:bg-gray-500 text-white px-5 py-2 rounded-xl "
                         >
                             Cancelar
                         </button>
 
                         <button
                             type="submit"
-                            className="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg"
+                            disabled={loading}
+                        className=" bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-xl disabled:opacity-50"
                         >
-
-                            {modo === "crear"
-                                ? "Crear"
-                                : "Actualizar"}
-
+                            {
+                                loading
+                                ? "Guardando..."
+                                : modo === "crear"
+                                    ? "Crear"
+                                    : "Actualizar"
+                            }
                         </button>
-
                     </div>
-
                 </form>
-
             </div>
-
         </div>
-
     );
-
 };
 
 export default ModalRecurso;

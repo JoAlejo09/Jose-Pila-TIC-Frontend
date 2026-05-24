@@ -35,6 +35,10 @@ const menuPorRol = {
                     path:"/dashboard/admin/materias"
                 },
                 {
+                    label:"Unidades",
+                    path:"/dashboard/admin/unidades"
+                },
+                {
                     label:"Temas",
                     path:"/dashboard/admin/temas"
                 },
@@ -43,7 +47,7 @@ const menuPorRol = {
                     path:"/dashboard/admin/recursos"
                 },
 
-                // SUBMENU EVALUACIONES
+                //Para las evaluaciones
                 {
                     label:"Evaluaciones",
                     children:[
@@ -60,12 +64,10 @@ const menuPorRol = {
 
             ]
         },
-        // REPORTES
 
         {
             label:"Reportes",
             icon:BarChart3,
-
             children:[
                 {
                     label:"Evaluaciones",
@@ -76,12 +78,7 @@ const menuPorRol = {
 
     ],
 
-
-
-    // =========================================
-    // ESTUDIANTE
-    // =========================================
-
+    // Menu Estudiante
     estudiante:[
 
         {
@@ -90,60 +87,35 @@ const menuPorRol = {
             path:"/mi-perfil"
         },
 
-
-
-        // =========================================
-        // MATERIAS
-        // =========================================
-
+        //Visualizar las materias de estudiante
         {
             label:"Materias",
             icon:BookOpen,
             path:"/dashboard/estudiante/materias"
         },
-
-
-
-        // =========================================
-        // CUESTIONARIOS
-        // =========================================
-
+        
+        //Menu de evaluaciones
         {
             label:"Evaluaciones",
             icon:ClipboardCheck,
             path:"/dashboard/estudiante/cuestionarios"
         },
 
-
-
-        // =========================================
-        // RESULTADOS
-        // =========================================
-
+        // Resultado de las evaluaciones de Estudiante
         {
             label:"Mis Resultados",
             icon:FileText,
             path:"/dashboard/estudiante/resultados"
         },
 
-
-
-        // =========================================
-        // PROGRESO
-        // =========================================
-
+        // Progreso del estudiante
         {
             label:"Mi Progreso",
             icon:TrendingUp,
             path:"/dashboard/estudiante/progreso"
         },
 
-
-
-        // =========================================
-        // RECOMENDACIONES
-        // =========================================
-
+        // Recomendaciones para el estudiante
         {
             label:"Recomendaciones",
             icon:Lightbulb,
@@ -152,12 +124,7 @@ const menuPorRol = {
 
     ],
 
-
-
-    // =========================================
     // TUTOR
-    // =========================================
-
     tutor:[
 
         {

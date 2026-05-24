@@ -20,14 +20,10 @@ const cambiarEstadoTemaRequest = async(id)=>{
     const res = await axios.patch(`/tema/estado/${id}`);
     return res.data
 }
-const obtenerTemasPorMateriaRequest = async(materiaId)=>{
-    const res = await axios.get(`/tema/materia/${materiaId}`)
-    return res.data;
+const obtenerTemasPorUnidadRequest = async(unidadId)=>{
+    const res = await axios.get(`/tema/unidad/${unidadId}`);
+    return res.data
 }
-const obtenerTemasPorMateriaNivelRequest = async(materiaId,nivelAcademico)=>{
-    const res = await axios.get(`/tema/materia/${materiaId}/nivel/${nivelAcademico}`);
-    return res.data;
-}
+
 export { obtenerTemasRequest, obtenerTemaRequest, crearTemaRequest,
-         actualizarTemaRequest, cambiarEstadoTemaRequest, obtenerTemasPorMateriaRequest,
-         obtenerTemasPorMateriaNivelRequest};
+         actualizarTemaRequest, cambiarEstadoTemaRequest, obtenerTemasPorUnidadRequest};

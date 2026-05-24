@@ -1,30 +1,32 @@
 import { useEffect, useState } from "react";
-
-import { crearCuestionarioRequest, actualizarCuestionarioRequest } from "../../services/cuestionarioService.js";
-
-import { obtenerMateriasRequest } from "../../services/materiaService.js";
+import { crearCuestionarioRequest, actualizarCuestionarioRequest} from "../../services/cuestionarioService.js";
+import { obtenerMateriasRequest} from "../../services/materiaService.js";
 import { obtenerTemasPorMateriaRequest } from "../../services/temaService.js";
-import { obtenerPreguntasRequest } from "../../services/preguntaService.js";
 
-const CuestionarioModal = ({ onClose, recargarCuestionarios, cuestionarioEditar = null })=>{
+import {obtenerPreguntasRequest}
+from "../../services/preguntaService.js";
+
+import PasoInformacion from "../cuestionario/Informacion.jsx";
+import PasoConfiguracion from "../cuestionario/Configuracion.jsx";
+import PasoPreguntas from "../cuestionario/Preguntas.jsx";
+
+const CuestionarioModal = ({onClose, recargarCuestionarios, cuestionarioEditar = null})=>{
 
     const modoEdicion = !!cuestionarioEditar;
-
+    const [paso,setPaso] = useState(1);
     const [materias,setMaterias] = useState([]);
     const [temas,setTemas] = useState([]);
     const [preguntasDisponibles,setPreguntasDisponibles] = useState([]);
     const [loading,setLoading] = useState(false);
-
     const [form,setForm] = useState({
-
         titulo:"",
         descripcion:"",
         instrucciones:"",
         materia:"",
         tema:"",
         nivelAcademico:"1ro BGU",
-        tipoEvaluacion:"materia",
-        tipoCuestionario:"practica",
+        tipoEvaluacion:"diagnostico",
+        alcanceEvaluacion:"tema",
         modoGeneracion:"manual",
         preguntas:[],
         cantidadPreguntas:0,
@@ -36,7 +38,7 @@ const CuestionarioModal = ({ onClose, recargarCuestionarios, cuestionarioEditar 
         permitirReintento:false
     });
 
-    // CARGAR DATOS EN EDICION
+    //Para la edicion del cuestionario
     useEffect(()=>{
         if(cuestionarioEditar){
             setForm({
@@ -46,8 +48,8 @@ const CuestionarioModal = ({ onClose, recargarCuestionarios, cuestionarioEditar 
                 materia: cuestionarioEditar.materia?._id || "",
                 tema: cuestionarioEditar.tema?._id || "",
                 nivelAcademico: cuestionarioEditar.nivelAcademico || "1ro BGU",
-                tipoEvaluacion: cuestionarioEditar.tipoEvaluacion || "materia",
-                tipoCuestionario: cuestionarioEditar.tipoCuestionario || "practica",
+                tipoEvaluacion:cuestionarioEditar.tipoEvaluacion || "diagnostico",
+                alcanceEvaluacion: cuestionarioEditar.alcanceEvaluacion || "tema",
                 modoGeneracion: cuestionarioEditar.modoGeneracion || "manual",
                 preguntas: cuestionarioEditar.preguntas?.map(
                     pregunta => pregunta._id
@@ -57,26 +59,27 @@ const CuestionarioModal = ({ onClose, recargarCuestionarios, cuestionarioEditar 
                 nivel: cuestionarioEditar.nivel || "medio",
                 aleatorio: cuestionarioEditar.aleatorio || false,
                 mostrarRevision: cuestionarioEditar.mostrarRevision ?? true,
-                mostrarRespuestasCorrectas: cuestionarioEditar.mostrarRespuestasCorrectas?? true,
-                permitirReintento: cuestionarioEditar.permitirReintento|| false
+                mostrarRespuestasCorrectas: cuestionarioEditar.mostrarRespuestasCorrectas ?? true,
+                permitirReintento: cuestionarioEditar.permitirReintento || false
             });
         }
     },[cuestionarioEditar]);
 
-    // OBTENER MATERIAS
+    //Obtener las materias
     useEffect(()=>{
         const obtenerMaterias = async()=>{
             try {
                 const data = await obtenerMateriasRequest();
                 setMaterias(data);
-            } catch (error) {
+            }
+            catch(error){
                 console.log(error);
             }
         };
         obtenerMaterias();
     },[]);
 
-    // OBTENER TEMAS SEGUN MATERIA
+    //Obtener temas de la materia
     useEffect(()=>{
         const obtenerTemas = async()=>{
             if(!form.materia){
@@ -84,95 +87,89 @@ const CuestionarioModal = ({ onClose, recargarCuestionarios, cuestionarioEditar 
                 return;
             }
             try {
-                const data = await obtenerTemasPorMateriaRequest( form.materia );
+                const data = await obtenerTemasPorMateriaRequest(form.materia);
                 setTemas(data);
-            } catch (error) {
+            }
+            catch(error){
                 console.log(error);
             }
         };
         obtenerTemas();
     },[form.materia]);
 
-    // OBTENER PREGUNTAS
+    //Obtener preguntas de un tema
     useEffect(()=>{
         const obtenerPreguntas = async()=>{
             try {
                 const data = await obtenerPreguntasRequest();
                 setPreguntasDisponibles(data);
-            } catch (error) {
+            }
+            catch(error){
                 console.log(error);
             }
         };
         obtenerPreguntas();
-
     },[]);
 
-    // SINCRONIZAR CANTIDAD DE PREGUNTAS EN MODO MANUAL
     useEffect(()=>{
+
         if(
             form.modoGeneracion === "manual"
         ){
 
             setForm((prev)=>({
-
                 ...prev,
-
-                cantidadPreguntas:
-                    prev.preguntas.length
+                cantidadPreguntas: prev.preguntas.length
             }));
         }
+    },[ form.preguntas, form.modoGeneracion ]);
+    
+    //Filtrado de preguntas
+    const preguntasFiltradas = preguntasDisponibles.filter(
+        (pregunta)=>{
+            const coincideMateria = pregunta.materia?._id?.toString() === form.materia?.toString();
+            const coincideNivel = pregunta.nivelAcademico === form.nivelAcademico;
+            const coincideTema = pregunta.tema?._id?.toString()
+            ===
+            form.tema?.toString();
 
-    },[
-        form.preguntas,
-        form.modoGeneracion
-    ]);
+            console.log({
+            pregunta: pregunta.enunciado,
+            coincideMateria,
+            coincideTema,
+            coincideNivel,
+            materiaPregunta: pregunta.materia?._id,
+            materiaForm: form.materia,
+            temaPregunta: pregunta.tema?._id,
+            temaForm: form.tema
+        });
 
-    // FILTRAR PREGUNTAS
-    const preguntasFiltradas =
-        preguntasDisponibles.filter(
-            (pregunta)=>{
-
-                const coincideMateria =pregunta.materia?._id === form.materia;
-
-                const coincideNivel = pregunta.nivelAcademico === form.nivelAcademico;
-
-                if(
-                    form.tipoEvaluacion === "tema"
-                ){
-                    return(
-                        coincideMateria
-                        &&
-                        coincideNivel
-                        &&
-                        pregunta.tema?._id ===
-                        form.tema
-                    );
-                }
+            if( form.alcanceEvaluacion === "tema" ){
                 return(
-                    coincideMateria
-                    &&
-                    coincideNivel
+                    coincideMateria &&
+                    coincideNivel &&
+                    coincideTema
                 );
             }
-        );
+            return(
+                coincideMateria &&
+                coincideNivel
+            );
+        }
+    );
+    console.log("PREGUNTAS FILTRADAS:", preguntasFiltradas);
 
-    // CAMBIOS FORMULARIO
+    //Cambios de formulario
     const handleChange = (e)=>{
-        const {
-            name,
-            value,
-            type,
-            checked
-        } = e.target;
-
+        const { name, value, type, checked } = e.target;
         const valor = type === "checkbox"
             ? checked
             : value;
+
         setForm((prev)=>({
             ...prev,
             [name]:valor,
-
-            ...(name === "tipoEvaluacion"
+            ...(name === "alcanceEvaluacion"
                 &&
                 valor === "materia"
                 ? {
@@ -181,7 +178,6 @@ const CuestionarioModal = ({ onClose, recargarCuestionarios, cuestionarioEditar 
                 }
                 : {}
             ),
-
             ...(name === "materia"
                 ? {
                     tema:"",
@@ -189,27 +185,26 @@ const CuestionarioModal = ({ onClose, recargarCuestionarios, cuestionarioEditar 
                 }
                 : {}
             ),
-
             ...(name === "tema"
                 ? {
                     preguntas:[]
                 }
                 : {}
             ),
-
             ...(name === "nivelAcademico"
                 ? {
                     preguntas:[]
                 }
                 : {}
             )
+
         }));
     };
 
-    // SELECCIONAR PREGUNTAS
+    //Agregar preguntas
     const handlePregunta = (id)=>{
-
         const existe = form.preguntas.includes(id);
+
         if(existe){
             setForm({
                 ...form,
@@ -218,7 +213,7 @@ const CuestionarioModal = ({ onClose, recargarCuestionarios, cuestionarioEditar 
                         pregunta => pregunta !== id
                     )
             });
-        }else{
+        } else{
             setForm({
                 ...form,
                 preguntas:[
@@ -229,41 +224,128 @@ const CuestionarioModal = ({ onClose, recargarCuestionarios, cuestionarioEditar 
         }
     };
 
-    // GUARDAR
-    const handleSubmit = async(e)=>{
-        e.preventDefault();
-        setLoading(true);
-        try {
-            if(modoEdicion){
-                await actualizarCuestionarioRequest(
-                    cuestionarioEditar._id,
-                    form
-                );
-            }else{
-                await crearCuestionarioRequest( form );
+    //Validacion de pasos
+    const validarPaso = ()=>{
+        if(paso === 1){
+            if( !form.titulo || !form.tipoEvaluacion ){
+                alert("Completa la información básica");
+                return false;
             }
-            await recargarCuestionarios();
-            onClose();
-        } catch (error) {
-            console.log(error);
-        } finally {
-            setLoading(false);
+        }
+
+        if(paso === 2){
+            if( !form.materia || !form.nivelAcademico ){
+                alert("Completa la configuración");
+                return false;
+            }
+
+            if( form.alcanceEvaluacion === "tema" && !form.tema
+            ){
+                alert("Debes seleccionar un tema");
+                return false;
+            }
+        }
+        return true;
+    };
+
+    //Navegacion entre partes del formulario
+    const siguientePaso = ()=>{
+        const valido = validarPaso();
+        if(valido){
+            setPaso((prev)=> prev + 1);
         }
     };
 
+    const pasoAnterior = ()=>{
+        setPaso((prev)=> prev - 1);
+    };
+
+    //Para guardar
+    const handleSubmit = async(e)=>{
+    e.preventDefault();
+
+    // VALIDACION FRONTEND
+
+    if(
+        form.modoGeneracion === "manual" &&
+        form.preguntas.length === 0
+    ){
+        alert("Debes seleccionar al menos una pregunta");
+        return;
+    }
+
+    setLoading(true);
+
+    try {
+
+        const payload = {
+            ...form,
+
+            cantidadPreguntas:
+                form.modoGeneracion === "manual"
+                ? form.preguntas.length
+                : Number(form.cantidadPreguntas),
+
+            tema:
+                form.alcanceEvaluacion === "tema"
+                ? form.tema
+                : null
+        };
+
+        console.log("PAYLOAD FINAL:", payload);
+
+        if(modoEdicion){
+
+            await actualizarCuestionarioRequest(
+                cuestionarioEditar._id,
+                payload
+            );
+
+        }else{
+
+            await crearCuestionarioRequest(payload);
+
+        }
+
+        await recargarCuestionarios();
+
+        onClose();
+
+    }
+    catch(error){
+
+        console.log(error);
+
+        alert(
+            error.response?.data?.msg ||
+            "Error al guardar cuestionario"
+        );
+
+    }
+    finally{
+
+        setLoading(false);
+
+    }
+};
+
     return(
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-
             <div className="bg-white w-full max-w-6xl rounded-2xl shadow-2xl max-h-[95vh] overflow-y-auto">
-                <div className="flex justify-between items-center border-b border-gray-200 p-6">
-                    <h2 className="text-2xl font-bold text-gray-800">
 
-                        {
-                            modoEdicion
-                            ? "Editar Cuestionario"
-                            : "Nuevo Cuestionario"
-                        }
-                    </h2>
+                <div className="flex justify-between items-center border-b border-gray-200 p-6">
+                    <div>
+                        <h2 className="text-2xl font-bold text-gray-800">
+                            {
+                                modoEdicion
+                                ? "Editar Evaluación"
+                                : "Nueva Evaluación"
+                            }
+                        </h2>
+                        <p className="text-sm text-gray-500 mt-1">
+                            Paso {paso} de 3
+                        </p>
+                    </div>
                     <button
                         onClick={onClose}
                         className="text-2xl text-gray-500 hover:text-gray-700"
@@ -272,340 +354,117 @@ const CuestionarioModal = ({ onClose, recargarCuestionarios, cuestionarioEditar 
                     </button>
                 </div>
 
+                <div className="flex items-center justify-center gap-4 py-6 border-b">
+                    {[1,2,3].map((item)=>(
+                        <div
+                            key={item}
+                            className={`w-10 h-10 rounded-full flex items-center justify-center font-bold
+                            ${
+                                paso >= item
+                                ? "bg-blue-600 text-white"
+                                : "bg-gray-200 text-gray-600"
+                            }`}
+                        >
+                            {item}
+                        </div>
+                    ))}
+                </div>
+
                 <form
                     onSubmit={handleSubmit}
                     className="p-6 space-y-6"
                 >
-
-                    <div>
-                        <label className="block mb-2 font-medium">
-                            Título
-                        </label>
-
-                        <input
-                            type="text"
-                            name="titulo"
-                            value={form.titulo}
-                            onChange={handleChange}
-                            required
-                            className="w-full border border-gray-300 rounded-xl p-3"
-                        />
-
-                    </div>
-
-                    <div>
-                        <label className="block mb-2 font-medium">
-                            Descripción
-                        </label>
-                        <textarea
-                            name="descripcion"
-                            value={form.descripcion}
-                            onChange={handleChange}
-                            className="w-full border border-gray-300 rounded-xl p-4 min-h-[100px]"
-                        />
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-
-                            <label className="block mb-2 font-medium">
-                                Materia
-                            </label>
-
-                            <select
-                                name="materia"
-                                value={form.materia}
-                                onChange={handleChange}
-                                required
-                                className="w-full border border-gray-300 rounded-xl p-3"
-                            >
-                                <option value="">
-                                    Seleccionar
-                                </option>
-                                {materias.map((materia)=>(
-
-                                    <option
-                                        key={materia._id}
-                                        value={materia._id}
-                                    >
-                                        {materia.nombre}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-
-                        {
-                            form.tipoEvaluacion === "tema"
-                            &&
-                            <div>
-
-                                <label className="block mb-2 font-medium">
-                                    Tema
-                                </label>
-
-                                <select
-                                    name="tema"
-                                    value={form.tema}
-                                    onChange={handleChange}
-                                    required
-                                    className="w-full border border-gray-300 rounded-xl p-3"
-                                >
-                                    <option value="">
-                                        Seleccionar
-                                    </option>
-
-                                    {temas.map((tema)=>(
-                                        <option
-                                            key={tema._id}
-                                            value={tema._id}
-                                        >
-                                            {tema.nombre}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                        }
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                        <div>
-                            <label className="block mb-2 font-medium">
-                                Tipo evaluación
-                            </label>
-                            <select
-                                name="tipoEvaluacion"
-                                value={form.tipoEvaluacion}
-                                onChange={handleChange}
-                                className="w-full border border-gray-300 rounded-xl p-3"
-                            >
-                                <option value="materia">Materia </option>
-                                <option value="tema"> Tema </option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label className="block mb-2 font-medium">
-                                Tipo cuestionario
-                            </label>
-                            <select
-                                name="tipoCuestionario"
-                                value={form.tipoCuestionario}
-                                onChange={handleChange}
-                                className="w-full border border-gray-300 rounded-xl p-3"
-                            >
-                                <option value="diagnostico">Diagnóstico</option>
-                                <option value="practica">Práctica</option>
-                                <option value="refuerzo">Refuerzo </option>
-                                <option value="simulador">Simulador</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label className="block mb-2 font-medium">
-                                Modo generación
-                            </label>
-
-                            <select
-                                name="modoGeneracion"
-                                value={form.modoGeneracion}
-                                onChange={handleChange}
-                                className="w-full border border-gray-300 rounded-xl p-3"
-                            >
-                                <option value="manual"> Manual </option>
-                                <option value="dinamico"> Dinámico </option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label className="block mb-2 font-medium">
-                                Nivel académico
-                            </label>
-                            <select
-                                name="nivelAcademico"
-                                value={form.nivelAcademico}
-                                onChange={handleChange}
-                                className="w-full border border-gray-300 rounded-xl p-3"
-                            >
-                                <option value="1ro BGU"> 1ro BGU </option>
-                                <option value="2do BGU"> 2do BGU </option>
-                                <option value="3ro BGU"> 3ro BGU </option>
-                            </select>
-                        </div>
-                    </div>
-
-                    {/* PREGUNTAS */}
                     {
-                        form.modoGeneracion === "manual"
-                        &&
-                        <div>
-                            <label className="block mb-4 font-medium">
-                                Seleccionar preguntas
-                            </label>
-                            <div className="border border-gray-200 rounded-2xl max-h-[350px] overflow-y-auto divide-y">
-                                {
-                                    preguntasFiltradas.map((pregunta)=>(
-                                        <div
-                                            key={pregunta._id}
-                                            className="p-4 flex items-start gap-3 hover:bg-gray-50"
-                                        >
-
-                                            <input
-                                                type="checkbox"
-                                                checked={
-                                                    form.preguntas.includes(
-                                                        pregunta._id
-                                                    )
-                                                }
-                                                onChange={()=>handlePregunta(
-                                                    pregunta._id
-                                                )}
-                                                className="mt-1"
-                                            />
-                                            <div>
-                                                <p className="font-medium text-gray-800">
-                                                    {pregunta.enunciado}
-                                                </p>
-                                                <p className="text-sm text-gray-500 mt-1">
-                                                    {
-                                                        pregunta.tema?.nombre
-                                                        ||
-                                                        pregunta.materia?.nombre
-                                                    }
-                                                </p>
-                                            </div>
-                                        </div>
-                                    ))
-                                }
-                            </div>
-                        </div>
+                        paso === 1 &&
+                        <PasoInformacion
+                            form={form}
+                            handleChange={handleChange}
+                        />
                     }
 
-                    {/* CONFIG EXTRA */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {
+                        paso === 2 &&
+                        <PasoConfiguracion
+                            form={form}
+                            handleChange={handleChange}
+                            materias={materias}
+                            temas={temas}
+                        />
+                    }
+
+                    {
+                        paso === 3 &&
+                        <PasoPreguntas
+                            form={form}
+                            handleChange={handleChange}
+                            preguntasFiltradas={preguntasFiltradas}
+                            handlePregunta={handlePregunta}
+                        />
+                    }
+
+                    <div className="flex justify-between pt-6">
 
                         <div>
-                            <label className="block mb-2 font-medium">
-                                Cantidad preguntas
-                            </label>
-                            <input
-                                type="number"
-                                name="cantidadPreguntas"
-                                value={form.cantidadPreguntas}
-                                onChange={handleChange}
-                                min="1"
-                                disabled={ form.modoGeneracion === "manual" }
-                                className="w-full border border-gray-300 rounded-xl p-3"
-                            />
-                        </div>
 
-                        <div>
-                            <label className="block mb-2 font-medium">
-                                Tiempo límite (min)
-                            </label>
-                            <input
-                                type="number"
-                                name="tiempoLimite"
-                                value={form.tiempoLimite}
-                                onChange={handleChange}
-                                min="1"
-                                className="w-full border border-gray-300 rounded-xl p-3"
-                            />
-                        </div>
-
-                        <div>
-                            <label className="block mb-2 font-medium">
-                                Nivel
-                            </label>
-                            <select
-                                name="nivel"
-                                value={form.nivel}
-                                onChange={handleChange}
-                                className="w-full border border-gray-300 rounded-xl p-3"
-                            >
-                                <option value="facil">Fácil </option>
-                                <option value="medio"> Medio </option>
-                                <option value="dificil"> Difícil </option>
-                            </select>
-                        </div>
-                    </div>
-
-                    {/* CHECKBOXES */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-                        <label className="flex items-center gap-3">
-
-                            <input
-                                type="checkbox"
-                                name="aleatorio"
-                                checked={form.aleatorio}
-                                onChange={handleChange}
-                            />
-
-                            Orden aleatorio
-
-                        </label>
-
-                        <label className="flex items-center gap-3">
-
-                            <input
-                                type="checkbox"
-                                name="mostrarRevision"
-                                checked={form.mostrarRevision}
-                                onChange={handleChange}
-                            />
-
-                            Mostrar revisión
-
-                        </label>
-
-                        <label className="flex items-center gap-3">
-                            <input
-                                type="checkbox"
-                                name="mostrarRespuestasCorrectas"
-                                checked={
-                                    form.mostrarRespuestasCorrectas
-                                }
-                                onChange={handleChange}
-                            />
-                            Mostrar respuestas correctas
-                        </label>
-
-                        <label className="flex items-center gap-3">
-                            <input
-                                type="checkbox"
-                                name="permitirReintento"
-                                checked={form.permitirReintento}
-                                onChange={handleChange}
-                            />
-                            Permitir reintento
-                        </label>
-                    </div>
-
-                    <div className="flex justify-end gap-4 pt-4">
-                        <button
-                            type="button"
-                            onClick={onClose}
-                            className="px-6 py-3 rounded-xl bg-gray-200 hover:bg-gray-300"
-                        >
-                            Cancelar
-                        </button>
-
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium disabled:opacity-50"
-                        >
                             {
-                                loading
-                                ? "Guardando..."
-                                : modoEdicion
-                                    ? "Actualizar"
-                                    : "Crear Cuestionario"
+                                paso > 1 &&
+                                <button
+                                    type="button"
+                                    onClick={pasoAnterior}
+                                    className="px-6 py-3 rounded-xl bg-gray-200 hover:bg-gray-300"
+                                >
+                                    Anterior
+                                </button>
                             }
-                        </button>
+
+                        </div>
+
+                        <div className="flex gap-4">
+
+                            <button
+                                type="button"
+                                onClick={onClose}
+                                className="px-6 py-3 rounded-xl bg-gray-200 hover:bg-gray-300"
+                            >
+                                Cancelar
+                            </button>
+
+                            {
+                                paso < 3
+                                ? (
+                                    <button
+                                        type="button"
+                                        onClick={siguientePaso}
+                                        className="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white"
+                                    >
+                                        Siguiente
+                                    </button>
+                                )
+                                : (
+                                    <button
+                                        type="submit"
+                                        disabled={loading}
+                                        className="px-6 py-3 rounded-xl bg-green-600 hover:bg-green-700 text-white disabled:opacity-50"
+                                    >
+                                        {
+                                            loading
+                                            ? "Guardando..."
+                                            : modoEdicion
+                                                ? "Actualizar"
+                                                : "Crear Evaluación"
+                                        }
+                                    </button>
+                                )
+                            }
+
+                        </div>
+
                     </div>
+
                 </form>
+
             </div>
+
         </div>
     );
 };
