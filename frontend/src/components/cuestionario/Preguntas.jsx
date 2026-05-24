@@ -5,11 +5,6 @@ const PasoPreguntas = ({
     handleChange
 })=>{
 
-    console.log(
-        "PREGUNTAS FILTRADAS:",
-        preguntasFiltradas
-    );
-
     return(
 
         <div className="space-y-6">
@@ -29,9 +24,9 @@ const PasoPreguntas = ({
                     Las preguntas disponibles se filtran automáticamente
                     según:
                     materia,
-                    tema,
+                    unidad,
                     nivel académico
-                    y tipo de cuestionario.
+                    y configuración de evaluación.
 
                 </p>
 
@@ -91,7 +86,7 @@ const PasoPreguntas = ({
 
             </div>
 
-            {/* MODO MANUAL */}
+            {/* MANUAL */}
 
             {
                 form.modoGeneracion === "manual"
@@ -155,22 +150,18 @@ const PasoPreguntas = ({
 
                                             <div className="flex-1">
 
-                                                {/* ENUNCIADO */}
-
                                                 <h4 className="font-medium text-gray-800">
 
                                                     {pregunta.enunciado}
 
                                                 </h4>
 
-                                                {/* INFORMACION */}
-
                                                 <div className="flex flex-wrap gap-2 mt-3">
 
                                                     <span className="bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-full">
 
                                                         {
-                                                            pregunta.tema?.nombre
+                                                            pregunta.unidad?.nombre
                                                             ||
                                                             pregunta.materia?.nombre
                                                         }
@@ -200,7 +191,6 @@ const PasoPreguntas = ({
                                         </div>
 
                                     </div>
-
                                 ))
                             }
 
@@ -211,7 +201,7 @@ const PasoPreguntas = ({
                 </div>
             }
 
-            {/* MODO DINAMICO */}
+            {/* DINAMICO */}
 
             {
                 form.modoGeneracion === "dinamico"
@@ -227,14 +217,11 @@ const PasoPreguntas = ({
                     <p className="text-sm text-yellow-700 leading-relaxed mb-4">
 
                         El sistema seleccionará automáticamente preguntas
-                        aleatorias del banco disponible según la configuración
-                        académica establecida.
+                        aleatorias según la configuración académica establecida.
 
                     </p>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-                        {/* CANTIDAD */}
 
                         <div>
 
@@ -255,8 +242,6 @@ const PasoPreguntas = ({
                             />
 
                         </div>
-
-                        {/* INFO */}
 
                         <div className="flex items-end">
 

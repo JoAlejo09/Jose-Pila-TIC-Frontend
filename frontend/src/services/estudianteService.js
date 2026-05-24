@@ -40,10 +40,17 @@ const obtenerTemasPorMateriaRequest = async(materiaId)=>{
     const res = await axios.get(
         `/estudiante/temas/${materiaId}`
     );
-
     return res.data;
 };
+const obtenerTemasPorUnidadRequest = async(unidadId)=>{
 
+    const res = await axios.get(
+        `/estudiante/temas/unidad/${unidadId}`
+    );
+
+    return res.data;
+
+};
 const agregarTemaFavoritoRequest = async(temaId)=>{
     const res = await axios.post(
         `/estudiante/favoritos-temas/${temaId}`
@@ -87,6 +94,7 @@ export {
     quitarMateriaFavoritaRequest,
 
     obtenerTemasPorMateriaRequest,
+    obtenerTemasPorUnidadRequest,
     agregarTemaFavoritoRequest,
     quitarTemaFavoritoRequest,
 

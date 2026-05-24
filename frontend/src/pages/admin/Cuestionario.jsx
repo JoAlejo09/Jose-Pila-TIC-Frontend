@@ -9,14 +9,10 @@ import CuestionarioModal from "../../components/modal/CuestionarioModal.jsx";
 
 const Cuestionarios = ()=>{
 
-    const [cuestionarios,setCuestionarios] =
-        useState([]);
+    const [cuestionarios,setCuestionarios] = useState([]);
+    const [loading,setLoading] = useState(true);
 
-    const [loading,setLoading] =
-        useState(true);
-
-    const [abrirModal,setAbrirModal] =
-        useState(false);
+    const [abrirModal,setAbrirModal] = useState(false);
 
     const [
         cuestionarioEditar,
@@ -30,6 +26,8 @@ const Cuestionarios = ()=>{
     const cargarCuestionarios = async()=>{
 
         try {
+
+            setLoading(true);
 
             const data =
                 await obtenerCuestionariosRequest();
@@ -120,7 +118,15 @@ const Cuestionarios = ()=>{
                         setCuestionarioEditar(null);
                         setAbrirModal(true);
                     }}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl font-medium transition-all"
+                    className="
+                        bg-blue-600
+                        hover:bg-blue-700
+                        text-white
+                        px-5 py-3
+                        rounded-xl
+                        font-medium
+                        transition-all
+                    "
                 >
                     + Nuevo Cuestionario
                 </button>
@@ -158,7 +164,7 @@ const Cuestionarios = ()=>{
                             </th>
 
                             <th className="p-4 text-left">
-                                Tipo Cuestionario
+                                Alcance
                             </th>
 
                             <th className="p-4 text-left">
@@ -166,7 +172,7 @@ const Cuestionarios = ()=>{
                             </th>
 
                             <th className="p-4 text-left">
-                                Nivel
+                                Dificultad
                             </th>
 
                             <th className="p-4 text-left">
@@ -201,9 +207,7 @@ const Cuestionarios = ()=>{
                                 >
 
                                     <td className="p-4 font-medium text-gray-800">
-                                        {
-                                            cuestionario.titulo
-                                        }
+                                        {cuestionario.titulo}
                                     </td>
 
                                     <td className="p-4">
@@ -225,28 +229,53 @@ const Cuestionarios = ()=>{
                                     </td>
 
                                     <td className="p-4">
-                                        {
-                                            cuestionario.nivelAcademico
-                                        }
+                                        {cuestionario.nivelAcademico}
                                     </td>
+
+                                    {/* TIPO EVALUACION */}
 
                                     <td className="p-4">
 
                                         <span
-                                            className={`px-3 py-1 rounded-full text-xs font-medium
-                                            ${
-                                                cuestionario.alcanceEvaluacion
-                                                === "tema"
-                                                ? "bg-purple-100 text-purple-700"
-                                                : "bg-blue-100 text-blue-700"
-                                            }`}
+                                            className={`
+                                                px-3 py-1 rounded-full text-xs font-medium
+                                                ${
+                                                    cuestionario.tipoEvaluacion === "diagnostico"
+                                                    ? "bg-red-100 text-red-700"
+                                                    : "bg-green-100 text-green-700"
+                                                }
+                                            `}
                                         >
 
                                             {
-                                                cuestionario.alcanceEvaluacion
-                                                === "tema"
-                                                    ? "Por Tema"
-                                                    : "General"
+                                                cuestionario.tipoEvaluacion === "diagnostico"
+                                                ? "Diagnóstico"
+                                                : "Refuerzo"
+                                            }
+
+                                        </span>
+
+                                    </td>
+
+                                    {/* ALCANCE */}
+
+                                    <td className="p-4">
+
+                                        <span
+                                            className={`
+                                                px-3 py-1 rounded-full text-xs font-medium
+                                                ${
+                                                    cuestionario.alcanceEvaluacion === "tema"
+                                                    ? "bg-purple-100 text-purple-700"
+                                                    : "bg-blue-100 text-blue-700"
+                                                }
+                                            `}
+                                        >
+
+                                            {
+                                                cuestionario.alcanceEvaluacion === "tema"
+                                                ? "Por Tema"
+                                                : "Por Materia"
                                             }
 
                                         </span>
@@ -254,44 +283,32 @@ const Cuestionarios = ()=>{
                                     </td>
 
                                     <td className="p-4 capitalize">
-                                        {
-                                            cuestionario.alcanceEvaluacion
-                                        }
+                                        {cuestionario.modoGeneracion}
                                     </td>
 
                                     <td className="p-4 capitalize">
-                                        {
-                                            cuestionario.modoGeneracion
-                                        }
-                                    </td>
-
-                                    <td className="p-4 capitalize">
-                                        {
-                                            cuestionario.nivel
-                                        }
+                                        {cuestionario.nivel}
                                     </td>
 
                                     <td className="p-4 text-center">
-                                        {
-                                            cuestionario.cantidadPreguntas
-                                        }
+                                        {cuestionario.cantidadPreguntas}
                                     </td>
 
                                     <td className="p-4">
-                                        {
-                                            cuestionario.tiempoLimite
-                                        } min
+                                        {cuestionario.tiempoLimite} min
                                     </td>
 
                                     <td className="p-4">
 
                                         <span
-                                            className={`px-3 py-1 rounded-full text-sm
-                                            ${
-                                                cuestionario.estado
-                                                ? "bg-green-100 text-green-700"
-                                                : "bg-red-100 text-red-700"
-                                            }`}
+                                            className={`
+                                                px-3 py-1 rounded-full text-sm
+                                                ${
+                                                    cuestionario.estado
+                                                    ? "bg-green-100 text-green-700"
+                                                    : "bg-red-100 text-red-700"
+                                                }
+                                            `}
                                         >
 
                                             {
@@ -316,7 +333,12 @@ const Cuestionarios = ()=>{
 
                                                     setAbrirModal(true);
                                                 }}
-                                                className="px-4 py-2 rounded-lg bg-yellow-100 text-yellow-700 hover:bg-yellow-200"
+                                                className="
+                                                    px-4 py-2 rounded-lg
+                                                    bg-yellow-100
+                                                    text-yellow-700
+                                                    hover:bg-yellow-200
+                                                "
                                             >
                                                 Editar
                                             </button>
@@ -327,7 +349,12 @@ const Cuestionarios = ()=>{
                                                         cuestionario._id
                                                     )
                                                 }
-                                                className="px-4 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300"
+                                                className="
+                                                    px-4 py-2 rounded-lg
+                                                    bg-gray-200
+                                                    text-gray-700
+                                                    hover:bg-gray-300
+                                                "
                                             >
 
                                                 {

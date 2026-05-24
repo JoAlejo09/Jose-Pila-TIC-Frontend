@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
-import { crearMateriaRequest, actualizarMateriaRequest } from "../../services/materiaService";
+
+import {
+    crearMateriaRequest,
+    actualizarMateriaRequest
+} from "../../services/materiaService";
 
 import Input from "../ui/Input";
 
@@ -9,70 +13,111 @@ const ModalMateria = ({
     modo = "crear",
     materiaSeleccionada
 }) => {
-    const [form, setForm] = useState({
-        nombre: "",
-        descripcion: ""
+
+    const [form,setForm] = useState({
+
+        nombre:"",
+        descripcion:"",
+        nivelAcademico:"1ro BGU",
+        estado:true
     });
 
-    const [error, setError] = useState("");
-    const [loading, setLoading] = useState(false);
+    const [error,setError] = useState("");
 
-    useEffect(() => {
+    const [loading,setLoading] = useState(false);
 
-        if (
-            modo === "editar" &&
+    // =========================================
+    // EDICION
+    // =========================================
+
+    useEffect(()=>{
+
+        if(
+            modo === "editar"
+            &&
             materiaSeleccionada
-        ) {
+        ){
 
             setForm({
-                nombre: materiaSeleccionada.nombre || "",
-                descripcion: materiaSeleccionada.descripcion || ""
-            });
 
+                nombre:
+                    materiaSeleccionada.nombre || "",
+
+                descripcion:
+                    materiaSeleccionada.descripcion || "",
+
+                nivelAcademico:
+                    materiaSeleccionada.nivelAcademico || "1ro BGU",
+
+                estado:
+                    materiaSeleccionada.estado ?? true
+            });
         }
 
-    }, [modo, materiaSeleccionada]);
+    },[
+        modo,
+        materiaSeleccionada
+    ]);
 
-    const handleChange = (e) => {
+    // =========================================
+    // HANDLE CHANGE
+    // =========================================
 
-        setForm({
-            ...form,
-            [e.target.name]: e.target.value
-        });
+    const handleChange = (e)=>{
 
+        const {
+            name,
+            value,
+            type,
+            checked
+        } = e.target;
+
+        setForm((prev)=>({
+
+            ...prev,
+
+            [name]:
+                type === "checkbox"
+                ? checked
+                : value
+        }));
     };
 
-    const handleSubmit = async (e) => {
+    // =========================================
+    // SUBMIT
+    // =========================================
+
+    const handleSubmit = async(e)=>{
 
         e.preventDefault();
+
         setError("");
 
-        if (!form.nombre.trim()) {
+        if(!form.nombre.trim()){
 
             return setError(
                 "El nombre de la materia es obligatorio"
             );
-
         }
 
         try {
 
             setLoading(true);
 
-            if (modo === "crear") {
+            if(modo === "crear"){
 
                 await crearMateriaRequest(form);
 
-            } else {
+            } else{
 
                 await actualizarMateriaRequest(
                     materiaSeleccionada._id,
                     form
                 );
-
             }
 
             onMateriaCreada();
+
             onClose();
 
         } catch (error) {
@@ -80,63 +125,71 @@ const ModalMateria = ({
             console.log(error);
 
             setError(
-                error.response?.data?.msg ||
+                error.response?.data?.msg
+                ||
                 "Error al guardar materia"
             );
 
-        } finally {
+        } finally{
 
             setLoading(false);
-
         }
     };
 
-    return (
+    return(
 
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
+
             <div className="bg-white w-full max-w-md rounded-2xl shadow-xl p-6">
 
+                {/* HEADER */}
+
                 <div className="mb-6">
+
                     <h2 className="text-2xl font-bold text-gray-800 text-center">
+
                         {
                             modo === "crear"
-                                ? "Nueva Materia"
-                                : "Editar Materia"
+                            ? "Nueva Materia"
+                            : "Editar Materia"
                         }
+
                     </h2>
 
-                    <p className="text-sm text-gray-500 text-center mt-1 ">
-                        Completa la información de la materia.
+                    <p className="text-sm text-gray-500 text-center mt-1">
+
+                        Completa la información académica
+
                     </p>
+
                 </div>
+
+                {/* ERROR */}
 
                 {
                     error &&
-                    (
-                        <div className="
-                            bg-red-100 border border-red-200
-                            text-red-600 text-sm
-                            rounded-lg p-3 mb-4
-                        ">
-                            {error}
-                        </div>
-                    )
+                    <div className="bg-red-100 border border-red-200 text-red-600 text-sm rounded-lg p-3 mb-4">
+
+                        {error}
+
+                    </div>
                 }
 
                 {/* FORM */}
+
                 <form
                     onSubmit={handleSubmit}
                     className="space-y-5"
                 >
 
                     {/* NOMBRE */}
+
                     <div>
 
-                        <label className="
-                            block mb-2
-                            text-sm font-semibold text-gray-700
-                        ">
+                        <label className="block mb-2 text-sm font-semibold text-gray-700">
+
                             Nombre
+
                         </label>
 
                         <Input
@@ -145,23 +198,52 @@ const ModalMateria = ({
                             placeholder="Ej: Matemática"
                             value={form.nombre}
                             onChange={handleChange}
-                            className="
-                                w-full border border-gray-300
-                                p-3 rounded-xl outline-none
-                                focus:ring-2 focus:ring-green-500
-                            "
+                            className="w-full border border-gray-300 p-3 rounded-xl outline-none focus:ring-2 focus:ring-green-500"
                         />
 
                     </div>
 
-                    {/* DESCRIPCION */}
+                    {/* NIVEL */}
+
                     <div>
 
-                        <label className="
-                            block mb-2
-                            text-sm font-semibold text-gray-700
-                        ">
+                        <label className="block mb-2 text-sm font-semibold text-gray-700">
+
+                            Nivel académico
+
+                        </label>
+
+                        <select
+                            name="nivelAcademico"
+                            value={form.nivelAcademico}
+                            onChange={handleChange}
+                            className="w-full border border-gray-300 p-3 rounded-xl outline-none focus:ring-2 focus:ring-green-500"
+                        >
+
+                            <option value="1ro BGU">
+                                1ro BGU
+                            </option>
+
+                            <option value="2do BGU">
+                                2do BGU
+                            </option>
+
+                            <option value="3ro BGU">
+                                3ro BGU
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    {/* DESCRIPCION */}
+
+                    <div>
+
+                        <label className="block mb-2 text-sm font-semibold text-gray-700">
+
                             Descripción
+
                         </label>
 
                         <textarea
@@ -170,50 +252,56 @@ const ModalMateria = ({
                             value={form.descripcion}
                             onChange={handleChange}
                             rows={4}
-                            className="
-                                w-full border border-gray-300
-                                p-3 rounded-xl outline-none
-                                focus:ring-2 focus:ring-green-500
-                                resize-none
-                            "
+                            className="w-full border border-gray-300 p-3 rounded-xl outline-none focus:ring-2 focus:ring-green-500 resize-none"
                         />
 
                     </div>
 
+                    {/* ESTADO */}
+
+                    <div className="flex items-center gap-3">
+
+                        <input
+                            type="checkbox"
+                            name="estado"
+                            checked={form.estado}
+                            onChange={handleChange}
+                        />
+
+                        <label className="text-sm font-medium text-gray-700">
+
+                            Materia activa
+
+                        </label>
+
+                    </div>
+
                     {/* BOTONES */}
-                    <div className="
-                        flex justify-end gap-3 pt-2
-                    ">
+
+                    <div className="flex justify-end gap-3 pt-2">
 
                         <button
                             type="button"
                             onClick={onClose}
-                            className="
-                                px-5 py-2 rounded-xl
-                                bg-gray-400 hover:bg-gray-500
-                                text-white transition
-                            "
+                            className="px-5 py-2 rounded-xl bg-gray-400 hover:bg-gray-500 text-white transition"
                         >
+
                             Cancelar
+
                         </button>
 
                         <button
                             type="submit"
                             disabled={loading}
-                            className="
-                                px-5 py-2 rounded-xl
-                                bg-green-600 hover:bg-green-700
-                                text-white transition
-                                disabled:opacity-70
-                            "
+                            className="px-5 py-2 rounded-xl bg-green-600 hover:bg-green-700 text-white transition disabled:opacity-70"
                         >
 
                             {
                                 loading
-                                    ? "Guardando..."
-                                    : modo === "crear"
-                                        ? "Crear"
-                                        : "Actualizar"
+                                ? "Guardando..."
+                                : modo === "crear"
+                                    ? "Crear"
+                                    : "Actualizar"
                             }
 
                         </button>

@@ -30,12 +30,19 @@ const PreguntaModal = ({
     const [loading,setLoading] = useState(false);
 
     const [form,setForm] = useState({
+
         enunciado:"",
+
         nivelAcademico:"1ro BGU",
+
         tipoPregunta:"opcion_multiple",
+
         opciones:["","","",""],
+
         respuestaCorrecta:"",
+
         explicacion:"",
+
         nivelDificultad:"facil",
 
         materia:"",
@@ -49,12 +56,16 @@ const PreguntaModal = ({
         }
     });
 
+    // =========================================
     // EDITAR
+    // =========================================
+
     useEffect(()=>{
 
         if(preguntaEditar){
 
             setForm({
+
                 enunciado:
                     preguntaEditar.enunciado || "",
 
@@ -103,7 +114,10 @@ const PreguntaModal = ({
 
     },[preguntaEditar]);
 
+    // =========================================
     // OBTENER MATERIAS
+    // =========================================
+
     useEffect(()=>{
 
         const obtenerMaterias = async()=>{
@@ -127,7 +141,10 @@ const PreguntaModal = ({
 
     },[]);
 
+    // =========================================
     // OBTENER UNIDADES
+    // =========================================
+
     useEffect(()=>{
 
         const obtenerUnidades = async()=>{
@@ -160,7 +177,10 @@ const PreguntaModal = ({
 
     },[form.materia]);
 
+    // =========================================
     // OBTENER TEMAS
+    // =========================================
+
     useEffect(()=>{
 
         const obtenerTemas = async()=>{
@@ -193,7 +213,10 @@ const PreguntaModal = ({
 
     },[form.unidad]);
 
+    // =========================================
     // HANDLE CHANGE
+    // =========================================
+
     const handleChange = (e)=>{
 
         const { name, value } = e.target;
@@ -212,12 +235,14 @@ const PreguntaModal = ({
             ...(name === "unidad" && {
                 tema:""
             })
-
         }));
 
     };
 
+    // =========================================
     // OPCIONES
+    // =========================================
+
     const handleOpcionChange = (index,valor)=>{
 
         const nuevasOpciones = [...form.opciones];
@@ -231,7 +256,10 @@ const PreguntaModal = ({
 
     };
 
+    // =========================================
     // RECURSO
+    // =========================================
+
     const handleRecursoChange = (e)=>{
 
         setForm({
@@ -244,7 +272,10 @@ const PreguntaModal = ({
 
     };
 
+    // =========================================
     // SUBMIT
+    // =========================================
+
     const handleSubmit = async(e)=>{
 
         e.preventDefault();
@@ -276,7 +307,7 @@ const PreguntaModal = ({
                     payload
                 );
 
-            }else{
+            } else{
 
                 await crearPreguntaRequest(payload);
 
@@ -308,7 +339,7 @@ const PreguntaModal = ({
         ">
 
             <div className="
-                bg-white w-full max-w-4xl
+                bg-white w-full max-w-5xl
                 rounded-2xl shadow-2xl
                 max-h-[95vh] overflow-y-auto
             ">
@@ -372,43 +403,77 @@ const PreguntaModal = ({
                     </div>
 
                     {/* NIVEL */}
-                    <div>
+                    <div className="grid md:grid-cols-2 gap-4">
 
-                        <label className="block mb-2 font-medium">
-                            Nivel académico
-                        </label>
+                        <div>
 
-                        <select
-                            name="nivelAcademico"
-                            value={form.nivelAcademico}
-                            onChange={handleChange}
-                            required
-                            className="
-                                w-full border border-gray-300
-                                rounded-xl p-3
-                            "
-                        >
+                            <label className="block mb-2 font-medium">
+                                Nivel académico
+                            </label>
 
-                            <option value="1ro BGU">
-                                1ro BGU
-                            </option>
+                            <select
+                                name="nivelAcademico"
+                                value={form.nivelAcademico}
+                                onChange={handleChange}
+                                className="
+                                    w-full border border-gray-300
+                                    rounded-xl p-3
+                                "
+                            >
 
-                            <option value="2do BGU">
-                                2do BGU
-                            </option>
+                                <option value="1ro BGU">
+                                    1ro BGU
+                                </option>
 
-                            <option value="3ro BGU">
-                                3ro BGU
-                            </option>
+                                <option value="2do BGU">
+                                    2do BGU
+                                </option>
 
-                        </select>
+                                <option value="3ro BGU">
+                                    3ro BGU
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <div>
+
+                            <label className="block mb-2 font-medium">
+                                Dificultad
+                            </label>
+
+                            <select
+                                name="nivelDificultad"
+                                value={form.nivelDificultad}
+                                onChange={handleChange}
+                                className="
+                                    w-full border border-gray-300
+                                    rounded-xl p-3
+                                "
+                            >
+
+                                <option value="facil">
+                                    Fácil
+                                </option>
+
+                                <option value="medio">
+                                    Medio
+                                </option>
+
+                                <option value="dificil">
+                                    Difícil
+                                </option>
+
+                            </select>
+
+                        </div>
 
                     </div>
 
                     {/* MATERIA / UNIDAD / TEMA */}
                     <div className="grid md:grid-cols-3 gap-4">
 
-                        {/* MATERIA */}
                         <div>
 
                             <label className="block mb-2 font-medium">
@@ -430,22 +495,23 @@ const PreguntaModal = ({
                                     Seleccione una materia
                                 </option>
 
-                                {materias.map((materia)=>(
+                                {
+                                    materias.map((materia)=>(
 
-                                    <option
-                                        key={materia._id}
-                                        value={materia._id}
-                                    >
-                                        {materia.nombre}
-                                    </option>
+                                        <option
+                                            key={materia._id}
+                                            value={materia._id}
+                                        >
+                                            {materia.nombre}
+                                        </option>
 
-                                ))}
+                                    ))
+                                }
 
                             </select>
 
                         </div>
 
-                        {/* UNIDAD */}
                         <div>
 
                             <label className="block mb-2 font-medium">
@@ -467,22 +533,23 @@ const PreguntaModal = ({
                                     Seleccione una unidad
                                 </option>
 
-                                {unidades.map((unidad)=>(
+                                {
+                                    unidades.map((unidad)=>(
 
-                                    <option
-                                        key={unidad._id}
-                                        value={unidad._id}
-                                    >
-                                        {unidad.nombre}
-                                    </option>
+                                        <option
+                                            key={unidad._id}
+                                            value={unidad._id}
+                                        >
+                                            {unidad.nombre}
+                                        </option>
 
-                                ))}
+                                    ))
+                                }
 
                             </select>
 
                         </div>
 
-                        {/* TEMA */}
                         <div>
 
                             <label className="block mb-2 font-medium">
@@ -504,16 +571,18 @@ const PreguntaModal = ({
                                     Seleccione un tema
                                 </option>
 
-                                {temas.map((tema)=>(
+                                {
+                                    temas.map((tema)=>(
 
-                                    <option
-                                        key={tema._id}
-                                        value={tema._id}
-                                    >
-                                        {tema.nombre}
-                                    </option>
+                                        <option
+                                            key={tema._id}
+                                            value={tema._id}
+                                        >
+                                            {tema.nombre}
+                                        </option>
 
-                                ))}
+                                    ))
+                                }
 
                             </select>
 
@@ -551,6 +620,306 @@ const PreguntaModal = ({
                             </option>
 
                         </select>
+
+                    </div>
+                    
+                    {/* =========================================
+    OPCION MULTIPLE
+========================================= */}
+
+{
+    form.tipoPregunta === "opcion_multiple"
+    &&
+    <div className="space-y-5">
+
+        <div>
+
+            <h3 className="font-semibold text-lg mb-4">
+                Opciones
+            </h3>
+
+            <div className="space-y-3">
+
+                {
+                    form.opciones.map((opcion,index)=>(
+
+                        <input
+                            key={index}
+                            type="text"
+                            placeholder={`Opción ${index + 1}`}
+                            value={opcion}
+                            onChange={(e)=>
+                                handleOpcionChange(
+                                    index,
+                                    e.target.value
+                                )
+                            }
+                            className="
+                                w-full border border-gray-300
+                                rounded-xl p-3
+                            "
+                        />
+
+                    ))
+                }
+
+            </div>
+
+        </div>
+
+        <div>
+
+            <label className="block mb-2 font-medium">
+                Respuesta correcta
+            </label>
+
+            <select
+                name="respuestaCorrecta"
+                value={form.respuestaCorrecta}
+                onChange={handleChange}
+                required
+                className="
+                    w-full border border-gray-300
+                    rounded-xl p-3
+                "
+            >
+
+                <option value="">
+                    Seleccione la respuesta correcta
+                </option>
+
+                {
+                    form.opciones.map((opcion,index)=>(
+
+                        opcion.trim() !== ""
+                        &&
+                        <option
+                            key={index}
+                            value={opcion}
+                        >
+                            {opcion}
+                        </option>
+
+                    ))
+                }
+
+            </select>
+
+        </div>
+
+    </div>
+}
+
+{/* =========================================
+    VERDADERO / FALSO
+========================================= */}
+
+{
+    form.tipoPregunta === "verdadero_falso"
+    &&
+    <div className="space-y-5">
+
+        <div className="
+            bg-gray-50 border border-gray-200
+            rounded-2xl p-5
+        ">
+
+            <h3 className="font-semibold text-lg mb-4">
+                Respuesta correcta
+            </h3>
+
+            <div className="flex gap-6">
+
+                <label className="flex items-center gap-2">
+
+                    <input
+                        type="radio"
+                        name="respuestaCorrecta"
+                        value="Verdadero"
+                        checked={
+                            form.respuestaCorrecta === "Verdadero"
+                        }
+                        onChange={handleChange}
+                    />
+
+                    Verdadero
+
+                </label>
+
+                <label className="flex items-center gap-2">
+
+                    <input
+                        type="radio"
+                        name="respuestaCorrecta"
+                        value="Falso"
+                        checked={
+                            form.respuestaCorrecta === "Falso"
+                        }
+                        onChange={handleChange}
+                    />
+
+                    Falso
+
+                </label>
+
+            </div>
+
+        </div>
+
+    </div>
+}
+
+{/* =========================================
+    RESPUESTA CORTA
+========================================= */}
+
+{
+    form.tipoPregunta === "respuesta_corta"
+    &&
+    <div>
+
+        <label className="block mb-2 font-medium">
+            Respuesta correcta
+        </label>
+
+        <input
+            type="text"
+            name="respuestaCorrecta"
+            placeholder="Ingrese la respuesta esperada"
+            value={form.respuestaCorrecta}
+            onChange={handleChange}
+            required
+            className="
+                w-full border border-gray-300
+                rounded-xl p-3
+            "
+        />
+
+    </div>
+}
+                    {/* EXPLICACION */}
+                    <div>
+
+                        <label className="block mb-2 font-medium">
+                            Explicación
+                        </label>
+
+                        <textarea
+                            name="explicacion"
+                            value={form.explicacion}
+                            onChange={handleChange}
+                            className="
+                                w-full border border-gray-300
+                                rounded-xl p-4
+                                min-h-[100px]
+                            "
+                        />
+
+                    </div>
+
+                    {/* RECURSO */}
+                    <div className="
+                        border border-gray-200
+                        rounded-2xl p-5
+                        space-y-4
+                    ">
+
+                        <h3 className="font-semibold text-lg">
+                            Recurso de apoyo
+                        </h3>
+
+                        <select
+                            name="tipo"
+                            value={form.recursoApoyo.tipo}
+                            onChange={handleRecursoChange}
+                            className="
+                                w-full border border-gray-300
+                                rounded-xl p-3
+                            "
+                        >
+
+                            <option value="">
+                                Sin recurso
+                            </option>
+
+                            <option value="video">
+                                Video
+                            </option>
+
+                            <option value="documento">
+                                Documento
+                            </option>
+
+                            <option value="texto">
+                                Texto
+                            </option>
+
+                        </select>
+
+                        <input
+                            type="text"
+                            name="url"
+                            placeholder="URL recurso"
+                            value={form.recursoApoyo.url}
+                            onChange={handleRecursoChange}
+                            className="
+                                w-full border border-gray-300
+                                rounded-xl p-3
+                            "
+                        />
+
+                        <textarea
+                            name="contenido"
+                            placeholder="Contenido adicional"
+                            value={form.recursoApoyo.contenido}
+                            onChange={handleRecursoChange}
+                            className="
+                                w-full border border-gray-300
+                                rounded-xl p-4
+                                min-h-[100px]
+                            "
+                        />
+
+                    </div>
+
+                    {/* BOTONES */}
+                    <div className="
+                        flex justify-end gap-4
+                        pt-6 border-t border-gray-200
+                    ">
+
+                        <button
+                            type="button"
+                            onClick={onClose}
+                            className="
+                                px-6 py-3 rounded-xl
+                                bg-gray-300 hover:bg-gray-400
+                                text-gray-800 font-medium
+                            "
+                        >
+                            Cancelar
+                        </button>
+
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="
+                                px-6 py-3 rounded-xl
+                                bg-blue-600 hover:bg-blue-700
+                                text-white font-medium
+                                disabled:opacity-50
+                            "
+                        >
+
+                            {
+                                loading
+                                ? "Guardando..."
+                                : preguntaEditar
+                                    ? "Actualizar Pregunta"
+                                    : "Guardar Pregunta"
+                            }
+
+                        </button>
 
                     </div>
 

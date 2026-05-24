@@ -4,7 +4,7 @@ import { ArrowLeft, Layers } from "lucide-react";
 
 import { useNavigate, useParams } from "react-router-dom";
 
-import { obtenerMateriaPorIdRequest } from "../../services/materiaService";
+import { obtenerMateriaRequest } from "../../services/materiaService";
 
 import { obtenerUnidadesPorMateriaRequest } from "../../services/unidadService";
 
@@ -22,7 +22,7 @@ const UnidadesEstudiante = ()=>{
         try {
             setLoading(true);
 
-            const materiaData = await obtenerMateriaPorIdRequest(materiaId);
+            const materiaData = await obtenerMateriaRequest(materiaId);
             const unidadesData = await obtenerUnidadesPorMateriaRequest(materiaId);
 
             setMateria(materiaData);

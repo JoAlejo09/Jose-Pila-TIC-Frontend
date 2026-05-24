@@ -108,7 +108,7 @@ const MateriasEstudiante = () => {
             navigate( `/dashboard/estudiante/unidades/${materiaId}`);
         } else{
             navigate(
-                `/dashboard/estudiante/cuestionario/${data.cuestionarioId}`
+                `/dashboard/estudiante/cuestionarios/${data.cuestionarioId}`
             );
         }
     } catch (error) {

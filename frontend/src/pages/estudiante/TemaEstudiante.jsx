@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import {
     BookMarked,
     Search,
+    ArrowLeft,
     Star
 } from "lucide-react";
 
@@ -12,7 +13,7 @@ import {
 } from "react-router-dom";
 
 import {
-    obtenerTemasPorMateriaRequest,
+    obtenerTemasPorUnidadRequest,
     agregarTemaFavoritoRequest,
     quitarTemaFavoritoRequest
 } from "../../services/estudianteService.js";
@@ -21,7 +22,7 @@ const TemasEstudiante = ()=>{
 
     const navigate = useNavigate();
 
-    const { materiaId } = useParams();
+    const { unidadId } = useParams();
 
     const [temas, setTemas] = useState({
         favoritos: [],
@@ -43,9 +44,7 @@ const TemasEstudiante = ()=>{
             setLoading(true);
 
             const data =
-                await obtenerTemasPorMateriaRequest(
-                    materiaId
-                );
+                await obtenerTemasPorUnidadRequest(unidadId);
 
             setTemas({
                 favoritos: data.favoritos || [],
@@ -73,7 +72,7 @@ const TemasEstudiante = ()=>{
 
         cargarTemas();
 
-    },[materiaId]);
+    },[unidadId]);
 
 
     // FAVORITOS
@@ -179,9 +178,19 @@ const TemasEstudiante = ()=>{
 
         <div className="min-h-screen bg-gray-50 p-6">
 
-
-            {/* HEADER */}
             <div className="mb-8">
+                <div className="flex items-center gap-4 mb-4">
+                    <button onClick={()=> navigate(-1)}
+                    className=" flex items-center gap-2 bg-white border border-gray-200
+                             hover:bg-gray-100 px-4 py-2 rounded-xl transition-all duration-200 shadow-sm
+                             "
+                    >
+                        <ArrowLeft size={18}/>
+                        <span className="font-medium">
+                            Volver
+                        </span>
+                    </button>
+                </div>
 
                 <h1 className="text-4xl font-bold text-gray-800">
                     Temas Académicos

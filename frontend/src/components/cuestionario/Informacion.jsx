@@ -22,14 +22,14 @@ const PasoInformacion = ({
                     name="titulo"
                     value={form.titulo}
                     onChange={handleChange}
-                    placeholder="Ejemplo: Diagnóstico de Funciones"
+                    placeholder="Ejemplo: Diagnóstico de Álgebra"
                     className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                 />
 
             </div>
 
-            {/* TIPO CUESTIONARIO */}
+            {/* TIPO EVALUACION */}
 
             <div>
 
@@ -47,27 +47,19 @@ const PasoInformacion = ({
                 >
 
                     <option value="diagnostico">
-
                         Diagnóstico
-
                     </option>
 
                     <option value="refuerzo">
-
                         Refuerzo
-
                     </option>
 
                     <option value="practica">
-
                         Práctica
-
                     </option>
 
                     <option value="simulador">
-
                         Simulador
-
                     </option>
 
                 </select>
@@ -114,7 +106,7 @@ const PasoInformacion = ({
 
             </div>
 
-            {/* ALERTA VISUAL */}
+            {/* ALERTA */}
 
             <div className="bg-blue-50 border border-blue-200 rounded-2xl p-4">
 
@@ -127,9 +119,9 @@ const PasoInformacion = ({
                 <p className="text-sm text-blue-600 leading-relaxed">
 
                     Las evaluaciones diagnósticas permiten medir conocimientos
-                    previos antes del acceso a recursos académicos.
-                    Las evaluaciones de refuerzo permiten medir el aprendizaje
-                    posterior al estudio de recursos educativos.
+                    previos del estudiante antes del acceso a recursos académicos.
+                    Las evaluaciones de refuerzo ayudan a medir el aprendizaje
+                    posterior al estudio de contenidos educativos.
 
                 </p>
 

@@ -130,7 +130,7 @@ const AppRouter = ()=>{
                         />
 
                         <Route
-                            path="dashboard/estudiante/temas/:materiaId"
+                            path="dashboard/estudiante/temas/:unidadId"
                             element={<TemasEstudiante/>}
                         />
                         {/* UNIDADES*/}

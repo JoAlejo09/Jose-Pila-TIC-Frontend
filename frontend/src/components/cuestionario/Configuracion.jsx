@@ -2,7 +2,7 @@ const PasoConfiguracion = ({
     form,
     handleChange,
     materias,
-    temas
+    unidades
 })=>{
 
     return(
@@ -31,22 +31,18 @@ const PasoConfiguracion = ({
                     >
 
                         <option value="materia">
-
                             Materia completa
-
                         </option>
 
-                        <option value="tema">
-
-                            Tema específico
-
+                        <option value="unidad">
+                            Unidad específica
                         </option>
 
                     </select>
 
                 </div>
 
-                {/* NIVEL ACADEMICO */}
+                {/* NIVEL */}
 
                 <div>
 
@@ -64,21 +60,15 @@ const PasoConfiguracion = ({
                     >
 
                         <option value="1ro BGU">
-
                             1ro BGU
-
                         </option>
 
                         <option value="2do BGU">
-
                             2do BGU
-
                         </option>
 
                         <option value="3ro BGU">
-
                             3ro BGU
-
                         </option>
 
                     </select>
@@ -109,9 +99,7 @@ const PasoConfiguracion = ({
                     >
 
                         <option value="">
-
                             Seleccionar materia
-
                         </option>
 
                         {
@@ -125,7 +113,6 @@ const PasoConfiguracion = ({
                                     {materia.nombre}
 
                                 </option>
-
                             ))
                         }
 
@@ -133,44 +120,41 @@ const PasoConfiguracion = ({
 
                 </div>
 
-                {/* TEMA */}
+                {/* UNIDAD */}
 
                 {
-                    form.alcanceEvaluacion === "tema"
+                    form.alcanceEvaluacion === "unidad"
                     &&
                     <div>
 
                         <label className="block mb-2 font-medium text-gray-700">
 
-                            Tema
+                            Unidad
 
                         </label>
 
                         <select
-                            name="tema"
-                            value={form.tema}
+                            name="unidad"
+                            value={form.unidad}
                             onChange={handleChange}
                             className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
 
                             <option value="">
-
-                                Seleccionar tema
-
+                                Seleccionar unidad
                             </option>
 
                             {
-                                temas.map((tema)=>(
+                                unidades.map((unidad)=>(
 
                                     <option
-                                        key={tema._id}
-                                        value={tema._id}
+                                        key={unidad._id}
+                                        value={unidad._id}
                                     >
 
-                                        {tema.nombre}
+                                        {unidad.nombre}
 
                                     </option>
-
                                 ))
                             }
 
@@ -185,7 +169,7 @@ const PasoConfiguracion = ({
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
-                {/* MODO GENERACION */}
+                {/* MODO */}
 
                 <div>
 
@@ -203,22 +187,18 @@ const PasoConfiguracion = ({
                     >
 
                         <option value="manual">
-
                             Manual
-
                         </option>
 
                         <option value="dinamico">
-
                             Dinámico
-
                         </option>
 
                     </select>
 
                 </div>
 
-                {/* NIVEL */}
+                {/* DIFICULTAD */}
 
                 <div>
 
@@ -236,21 +216,15 @@ const PasoConfiguracion = ({
                     >
 
                         <option value="facil">
-
                             Fácil
-
                         </option>
 
                         <option value="medio">
-
                             Medio
-
                         </option>
 
                         <option value="dificil">
-
                             Difícil
-
                         </option>
 
                     </select>
