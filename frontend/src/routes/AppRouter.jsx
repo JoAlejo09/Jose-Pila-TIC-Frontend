@@ -35,6 +35,8 @@ import ResultadoEstudiante from "../pages/estudiante/Resultado/ResultadoEstudian
 import DetalleResultado from "../pages/estudiante/Resultado/DetalleResultado.jsx";
 import DetalleResultadoAdmin from "../pages/admin/DetalleResultadoAdmin.jsx";
 
+import MiProgreso from "../pages/estudiante/Progreso/MiProgreso.jsx";
+
 import PublicLayout from "../components/layout/PublicLayout.jsx";
 import PrivateLayout from "../components/layout/PrivateLayout.jsx";
 
@@ -87,28 +89,12 @@ const AppRouter = ()=>{
                         <Route path="dashboard/admin/materias" element={<Materias/>}/>
                         <Route path="dashboard/admin/unidades" element={<Unidades/>}/>
                         <Route path="dashboard/admin/temas" element={<Temas/>}/>
-
-                        <Route
-                            path="dashboard/admin/recursos"
-                            element={<Recursos/>}
-                        />
-
-                        <Route
-                            path="dashboard/admin/preguntas"
-                            element={<Preguntas/>}
-                        />
-
-                        <Route
-                            path="dashboard/admin/cuestionarios"
-                            element={<Cuestionarios/>}
-                        />
-                        <Route 
-                            path="dashboard/admin/resultados" element={<ReportesEvaluaciones/>}
-                        />
+                        <Route path="dashboard/admin/recursos" element={<Recursos/>} />
+                        <Route path="dashboard/admin/preguntas" element={<Preguntas/>}/>
+                        <Route path="dashboard/admin/cuestionarios" element={<Cuestionarios/>}/>
+                        <Route path="dashboard/admin/resultados" element={<ReportesEvaluaciones/>} />
                         <Route path="admin/resultados/:id" element={<DetalleResultadoAdmin/>} />
                     </Route>
-
-
 
                     {/* ================================= */}
                     {/* ESTUDIANTE */}
@@ -119,75 +105,28 @@ const AppRouter = ()=>{
                             <RolRoute
                                 rolesPermitidos={["estudiante"]}
                             />
-                        }
-                    >
-
+                    }>
                         {/* MATERIAS */}
-
-                        <Route
-                            path="dashboard/estudiante/materias"
-                            element={<MateriasEstudiante/>}
-                        />
-
-                        <Route
-                            path="dashboard/estudiante/temas/:unidadId"
-                            element={<TemasEstudiante/>}
-                        />
+                        <Route path="dashboard/estudiante/materias" element={<MateriasEstudiante/>}/>
+                        <Route path="dashboard/estudiante/temas/:unidadId" element={<TemasEstudiante/>} />
                         {/* UNIDADES*/}
-                        <Route
-                            path="dashboard/estudiante/unidades/:materiaId"
-                            element={<UnidadesEstudiante/>}/>
-                            
+                        <Route path="dashboard/estudiante/unidades/:materiaId" element={<UnidadesEstudiante/>}/>
                         {/* RECURSOS */}
-
-                        <Route
-                            path="dashboard/estudiante/recursos/:temaId"
-                            element={<RecursosEstudiante/>}
-                        />
-
-                        <Route
-                            path="dashboard/estudiante/recurso/:id"
-                            element={<DetalleRecursoEstudiante/>}
-                        />
-
-
-
+                        <Route path="dashboard/estudiante/recursos/:temaId" element={<RecursosEstudiante/>} />
+                        <Route path="dashboard/estudiante/recurso/:id" element={<DetalleRecursoEstudiante/>} />
                         {/* CUESTIONARIOS */}
-
-                        <Route
-                            path="dashboard/estudiante/cuestionarios"
-                            element={<CuestionariosEstudiante/>}
-                        />
-
-                        <Route
-                            path="dashboard/estudiante/cuestionarios/:id"
-                            element={<ResolverCuestionario/>}
-                        />
-
-
-
+                        <Route path="dashboard/estudiante/cuestionarios" element={<CuestionariosEstudiante/>}/>
+                        <Route path="dashboard/estudiante/cuestionarios/:id" element={<ResolverCuestionario/>} />
                         {/* RESULTADOS */}
-
-                        <Route
-                            path="dashboard/estudiante/resultados"
-                            element={<ResultadoEstudiante/>}
-                        />
-
-                        <Route
-                            path="dashboard/estudiante/resultados/:id"
-                            element={<DetalleResultado/>}
-                        />
-
+                        <Route path="dashboard/estudiante/resultados" element={<ResultadoEstudiante/>} />
+                        <Route path="dashboard/estudiante/resultados/:id" element={<DetalleResultado/>} />
+                        {/*PROGRESO Y RECOMENDACIONES */}
+                        <Route path="/dashboard/estudiante/progreso" element={<MiProgreso/>}/>
                     </Route>
-
                 </Route>
-
             </Routes>
-
         </BrowserRouter>
-
     );
-
 };
 
 export default AppRouter;

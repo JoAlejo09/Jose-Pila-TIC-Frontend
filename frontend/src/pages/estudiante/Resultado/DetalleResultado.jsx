@@ -491,7 +491,7 @@ const DetalleResultado = ()=>{
                                             ">
 
                                                 {
-                                                    respuesta.respuestaCorrecta
+                                                    respuesta.pregunta?.respuestaCorrecta
                                                 }
 
                                             </div>
@@ -501,7 +501,7 @@ const DetalleResultado = ()=>{
 
                                         {/* EXPLICACION */}
                                         {
-                                            respuesta.explicacion
+                                            respuesta.pregunta.explicacion
                                             &&
                                             <div>
 
@@ -521,7 +521,7 @@ const DetalleResultado = ()=>{
                                                 ">
 
                                                     {
-                                                        respuesta.explicacion
+                                                        respuesta.pregunta?.explicacion
                                                     }
 
                                                 </div>
