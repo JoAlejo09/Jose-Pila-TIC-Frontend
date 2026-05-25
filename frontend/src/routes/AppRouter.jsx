@@ -36,6 +36,7 @@ import DetalleResultado from "../pages/estudiante/Resultado/DetalleResultado.jsx
 import DetalleResultadoAdmin from "../pages/admin/DetalleResultadoAdmin.jsx";
 
 import MiProgreso from "../pages/estudiante/Progreso/MiProgreso.jsx";
+import Recomendaciones from "../pages/estudiante/Recomendaciones.jsx";
 
 import PublicLayout from "../components/layout/PublicLayout.jsx";
 import PrivateLayout from "../components/layout/PrivateLayout.jsx";
@@ -122,6 +123,7 @@ const AppRouter = ()=>{
                         <Route path="dashboard/estudiante/resultados/:id" element={<DetalleResultado/>} />
                         {/*PROGRESO Y RECOMENDACIONES */}
                         <Route path="/dashboard/estudiante/progreso" element={<MiProgreso/>}/>
+                        <Route path="/dashboard/estudiante/recomendaciones" element={<Recomendaciones/>}/>
                     </Route>
                 </Route>
             </Routes>

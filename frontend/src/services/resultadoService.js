@@ -22,7 +22,11 @@ const eliminarResultadoAdminRequest = async(id)=>{
     const res = await axios.delete(`/resultado/admin/${id}`);
     return res.data
 }
+const obtenerUltimosResultadosRequest = async()=>{
+    const res = await axios.get("/resultado/ultimos-resultados");
+    return res.data
+}
 export { obtenerResultadosEstudianteRequest, obtenerResultadoPorIdRequest,
          obtenerResultadosAdminRequest, obtenerResultadoAdminPorIdRequest,
-         eliminarResultadoAdminRequest
+         eliminarResultadoAdminRequest, obtenerUltimosResultadosRequest
 }
