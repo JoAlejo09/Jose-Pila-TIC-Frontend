@@ -74,13 +74,20 @@ const menuPorRol = {
                     path:"/dashboard/admin/resultados"
                 }
             ]
+        },
+        {
+            label:"Tutorias",
+            children:[
+                {
+                    label:"Lista Tutorias",
+                    path:"/dashboard/admin/tutorias"
+                }
+            ]
         }
-
     ],
 
     // Menu Estudiante
     estudiante:[
-
         {
             label:"Mi Perfil",
             icon:User,
@@ -120,29 +127,39 @@ const menuPorRol = {
             label:"Recomendaciones",
             icon:Lightbulb,
             path:"/dashboard/estudiante/recomendaciones"
+        },
+        //Para tutorias personalizadas
+        {
+            label:"Tutorias",
+            icon:BarChart3,
+            children:
+            [
+                {
+                    label:"Mis tutorias",
+                    path:"/dashboard/estudiante/mis-tutorias"
+                }
+
+            ]
         }
 
     ],
 
     // TUTOR
     tutor:[
-
         {
             label:"Mi Perfil",
             icon:User,
             path:"/mi-perfil"
         },
-
         {
-            label:"Tutorías",
+            label:"Solicitudes Tutorias",
             icon:GraduationCap,
-            path:"/dashboard/tutorias"
+            path:"/dashboard/tutor/solicitudes"
         },
-
         {
-            label:"Estudiantes",
+            label:"Mis Tutorias",
             icon:School,
-            path:"/dashboard/estudiantes"
+            path:"/dashboard/tutor/mis-tutorias"
         }
 
     ]

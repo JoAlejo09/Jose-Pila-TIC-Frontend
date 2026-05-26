@@ -54,8 +54,8 @@ const Login = () => {
         return navigate("/cambiar-password" );
       }
       // VALIDAR PERFIL COMPLETO
-      if(data.user.rol === "estudiante"
-        && !data.user.perfilCompleto)
+      if((data.user.rol === "estudiante" || data.user.rol === "tutor")
+        && !data.perfilCompleto)
         {
           return navigate("/completar-perfil")
         }

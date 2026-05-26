@@ -18,6 +18,7 @@ import Recursos from "../pages/admin/Recurso.jsx";
 import Preguntas from "../pages/admin/Preguntas.jsx";
 import Cuestionarios from "../pages/admin/Cuestionario.jsx";
 import ReportesEvaluaciones from "../pages/admin/ReportesEvaluaciones.jsx"
+import GestionTutorias from "../pages/admin/TutoriasAdmin.jsx";
 
 import MiPerfil from "../pages/perfil/MiPerfil.jsx";
 import CompletarPerfil from "../pages/perfil/CompletarPerfil.jsx";
@@ -37,6 +38,10 @@ import DetalleResultadoAdmin from "../pages/admin/DetalleResultadoAdmin.jsx";
 
 import MiProgreso from "../pages/estudiante/Progreso/MiProgreso.jsx";
 import Recomendaciones from "../pages/estudiante/Recomendaciones.jsx";
+import MisTutorias from "../pages/estudiante/Tutorias/MisTutorias.jsx";
+
+import SolicitudesTutorias from "../pages/tutor/SolicitudesTutorias.jsx";
+import TutoriasAsignadas from "../pages/tutor/TutoriasAsignadas.jsx";
 
 import PublicLayout from "../components/layout/PublicLayout.jsx";
 import PrivateLayout from "../components/layout/PrivateLayout.jsx";
@@ -95,6 +100,7 @@ const AppRouter = ()=>{
                         <Route path="dashboard/admin/cuestionarios" element={<Cuestionarios/>}/>
                         <Route path="dashboard/admin/resultados" element={<ReportesEvaluaciones/>} />
                         <Route path="admin/resultados/:id" element={<DetalleResultadoAdmin/>} />
+                        <Route path="/dashboard/admin/tutorias" element={<GestionTutorias/>}/>
                     </Route>
 
                     {/* ================================= */}
@@ -124,7 +130,18 @@ const AppRouter = ()=>{
                         {/*PROGRESO Y RECOMENDACIONES */}
                         <Route path="/dashboard/estudiante/progreso" element={<MiProgreso/>}/>
                         <Route path="/dashboard/estudiante/recomendaciones" element={<Recomendaciones/>}/>
+                        {/*TUTORIAS PERSONALIZADAS */}
+                        <Route path="/dashboard/estudiante/mis-tutorias" element={<MisTutorias/>}/>
                     </Route>
+                    <Route
+                        element={
+                            <RolRoute
+                                rolesPermitidos={["tutor"]}
+                            />
+                    }>
+                        <Route path="/dashboard/tutor/solicitudes" element={<SolicitudesTutorias/>}/>
+                        <Route path="/dashboard/tutor/mis-tutorias" element={<TutoriasAsignadas/>}/>
+                    </Route>                
                 </Route>
             </Routes>
         </BrowserRouter>

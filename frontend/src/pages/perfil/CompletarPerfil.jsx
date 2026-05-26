@@ -108,9 +108,11 @@ const CompletarPerfil = () => {
             setMsg(res.msg);
 
             setTimeout(() => {
-
-                navigate("/dashboard");
-
+                if(usuario.rol === "estudiante"){
+                    navigate("/dashboard/estudiante");
+                }else{
+                    navigate("/dashboard/tutor");
+                }
             }, 1500);
 
         } catch (error) {
