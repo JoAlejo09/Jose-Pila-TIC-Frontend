@@ -1,242 +1,521 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
-import { obtenerUnidadesRequest,cambiarEstadoUnidadRequest } from "../../services/unidadService.js";
+import Input from "../../components/ui/Input.jsx";
+import ModalTema from "../../components/modal/TemaModal.jsx";
 
-import UnidadModal from "../../components/modal/UnidadModal.jsx";
+import {
+    obtenerTemasRequest,
+    cambiarEstadoTemaRequest
+} from "../../services/temaService.js";
 
-const Unidades = () => {
+const Temas = () => {
 
-    const [unidades, setUnidades] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [temas, setTemas] = useState([]);
+
+    const [loading, setLoading] = useState(false);
+
     const [error, setError] = useState(null);
-    const [buscar, setBuscar] = useState("");
-    const [modal, setModal] = useState(false);
-    const [modoModal, setModoModal] = useState("crear");
-    const [unidadSeleccionada, setUnidadSeleccionada] = useState(null);
 
-    //Carga de los datos de las unidades para mostrar en la tabla
-    const cargarUnidades = async() => {
+    const [buscar, setBuscar] = useState("");
+
+    const [filtroMateria, setFiltroMateria] = useState("");
+
+    const [filtroUnidad, setFiltroUnidad] = useState("");
+
+    const [modal, setModal] = useState(false);
+
+    const [modoModal, setModoModal] = useState("crear");
+
+    const [temaSeleccionado, setTemaSeleccionado] = useState(null);
+
+    // CARGAR TEMAS
+    const cargarTemas = async () => {
+
         try {
+
             setLoading(true);
-            const data = await obtenerUnidadesRequest();
-            setUnidades(data);
+
+            const data = await obtenerTemasRequest();
+
+            setTemas(data);
+
         } catch (error) {
+
             console.log(error);
-            setError( "Error al cargar las unidades" );
+
+            setError("Error al cargar temas");
+
         } finally {
+
             setLoading(false);
+
         }
     };
 
     useEffect(() => {
-        cargarUnidades();
+
+        cargarTemas();
+
     }, []);
 
-    const unidadesFiltradas = unidades.filter((unidad) =>
-        unidad.nombre
-            .toLowerCase()
-            .includes(
-                buscar.toLowerCase()
-            )
-    );
+    // OBTENER MATERIAS ÚNICAS
+    const materiasUnicas = useMemo(() => {
 
-    const handleEstado = async(id) => {
+        return [
+            ...new Set(
+                temas.map(
+                    (tema) =>
+                        tema.unidad?.materia?.nombre
+                )
+            )
+        ].filter(Boolean);
+
+    }, [temas]);
+
+    // OBTENER UNIDADES ÚNICAS
+    const unidadesUnicas = useMemo(() => {
+
+        return [
+            ...new Set(
+                temas.map(
+                    (tema) =>
+                        tema.unidad?.nombre
+                )
+            )
+        ].filter(Boolean);
+
+    }, [temas]);
+
+    // FILTRO
+    const temasFiltrados = useMemo(() => {
+
+        return temas.filter((tema) => {
+
+            const textoBusqueda =
+                buscar.toLowerCase();
+
+            const coincideBusqueda =
+
+                tema.nombre
+                    ?.toLowerCase()
+                    .includes(textoBusqueda)
+
+                ||
+
+                tema.unidad?.nombre
+                    ?.toLowerCase()
+                    .includes(textoBusqueda)
+
+                ||
+
+                tema.unidad?.materia?.nombre
+                    ?.toLowerCase()
+                    .includes(textoBusqueda);
+
+            const coincideMateria =
+
+                filtroMateria === ""
+                ||
+                tema.unidad?.materia?.nombre === filtroMateria;
+
+            const coincideUnidad =
+
+                filtroUnidad === ""
+                ||
+                tema.unidad?.nombre === filtroUnidad;
+
+            return (
+
+                coincideBusqueda
+                &&
+                coincideMateria
+                &&
+                coincideUnidad
+
+            );
+
+        });
+
+    }, [
+        temas,
+        buscar,
+        filtroMateria,
+        filtroUnidad
+    ]);
+
+    // CAMBIAR ESTADO
+    const handleEstado = async (id) => {
+
         try {
-            await cambiarEstadoUnidadRequest(id);
-            cargarUnidades();
+
+            await cambiarEstadoTemaRequest(id);
+
+            cargarTemas();
+
         } catch (error) {
+
             console.log(error);
+
         }
     };
 
-    const handleEditar = (unidad) => {
-        setUnidadSeleccionada(unidad);
+    // EDITAR
+    const handleEditar = (tema) => {
+
+        setTemaSeleccionado(tema);
+
         setModoModal("editar");
+
         setModal(true);
+
     };
 
-    if(loading){
-        return(
+    // LOADING
+    if (loading) {
+
+        return (
             <p className="text-center mt-10">
-                Cargando unidades...
+                Cargando temas...
             </p>
         );
     }
 
-    if(error){
-        return(
+    // ERROR
+    if (error) {
+
+        return (
             <p className="text-center mt-10 text-red-500">
                 {error}
             </p>
         );
     }
 
-    return(
+    return (
+
         <div className="space-y-6">
 
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            {/* HEADER */}
+            <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+
                 <div>
+
                     <h1 className="text-3xl font-bold text-gray-800">
-                        Gestión de Unidades
+                        Gestión de Temas
                     </h1>
 
                     <p className="text-gray-500 mt-1">
-                        Administra las unidades académicas
-                        por materia y nivel.
+                        Administra los temas académicos del sistema.
                     </p>
+
                 </div>
 
-                <div className="flex flex-col md:flex-row gap-3">
-                    <input
-                        type="text"
-                        placeholder="Buscar unidad..."
-                        value={buscar}
-                        onChange={(e)=>
-                            setBuscar(e.target.value)
-                        }
-                        className="
-                            border border-gray-300
-                            rounded-xl px-4 py-3
-                            w-full md:w-72
-                            outline-none
-                            focus:ring-2
-                            focus:ring-blue-500
-                        "
-                    />
+                <button
+                    onClick={() => {
 
-                    <button
-                        onClick={() => {
-                            setModoModal("crear");
-                            setUnidadSeleccionada(null);
-                            setModal(true);
-                        }}
-                        className=" bg-green-600 hover:bg-green-700 text-white px-5 py-3 rounded-xl font-medium transition"
-                    >
+                        setModoModal("crear");
 
-                        + Nueva Unidad
-                    </button>
-                </div>
+                        setTemaSeleccionado(null);
+
+                        setModal(true);
+
+                    }}
+                    className="
+                        bg-green-600 hover:bg-green-700
+                        text-white px-5 py-2 rounded-lg
+                        transition
+                    "
+                >
+                    + Nuevo
+                </button>
+
             </div>
 
+            {/* FILTROS */}
+            <div className="flex flex-col lg:flex-row gap-4">
+
+                <Input
+                    type="text"
+                    placeholder="Buscar tema, unidad o materia..."
+                    value={buscar}
+                    onChange={(e) =>
+                        setBuscar(e.target.value)
+                    }
+                    className="
+                        flex-1 border border-gray-300
+                        rounded-lg px-4 py-2
+                        focus:ring-2 focus:ring-green-500
+                        outline-none
+                    "
+                />
+
+                {/* FILTRO MATERIA */}
+                <select
+                    value={filtroMateria}
+                    onChange={(e) =>
+                        setFiltroMateria(
+                            e.target.value
+                        )
+                    }
+                    className="
+                        border border-gray-300
+                        rounded-lg px-4 py-2
+                        bg-white
+                    "
+                >
+
+                    <option value="">
+                        Todas las materias
+                    </option>
+
+                    {
+                        materiasUnicas.map(
+                            (materia) => (
+
+                                <option
+                                    key={materia}
+                                    value={materia}
+                                >
+                                    {materia}
+                                </option>
+
+                            )
+                        )
+                    }
+
+                </select>
+
+                {/* FILTRO UNIDAD */}
+                <select
+                    value={filtroUnidad}
+                    onChange={(e) =>
+                        setFiltroUnidad(
+                            e.target.value
+                        )
+                    }
+                    className="
+                        border border-gray-300
+                        rounded-lg px-4 py-2
+                        bg-white
+                    "
+                >
+
+                    <option value="">
+                        Todas las unidades
+                    </option>
+
+                    {
+                        unidadesUnicas.map(
+                            (unidad) => (
+
+                                <option
+                                    key={unidad}
+                                    value={unidad}
+                                >
+                                    {unidad}
+                                </option>
+
+                            )
+                        )
+                    }
+
+                </select>
+
+            </div>
+
+            {/* TABLA */}
             <div className="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100">
-                <div className="overflow-x-auto">
-                    <table className="w-full">
-                        <thead className="bg-gray-100">
-                            <tr className="text-gray-700">
-                                <th className="p-4 text-left"> Nombre </th>
-                                <th className="p-4 text-left"> Materia </th>
-                                <th className="p-4 text-center"> Nivel </th>
-                                <th className="p-4 text-center"> Orden </th>
-                                <th className="p-4 text-center"> Estado </th>
-                                <th className="p-4 text-center"> Acciones</th>
-                            </tr>
 
-                        </thead>
+                <table className="w-full">
 
-                        <tbody>
-                            { unidadesFiltradas.length > 0
+                    <thead className="bg-gray-100">
+
+                        <tr className="text-gray-700">
+
+                            <th className="p-4 text-left">
+                                Tema
+                            </th>
+
+                            <th className="p-4 text-left">
+                                Unidad
+                            </th>
+
+                            <th className="p-4 text-left">
+                                Materia
+                            </th>
+
+                            <th className="p-4 text-center">
+                                Orden
+                            </th>
+
+                            <th className="p-4 text-center">
+                                Estado
+                            </th>
+
+                            <th className="p-4 text-center">
+                                Acciones
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {
+                            temasFiltrados.length > 0
                                 ? (
-                                    unidadesFiltradas.map((unidad)=>(
+                                    temasFiltrados.map((tema) => (
+
                                         <tr
-                                            key={unidad._id}
+                                            key={tema._id}
                                             className="
                                                 border-t
                                                 hover:bg-gray-50
                                                 transition
                                             "
                                         >
-                                            <td className="p-4 font-medium text-gray-800">
-                                                {unidad.nombre}
-                                            </td>
 
-                                            <td className="p-4 text-gray-600">
-                                                { unidad.materia?.nombre }
-                                            </td>
-                                            <td className="p-4 text-center">
-                                                <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm">
-                                                    { unidad.nivelAcademico }
-                                                </span>
-                                            </td>
+                                            <td className="p-4">
 
-                                            <td className="p-4 text-center text-gray-700">
-                                                {unidad.orden}
-                                            </td>
+                                                <div>
 
-                                            <td className="p-4 text-center">
-                                                <span className={` px-3 py-1 rounded-full text-sm text-white
-                                                    ${
-                                                        unidad.estado
-                                                        ? "bg-green-500"
-                                                        : "bg-gray-400"
-                                                    }
-                                                `}>
+                                                    <p className="font-semibold text-gray-800">
+                                                        {tema.nombre}
+                                                    </p>
 
-                                                    { unidad.estado
-                                                        ? "Activa"
-                                                        : "Inactiva"
-                                                    }
-                                                </span>
+                                                    <p className="text-sm text-gray-500">
+                                                        {
+                                                            tema.descripcion ||
+                                                            "Sin descripción"
+                                                        }
+                                                    </p>
+
+                                                </div>
+
                                             </td>
 
                                             <td className="p-4">
+
+                                                {tema.unidad?.nombre || "-"}
+
+                                            </td>
+
+                                            <td className="p-4">
+
+                                                {
+                                                    tema.unidad?.materia?.nombre ||
+                                                    "-"
+                                                }
+
+                                            </td>
+
+                                            <td className="p-4 text-center">
+
+                                                {tema.orden}
+
+                                            </td>
+
+                                            <td className="p-4 text-center">
+
+                                                <span
+                                                    className={`
+                                                        px-3 py-1 rounded-full text-sm text-white
+                                                        ${
+                                                            tema.estado
+                                                                ? "bg-green-500"
+                                                                : "bg-gray-400"
+                                                        }
+                                                    `}
+                                                >
+                                                    {
+                                                        tema.estado
+                                                            ? "Activo"
+                                                            : "Inactivo"
+                                                    }
+                                                </span>
+
+                                            </td>
+
+                                            <td className="p-4">
+
                                                 <div className="flex justify-center gap-2">
+
                                                     <button
-                                                        onClick={()=> handleEditar(unidad)}
-                                                        className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm"
+                                                        onClick={() =>
+                                                            handleEditar(tema)
+                                                        }
+                                                        className="
+                                                            bg-blue-500 hover:bg-blue-600
+                                                            text-white px-4 py-2 rounded-lg
+                                                            transition
+                                                        "
                                                     >
                                                         Editar
                                                     </button>
 
                                                     <button
-                                                        onClick={()=>handleEstado(unidad._id)}
-                                                        className={`px-4 py-2 rounded-lg text-sm text-white
+                                                        onClick={() =>
+                                                            handleEstado(tema._id)
+                                                        }
+                                                        className={`
+                                                            px-4 py-2 rounded-lg text-white transition
                                                             ${
-                                                                unidad.estado
-                                                                ? "bg-red-500 hover:bg-red-600"
-                                                                : "bg-green-500 hover:bg-green-600"
+                                                                tema.estado
+                                                                    ? "bg-red-500 hover:bg-red-600"
+                                                                    : "bg-green-500 hover:bg-green-600"
                                                             }
                                                         `}
                                                     >
-                                                        { unidad.estado
-                                                            ? "Desactivar"
-                                                            : "Activar"
+                                                        {
+                                                            tema.estado
+                                                                ? "Desactivar"
+                                                                : "Activar"
                                                         }
                                                     </button>
+
                                                 </div>
+
                                             </td>
+
                                         </tr>
+
                                     ))
                                 )
                                 : (
                                     <tr>
+
                                         <td
                                             colSpan="6"
-                                            className=" text-center p-8 text-gray-500"
+                                            className="text-center p-8 text-gray-500"
                                         >
-                                            No hay unidades registradas
+                                            No hay temas registrados
                                         </td>
+
                                     </tr>
                                 )
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            {
-                modal &&
-                (
-                    <UnidadModal
-                        onClose={() => setModal(false)}
-                        onUnidadCreada={ cargarUnidades }
-                        modo={modoModal}
-                        unidadSeleccionada={
-                            unidadSeleccionada
                         }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            {
+                modal && (
+
+                    <ModalTema
+                        onClose={() => setModal(false)}
+                        onTemaCreado={cargarTemas}
+                        modo={modoModal}
+                        temaSeleccionado={temaSeleccionado}
                     />
+
                 )
             }
+
         </div>
     );
 };
 
-export default Unidades;
+export default Temas;

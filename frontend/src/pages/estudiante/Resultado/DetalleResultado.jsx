@@ -16,23 +16,27 @@ import {
     obtenerResultadoPorIdRequest
 } from "../../../services/resultadoService.js";
 
-const DetalleResultado = ()=>{
+const DetalleResultado = () => {
 
     const { id } = useParams();
 
     const navigate = useNavigate();
 
-    const [resultado,setResultado] = useState(null);
+    const [resultado, setResultado] = useState(null);
 
-    const [loading,setLoading] = useState(true);
+    const [loading, setLoading] = useState(true);
+
+    const [error, setError] = useState("");
 
 
     // OBTENER RESULTADO
-    useEffect(()=>{
+    useEffect(() => {
 
-        const obtenerResultado = async()=>{
+        const obtenerResultado = async () => {
 
             try {
+
+                setLoading(true);
 
                 const data =
                     await obtenerResultadoPorIdRequest(id);
@@ -42,6 +46,11 @@ const DetalleResultado = ()=>{
             } catch (error) {
 
                 console.log(error);
+
+                setError(
+                    error?.response?.data?.msg ||
+                    "Error al obtener resultado"
+                );
 
             } finally {
 
@@ -53,13 +62,13 @@ const DetalleResultado = ()=>{
 
         obtenerResultado();
 
-    },[id]);
+    }, [id]);
 
 
     // LOADING
-    if(loading){
+    if (loading) {
 
-        return(
+        return (
 
             <div className="min-h-screen bg-gray-50 p-6">
 
@@ -81,10 +90,35 @@ const DetalleResultado = ()=>{
     }
 
 
-    // NO EXISTE
-    if(!resultado){
+    // ERROR
+    if (error) {
 
-        return(
+        return (
+
+            <div className="min-h-screen bg-gray-50 p-6">
+
+                <div className="
+                    bg-white rounded-2xl
+                    shadow-sm p-8 text-center
+                ">
+
+                    <p className="text-red-500 text-lg">
+                        {error}
+                    </p>
+
+                </div>
+
+            </div>
+
+        );
+
+    }
+
+
+    // NO EXISTE
+    if (!resultado) {
+
+        return (
 
             <div className="p-6">
                 Resultado no encontrado
@@ -95,7 +129,7 @@ const DetalleResultado = ()=>{
     }
 
 
-    return(
+    return (
 
         <div className="min-h-screen bg-gray-50 p-6">
 
@@ -104,7 +138,7 @@ const DetalleResultado = ()=>{
 
                 {/* BOTON VOLVER */}
                 <button
-                    onClick={()=>
+                    onClick={() =>
                         navigate(
                             "/dashboard/estudiante/resultados"
                         )
@@ -117,7 +151,7 @@ const DetalleResultado = ()=>{
                     "
                 >
 
-                    <ArrowLeft size={20}/>
+                    <ArrowLeft size={20} />
 
                     Volver a resultados
 
@@ -155,7 +189,7 @@ const DetalleResultado = ()=>{
 
                                 {
                                     resultado.cuestionario
-                                    ?.materia?.nombre
+                                        ?.materia?.nombre
                                 }
 
                             </p>
@@ -172,7 +206,8 @@ const DetalleResultado = ()=>{
 
                                 {
                                     resultado.cuestionario
-                                    ?.tema?.nombre
+                                        ?.tema?.nombre
+                                        || "Sin tema"
                                 }
 
                             </span>
@@ -187,15 +222,15 @@ const DetalleResultado = ()=>{
 
                             ${
                                 resultado.aprobado
-                                ? "bg-green-100 text-green-700"
-                                : "bg-red-100 text-red-700"
+                                    ? "bg-green-100 text-green-700"
+                                    : "bg-red-100 text-red-700"
                             }
                         `}>
 
                             {
                                 resultado.aprobado
-                                ? "APROBADO"
-                                : "REPROBADO"
+                                    ? "APROBADO"
+                                    : "REPROBADO"
                             }
 
                         </span>
@@ -211,7 +246,7 @@ const DetalleResultado = ()=>{
                     gap-5 mb-8
                 ">
 
-                    {/* PUNTAJE */}
+                    {/* PORCENTAJE */}
                     <div className="
                         bg-blue-100 rounded-3xl
                         p-6 text-center
@@ -222,7 +257,7 @@ const DetalleResultado = ()=>{
                             text-blue-700
                         ">
 
-                            {resultado.puntaje}%
+                            {resultado.porcentaje}%
 
                         </h2>
 
@@ -348,10 +383,10 @@ const DetalleResultado = ()=>{
 
                     {
                         resultado.respuestas?.map(
-                            (respuesta,index)=>(
+                            (respuesta, index) => (
 
                                 <div
-                                    key={respuesta._id}
+                                    key={respuesta._id || index}
                                     className={`
                                         bg-white rounded-3xl
                                         shadow-sm p-8
@@ -360,10 +395,10 @@ const DetalleResultado = ()=>{
 
                                         ${
                                             respuesta.esCorrecta
-                                            ? "border-green-500"
-                                            : respuesta.respuestaUsuario
-                                                ? "border-red-500"
-                                                : "border-gray-400"
+                                                ? "border-green-500"
+                                                : respuesta.respuestaUsuario
+                                                    ? "border-red-500"
+                                                    : "border-gray-400"
                                         }
                                     `}
                                 >
@@ -392,7 +427,7 @@ const DetalleResultado = ()=>{
 
                                                 {
                                                     respuesta.pregunta
-                                                    ?.enunciado
+                                                        ?.enunciado
                                                 }
 
                                             </p>
@@ -408,27 +443,27 @@ const DetalleResultado = ()=>{
 
                                             ${
                                                 respuesta.esCorrecta
-                                                ? "bg-green-100 text-green-700"
-                                                : respuesta.respuestaUsuario
-                                                    ? "bg-red-100 text-red-700"
-                                                    : "bg-gray-200 text-gray-700"
+                                                    ? "bg-green-100 text-green-700"
+                                                    : respuesta.respuestaUsuario
+                                                        ? "bg-red-100 text-red-700"
+                                                        : "bg-gray-200 text-gray-700"
                                             }
                                         `}>
 
                                             {
                                                 respuesta.esCorrecta
-                                                ? <CheckCircle size={18}/>
-                                                : respuesta.respuestaUsuario
-                                                    ? <XCircle size={18}/>
-                                                    : <Clock3 size={18}/>
+                                                    ? <CheckCircle size={18} />
+                                                    : respuesta.respuestaUsuario
+                                                        ? <XCircle size={18} />
+                                                        : <Clock3 size={18} />
                                             }
 
                                             {
                                                 respuesta.esCorrecta
-                                                ? "Correcta"
-                                                : respuesta.respuestaUsuario
-                                                    ? "Incorrecta"
-                                                    : "Sin responder"
+                                                    ? "Correcta"
+                                                    : respuesta.respuestaUsuario
+                                                        ? "Incorrecta"
+                                                        : "Sin responder"
                                             }
 
                                         </span>
@@ -456,10 +491,10 @@ const DetalleResultado = ()=>{
 
                                                 ${
                                                     respuesta.esCorrecta
-                                                    ? "bg-green-50 border-green-200 text-green-700"
-                                                    : respuesta.respuestaUsuario
-                                                        ? "bg-red-50 border-red-200 text-red-700"
-                                                        : "bg-gray-100 border-gray-300 text-gray-500"
+                                                        ? "bg-green-50 border-green-200 text-green-700"
+                                                        : respuesta.respuestaUsuario
+                                                            ? "bg-red-50 border-red-200 text-red-700"
+                                                            : "bg-gray-100 border-gray-300 text-gray-500"
                                                 }
                                             `}>
 
@@ -491,7 +526,8 @@ const DetalleResultado = ()=>{
                                             ">
 
                                                 {
-                                                    respuesta.pregunta?.respuestaCorrecta
+                                                    respuesta.pregunta
+                                                        ?.respuestaCorrecta
                                                 }
 
                                             </div>
@@ -501,7 +537,7 @@ const DetalleResultado = ()=>{
 
                                         {/* EXPLICACION */}
                                         {
-                                            respuesta.pregunta.explicacion
+                                            respuesta.pregunta?.explicacion
                                             &&
                                             <div>
 
@@ -521,7 +557,8 @@ const DetalleResultado = ()=>{
                                                 ">
 
                                                     {
-                                                        respuesta.pregunta?.explicacion
+                                                        respuesta.pregunta
+                                                            ?.explicacion
                                                     }
 
                                                 </div>

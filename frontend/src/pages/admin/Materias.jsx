@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import {
     obtenerMateriasRequest,
@@ -15,6 +15,8 @@ const Materias = () => {
     const [error, setError] = useState(null);
 
     const [buscar, setBuscar] = useState("");
+
+    const [filtroNivelAcademico, setFiltroNivelAcademico] = useState("");
 
     const [modal, setModal] = useState(false);
 
@@ -53,12 +55,67 @@ const Materias = () => {
 
     }, []);
 
-    // BUSQUEDA
-    const materiasFiltradas = materias.filter((materia) =>
-        materia.nombre
-            .toLowerCase()
-            .includes(buscar.toLowerCase())
-    );
+    // NIVELES ÚNICOS
+    const nivelesAcademicos = useMemo(() => {
+
+        return [
+            ...new Set(
+                materias.map(
+                    (materia) =>
+                        materia.nivelAcademico
+                )
+            )
+        ].filter(Boolean);
+
+    }, [materias]);
+
+    // FILTRADO
+    const materiasFiltradas = useMemo(() => {
+
+        return materias.filter((materia) => {
+
+            const textoBusqueda =
+                buscar.toLowerCase();
+
+            const coincideBusqueda =
+
+                materia.nombre
+                    ?.toLowerCase()
+                    .includes(textoBusqueda)
+
+                ||
+
+                materia.descripcion
+                    ?.toLowerCase()
+                    .includes(textoBusqueda)
+
+                ||
+
+                materia.nivelAcademico
+                    ?.toLowerCase()
+                    .includes(textoBusqueda);
+
+            const coincideNivelAcademico =
+
+                filtroNivelAcademico === ""
+                ||
+                materia.nivelAcademico === filtroNivelAcademico;
+
+            return (
+
+                coincideBusqueda
+                &&
+                coincideNivelAcademico
+
+            );
+
+        });
+
+    }, [
+        materias,
+        buscar,
+        filtroNivelAcademico
+    ]);
 
     // CAMBIAR ESTADO
     const handleEstado = async (id) => {
@@ -136,47 +193,83 @@ const Materias = () => {
 
                 </div>
 
-                <div className="
-                    flex flex-col sm:flex-row
-                    gap-3
-                ">
+                <button
+                    onClick={() => {
 
-                    {/* BUSCADOR */}
-                    <Input
-                        type="text"
-                        placeholder="Buscar materia..."
-                        value={buscar}
-                        onChange={(e) =>
-                            setBuscar(e.target.value)
-                        }
-                        className="
-                            w-full sm:w-64
-                            border border-gray-300
-                            rounded-xl p-3
-                        "
-                    />
+                        setModoModal("crear");
 
-                    {/* BOTON */}
-                    <button
-                        onClick={() => {
+                        setMateriaSeleccionada(null);
 
-                            setModoModal("crear");
+                        setModal(true);
 
-                            setMateriaSeleccionada(null);
+                    }}
+                    className="
+                        bg-green-600 hover:bg-green-700
+                        text-white px-5 py-3
+                        rounded-xl transition
+                    "
+                >
+                    + Nueva
+                </button>
 
-                            setModal(true);
+            </div>
 
-                        }}
-                        className="
-                            bg-green-600 hover:bg-green-700
-                            text-white px-5 py-3
-                            rounded-xl transition
-                        "
-                    >
-                        + Nueva
-                    </button>
+            {/* FILTROS */}
+            <div className="
+                flex flex-col lg:flex-row
+                gap-4 mb-6
+            ">
 
-                </div>
+                {/* BUSCADOR */}
+                <Input
+                    type="text"
+                    placeholder="Buscar materia..."
+                    value={buscar}
+                    onChange={(e) =>
+                        setBuscar(e.target.value)
+                    }
+                    className="
+                        flex-1
+                        border border-gray-300
+                        rounded-xl p-3
+                    "
+                />
+
+                {/* FILTRO NIVEL */}
+                <select
+                    value={filtroNivelAcademico}
+                    onChange={(e) =>
+                        setFiltroNivelAcademico(
+                            e.target.value
+                        )
+                    }
+                    className="
+                        border border-gray-300
+                        rounded-xl px-4 py-3
+                        bg-white
+                    "
+                >
+
+                    <option value="">
+                        Todos los cursos
+                    </option>
+
+                    {
+                        nivelesAcademicos.map(
+                            (nivel) => (
+
+                                <option
+                                    key={nivel}
+                                    value={nivel}
+                                >
+                                    {nivel}
+                                </option>
+
+                            )
+                        )
+                    }
+
+                </select>
 
             </div>
 
@@ -202,6 +295,12 @@ const Materias = () => {
                                 p-4 text-left font-semibold
                             ">
                                 Descripción
+                            </th>
+
+                            <th className="
+                                p-4 text-left font-semibold
+                            ">
+                                Año Escolar
                             </th>
 
                             <th className="
@@ -251,6 +350,22 @@ const Materias = () => {
                                                     materia.descripcion ||
                                                     "-"
                                                 }
+                                            </td>
+
+                                            {/* NIVEL ACADÉMICO */}
+                                            <td className="p-4">
+
+                                                <span className="
+                                                    px-3 py-1 rounded-full
+                                                    text-xs
+                                                    bg-blue-100 text-blue-700
+                                                ">
+                                                    {
+                                                        materia.nivelAcademico ||
+                                                        "No asignado"
+                                                    }
+                                                </span>
+
                                             </td>
 
                                             {/* ESTADO */}
@@ -339,7 +454,7 @@ const Materias = () => {
                                     <tr>
 
                                         <td
-                                            colSpan="4"
+                                            colSpan="5"
                                             className="
                                                 text-center p-8
                                                 text-gray-500

@@ -1,5 +1,5 @@
 import axios from "../api/axios.js";
-const getUsuariosRequest = async(search="")=>{
+const obtenerUsuariosRequest = async(search="")=>{
     const res = await axios.get(`/user?search=${search}`);
     return res.data;
 }
@@ -19,6 +19,6 @@ const actualizarUsuarioRequest = async (id, data)=>{
   const res = await axios.put(`/user/${id}`,data);
   return res.data;
 }
-export {getUsuariosRequest, desactivarUsuarioRequest,activarUsuarioRequest,
+export {obtenerUsuariosRequest, desactivarUsuarioRequest,activarUsuarioRequest,
   crearUsuarioRequest, actualizarUsuarioRequest
 }

@@ -1,9 +1,21 @@
 import { useEffect, useMemo, useState } from "react";
 
 import {
+    GraduationCap,
+    CalendarDays,
+    Clock3,
+    User,
+    BookOpen
+}
+from "lucide-react";
+
+import Input from "../../components/ui/Input.jsx";
+
+import {
     obtenerTodasTutoriasRequest,
     cancelarTutoriaAdminRequest
-} from "../../services/tutoriaService.js";
+}
+from "../../services/tutoriaService.js";
 
 const GestionTutorias = () => {
 
@@ -12,6 +24,8 @@ const GestionTutorias = () => {
     const [loading, setLoading] = useState(true);
 
     const [error, setError] = useState("");
+
+    const [buscar, setBuscar] = useState("");
 
     const [filtro, setFiltro] = useState("todas");
 
@@ -81,27 +95,78 @@ const GestionTutorias = () => {
     // FILTRAR
     const tutoriasFiltradas = useMemo(() => {
 
-        if (filtro === "todas") {
+        return tutorias.filter((tutoria) => {
 
-            return tutorias;
+            const coincideBusqueda =
 
-        }
+                tutoria.materia
+                    .toLowerCase()
+                    .includes(
+                        buscar.toLowerCase()
+                    )
+                ||
+                tutoria.tema
+                    .toLowerCase()
+                    .includes(
+                        buscar.toLowerCase()
+                    );
 
-        return tutorias.filter(
-            (t) => t.estado === filtro
-        );
+            const coincideFiltro =
 
-    }, [tutorias, filtro]);
+                filtro === "todas"
+                ||
+                tutoria.estado === filtro;
 
+            return (
+                coincideBusqueda &&
+                coincideFiltro
+            );
+
+        });
+
+    }, [tutorias, buscar, filtro]);
+
+    // LOADING
     if (loading) {
 
         return (
 
-            <p className="text-center mt-10">
+            <div className="p-6">
 
-                Cargando tutorías...
+                <div className="bg-white rounded-2xl shadow-sm p-10 text-center">
 
-            </p>
+                    <p className="text-lg text-gray-600">
+
+                        Cargando tutorías...
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        );
+
+    }
+
+    // ERROR
+    if (error) {
+
+        return (
+
+            <div className="p-6">
+
+                <div className="bg-white rounded-2xl shadow-sm p-10 text-center">
+
+                    <p className="text-lg text-red-500">
+
+                        {error}
+
+                    </p>
+
+                </div>
+
+            </div>
 
         );
 
@@ -109,177 +174,346 @@ const GestionTutorias = () => {
 
     return (
 
-        <div className="p-6">
+        <div className="min-h-screen bg-gray-50 p-6">
 
             {/* HEADER */}
-            <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
+            <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-8">
 
                 <div>
 
-                    <h1 className="text-3xl font-bold">
+                    <h1 className="text-4xl font-bold text-gray-800">
 
                         Gestión de Tutorías
 
                     </h1>
 
-                    <p className="text-gray-500 mt-1">
+                    <p className="text-gray-500 mt-2">
 
-                        Administración general de tutorías
+                        Administra las tutorías registradas en el sistema.
 
                     </p>
 
                 </div>
 
-                {/* FILTRO */}
-                <select
-                    value={filtro}
-                    onChange={(e) =>
-                        setFiltro(e.target.value)
-                    }
-                    className="border p-2 rounded-lg"
-                >
+                <div className="flex gap-3">
 
-                    <option value="todas">
-                        Todas
-                    </option>
+                    {/* BUSCADOR */}
+                    <Input
+                        type="text"
+                        placeholder="Buscar tutoría..."
+                        value={buscar}
+                        onChange={(e) =>
+                            setBuscar(
+                                e.target.value
+                            )
+                        }
+                        className="
+                            w-64 border border-gray-300
+                            rounded-xl px-4 py-3
+                            outline-none
+                            focus:ring-2 focus:ring-green-500
+                        "
+                    />
 
-                    <option value="pendiente">
-                        Pendientes
-                    </option>
+                    {/* FILTRO */}
+                    <select
+                        value={filtro}
+                        onChange={(e) =>
+                            setFiltro(
+                                e.target.value
+                            )
+                        }
+                        className="
+                            border border-gray-300
+                            rounded-xl px-4 py-3
+                            outline-none
+                            focus:ring-2 focus:ring-green-500
+                        "
+                    >
 
-                    <option value="aceptada">
-                        Aceptadas
-                    </option>
+                        <option value="todas">
+                            Todas
+                        </option>
 
-                    <option value="realizada">
-                        Realizadas
-                    </option>
+                        <option value="pendiente">
+                            Pendientes
+                        </option>
 
-                    <option value="cancelada">
-                        Canceladas
-                    </option>
+                        <option value="aceptada">
+                            Aceptadas
+                        </option>
 
-                </select>
+                        <option value="realizada">
+                            Realizadas
+                        </option>
+
+                        <option value="cancelada">
+                            Canceladas
+                        </option>
+
+                    </select>
+
+                </div>
 
             </div>
 
-            {/* ERROR */}
+            {/* EMPTY */}
             {
-                error && (
+                tutoriasFiltradas.length === 0 &&
+                (
+                    <div className="bg-white rounded-2xl shadow-sm p-10 text-center">
 
-                    <div className="bg-red-100 text-red-600 p-3 rounded mb-4">
+                        <h2 className="text-2xl font-semibold text-gray-700">
 
-                        {error}
+                            No existen tutorías registradas
+
+                        </h2>
+
+                        <p className="text-gray-500 mt-2">
+
+                            No se encontraron resultados.
+
+                        </p>
 
                     </div>
-
                 )
             }
 
-            {/* LISTADO */}
-            {
-                tutoriasFiltradas.length === 0
-                ? (
+            {/* GRID */}
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
 
-                    <div className="bg-white shadow rounded-xl p-10 text-center text-gray-500">
+                {
+                    tutoriasFiltradas.map((tutoria) => (
 
-                        No existen tutorías registradas.
+                        <div
+                            key={tutoria._id}
+                            className="
+                                bg-white rounded-2xl
+                                shadow-sm border border-gray-100
+                                p-6 hover:shadow-xl
+                                hover:-translate-y-1
+                                transition-all duration-300
+                            "
+                        >
 
-                    </div>
+                            {/* ICONO */}
+                            <div className="
+                                w-16 h-16 rounded-2xl
+                                bg-green-100 text-green-600
+                                flex items-center justify-center
+                                mb-5
+                            ">
 
-                )
-                : (
+                                <GraduationCap size={30} />
 
-                    <div className="grid gap-5">
+                            </div>
 
-                        {
-                            tutoriasFiltradas.map((tutoria) => (
+                            {/* TITULO */}
+                            <h2 className="
+                                text-2xl font-bold
+                                text-gray-800 mb-1
+                            ">
 
-                                <div
-                                    key={tutoria._id}
-                                    className="bg-white shadow-lg rounded-xl p-6"
-                                >
+                                {tutoria.materia}
 
-                                    {/* HEADER */}
-                                    <div className="flex justify-between items-start mb-4">
+                            </h2>
 
-                                        <div>
+                            <p className="text-gray-500 mb-5">
 
-                                            <h2 className="text-2xl font-bold">
+                                {tutoria.tema}
 
-                                                {tutoria.materia}
+                            </p>
 
-                                            </h2>
+                            {/* INFO */}
+                            <div className="space-y-3 text-sm mb-5">
 
-                                            <p className="text-gray-600">
+                                <div className="flex items-center gap-2">
 
-                                                {tutoria.tema}
+                                    <User size={16} />
 
-                                            </p>
+                                    <span>
+
+                                        <strong>
+                                            Estudiante:
+                                        </strong>
+
+                                        {" "}
+
+                                        {
+                                            tutoria.estudiante?.nombre
+                                        }
+
+                                        {" "}
+
+                                        {
+                                            tutoria.estudiante?.apellido
+                                        }
+
+                                    </span>
+
+                                </div>
+
+                                {
+                                    tutoria.tutor && (
+
+                                        <div className="flex items-center gap-2">
+
+                                            <BookOpen size={16} />
+
+                                            <span>
+
+                                                <strong>
+                                                    Tutor:
+                                                </strong>
+
+                                                {" "}
+
+                                                {
+                                                    tutoria.tutor?.nombre
+                                                }
+
+                                                {" "}
+
+                                                {
+                                                    tutoria.tutor?.apellido
+                                                }
+
+                                            </span>
 
                                         </div>
 
-                                        <span
-                                            className={`px-3 py-1 rounded-full text-sm font-semibold capitalize text-white
-                                            ${
-                                                tutoria.estado === "pendiente"
-                                                ? "bg-yellow-500"
-                                                : tutoria.estado === "aceptada"
-                                                ? "bg-blue-600"
-                                                : tutoria.estado === "realizada"
-                                                ? "bg-green-600"
-                                                : "bg-red-600"
-                                            }`}
-                                        >
+                                    )
+                                }
 
-                                            {tutoria.estado}
+                                <div className="flex items-center gap-2">
 
-                                        </span>
+                                    <CalendarDays size={16} />
 
-                                    </div>
+                                    <span>
 
-                                    {/* INFO */}
-                                    <div className="space-y-2 text-gray-700">
+                                        <strong>
+                                            Fecha:
+                                        </strong>
 
-                                        <p>
+                                        {" "}
 
-                                            <strong>
-                                                Estudiante:
-                                            </strong>
+                                        {
+                                            new Date(
+                                                tutoria.fecha
+                                            ).toLocaleString()
+                                        }
 
-                                            {" "}
+                                    </span>
+
+                                </div>
+
+                                <div className="flex items-center gap-2">
+
+                                    <Clock3 size={16} />
+
+                                    <span>
+
+                                        <strong>
+                                            Duración:
+                                        </strong>
+
+                                        {" "}
+
+                                        {tutoria.duracion} hora(s)
+
+                                    </span>
+
+                                </div>
+
+                                <p>
+
+                                    <strong>
+                                        Modalidad:
+                                    </strong>
+
+                                    {" "}
+
+                                    {tutoria.modalidad}
+
+                                </p>
+
+                            </div>
+
+                            {/* DESCRIPCION */}
+                            {
+                                tutoria.descripcion && (
+
+                                    <div className="mb-5">
+
+                                        <p className="font-semibold mb-1">
+
+                                            Descripción:
+
+                                        </p>
+
+                                        <p className="text-gray-500 line-clamp-3">
 
                                             {
-                                                tutoria.estudiante?.nombre
-                                            }
-
-                                            {" "}
-
-                                            {
-                                                tutoria.estudiante?.apellido
+                                                tutoria.descripcion
                                             }
 
                                         </p>
 
+                                    </div>
+
+                                )
+                            }
+
+                            {/* OBSERVACION */}
+                            {
+                                tutoria.observacionTutor && (
+
+                                    <div className="
+                                        bg-blue-50 border border-blue-200
+                                        rounded-xl p-4 mb-5
+                                    ">
+
+                                        <p className="font-semibold text-blue-700 mb-1">
+
+                                            Observación del Tutor
+
+                                        </p>
+
+                                        <p className="text-gray-700">
+
+                                            {
+                                                tutoria.observacionTutor
+                                            }
+
+                                        </p>
+
+                                    </div>
+
+                                )
+                            }
+
+                            {/* CALIFICACION */}
+                            {
+                                tutoria.calificacion && (
+
+                                    <div className="
+                                        bg-yellow-50 border border-yellow-200
+                                        rounded-xl p-4 mb-5
+                                    ">
+
+                                        <p className="font-semibold text-yellow-700">
+
+                                            ⭐ {tutoria.calificacion}/5
+
+                                        </p>
+
                                         {
-                                            tutoria.tutor && (
+                                            tutoria.comentarioCalificacion && (
 
-                                                <p>
-
-                                                    <strong>
-                                                        Tutor:
-                                                    </strong>
-
-                                                    {" "}
+                                                <p className="text-gray-700 mt-2">
 
                                                     {
-                                                        tutoria.tutor?.nombre
-                                                    }
-
-                                                    {" "}
-
-                                                    {
-                                                        tutoria.tutor?.apellido
+                                                        tutoria.comentarioCalificacion
                                                     }
 
                                                 </p>
@@ -287,170 +521,74 @@ const GestionTutorias = () => {
                                             )
                                         }
 
-                                        <p>
+                                    </div>
 
-                                            <strong>
-                                                Modalidad:
-                                            </strong>
+                                )
+                            }
 
-                                            {" "}
+                            {/* BADGES */}
+                            <div className="flex flex-wrap gap-2 mb-5">
 
-                                            {tutoria.modalidad}
+                                <span
+                                    className={`
+                                        text-xs px-3 py-1
+                                        rounded-full text-white capitalize
+                                        ${
+                                            tutoria.estado === "pendiente"
+                                            ? "bg-yellow-500"
+                                            : tutoria.estado === "aceptada"
+                                            ? "bg-blue-600"
+                                            : tutoria.estado === "realizada"
+                                            ? "bg-green-600"
+                                            : "bg-red-600"
+                                        }
+                                    `}
+                                >
 
-                                        </p>
+                                    {tutoria.estado}
 
-                                        <p>
+                                </span>
 
-                                            <strong>
-                                                Fecha:
-                                            </strong>
+                            </div>
 
-                                            {" "}
+                            {/* BOTONES */}
+                            {
+                                (
+                                    tutoria.estado === "pendiente" ||
+                                    tutoria.estado === "aceptada"
+                                ) && (
 
-                                            {
-                                                new Date(
-                                                    tutoria.fecha
-                                                ).toLocaleString()
+                                    <div className="flex gap-3">
+
+                                        <button
+                                            onClick={() =>
+                                                cancelarTutoria(
+                                                    tutoria._id
+                                                )
                                             }
+                                            className="
+                                                flex-1 bg-red-500
+                                                hover:bg-red-600
+                                                text-white py-2
+                                                rounded-xl transition
+                                            "
+                                        >
 
-                                        </p>
+                                            Cancelar
 
-                                        <p>
-
-                                            <strong>
-                                                Duración:
-                                            </strong>
-
-                                            {" "}
-
-                                            {tutoria.duracion} hora(s)
-
-                                        </p>
-
-                                        {
-                                            tutoria.descripcion && (
-
-                                                <div>
-
-                                                    <p className="font-semibold">
-
-                                                        Descripción:
-
-                                                    </p>
-
-                                                    <p className="text-gray-600">
-
-                                                        {
-                                                            tutoria.descripcion
-                                                        }
-
-                                                    </p>
-
-                                                </div>
-
-                                            )
-                                        }
-
-                                        {
-                                            tutoria.observacionTutor && (
-
-                                                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-3">
-
-                                                    <p className="font-semibold">
-
-                                                        Observación del Tutor:
-
-                                                    </p>
-
-                                                    <p className="text-gray-700">
-
-                                                        {
-                                                            tutoria.observacionTutor
-                                                        }
-
-                                                    </p>
-
-                                                </div>
-
-                                            )
-                                        }
-
-                                        {
-                                            tutoria.calificacion && (
-
-                                                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mt-3">
-
-                                                    <p>
-
-                                                        <span className="font-semibold">
-
-                                                            Calificación:
-
-                                                        </span>
-
-                                                        {" "}
-
-                                                        ⭐ {tutoria.calificacion}/5
-
-                                                    </p>
-
-                                                    {
-                                                        tutoria.comentarioCalificacion && (
-
-                                                            <p className="text-gray-700 mt-1">
-
-                                                                {
-                                                                    tutoria.comentarioCalificacion
-                                                                }
-
-                                                            </p>
-
-                                                        )
-                                                    }
-
-                                                </div>
-
-                                            )
-                                        }
+                                        </button>
 
                                     </div>
 
-                                    {/* ACCIONES */}
-                                    {
-                                        (
-                                            tutoria.estado === "pendiente" ||
-                                            tutoria.estado === "aceptada"
-                                        ) && (
+                                )
+                            }
 
-                                            <div className="mt-5">
+                        </div>
 
-                                                <button
-                                                    onClick={() =>
-                                                        cancelarTutoria(
-                                                            tutoria._id
-                                                        )
-                                                    }
-                                                    className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg"
-                                                >
+                    ))
+                }
 
-                                                    Cancelar Tutoría
-
-                                                </button>
-
-                                            </div>
-
-                                        )
-                                    }
-
-                                </div>
-
-                            ))
-                        }
-
-                    </div>
-
-                )
-            }
+            </div>
 
         </div>
 

@@ -55,7 +55,7 @@ const Login = () => {
       }
       // VALIDAR PERFIL COMPLETO
       if((data.user.rol === "estudiante" || data.user.rol === "tutor")
-        && !data.perfilCompleto)
+        && !data.user.perfilCompleto)
         {
           return navigate("/completar-perfil")
         }

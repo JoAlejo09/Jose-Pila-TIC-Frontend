@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import {
-  getUsuariosRequest,
+  obtenerUsuariosRequest,
   desactivarUsuarioRequest,
   activarUsuarioRequest,
 } from "../../services/userService";
@@ -24,7 +24,7 @@ const Usuarios = () => {
 
       if (isInitial) setLoading(true);
 
-      const data = await getUsuariosRequest(searchWord);
+      const data = await obtenerUsuariosRequest(searchWord);
 
       setUsuarios(Array.isArray(data) ? data : []);
 
