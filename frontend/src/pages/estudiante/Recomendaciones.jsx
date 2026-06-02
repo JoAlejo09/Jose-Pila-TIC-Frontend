@@ -21,11 +21,10 @@ const Recomendaciones = ()=>{
 
             try {
 
-                const data =
-                    await obtenerMisRecomendacionesRequest();
-
+                const data = await obtenerMisRecomendacionesRequest();
+                console.log("DATA:", data);
                 setRecomendaciones(
-                    data.recomendaciones || []
+                    data || []
                 );
 
             } catch (error) {
