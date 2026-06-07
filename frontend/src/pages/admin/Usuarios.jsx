@@ -1,11 +1,6 @@
 import { useEffect, useState } from "react";
 
-import {
-  obtenerUsuariosRequest,
-  desactivarUsuarioRequest,
-  activarUsuarioRequest,
-} from "../../services/userService";
-
+import { obtenerUsuariosRequest, desactivarUsuarioRequest, activarUsuarioRequest } from "../../services/userService";
 import Input from "../../components/ui/Input";
 import ModalCrearUsuario from "../../components/modal/UsuarioModal.jsx";
 
@@ -14,6 +9,8 @@ const Usuarios = () => {
   const [usuarios, setUsuarios] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [msg, setMsg] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
   const [search, setSearch] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [modoModal, setModoModal] = useState("crear");
@@ -21,22 +18,15 @@ const Usuarios = () => {
 
   const cargarUsuarios = async (searchWord = "", isInitial = false) => {
     try {
-
       if (isInitial) setLoading(true);
-
       const data = await obtenerUsuariosRequest(searchWord);
-
       setUsuarios(Array.isArray(data) ? data : []);
-
     } catch (err) {
-
       console.error(err);
       setError("Error al cargar usuarios");
 
     } finally {
-
       if (isInitial) setLoading(false);
-
     }
   };
 
@@ -47,28 +37,24 @@ const Usuarios = () => {
 
   // BUSQUEDA
   useEffect(() => {
-
     const time = setTimeout(() => {
       cargarUsuarios(search, false);
     }, 400);
-
     return () => clearTimeout(time);
-
   }, [search]);
 
   // DESACTIVAR
   const handleDesactivar = async (id) => {
-
     const confirmacion = window.confirm(
       "¿Estás seguro de desactivar este usuario?"
     );
-
     if (!confirmacion) return;
 
     try {
-
-      await desactivarUsuarioRequest(id);
-
+      setMsg("");
+      setErrorMsg("");
+      
+      const res = await desactivarUsuarioRequest(id);
       setUsuarios((prev) =>
         prev.map((user) =>
           user._id === id
@@ -77,25 +63,24 @@ const Usuarios = () => {
         )
       );
 
+      setMsg(res.msg || "Usuario desactivado");
+
     } catch (error) {
 
       console.error(error);
-
+      setErrorMsg( error.response?.data?.msg || "Error al desactivar usuario");
     }
   };
 
-  // ACTIVAR
   const handleActivar = async (id) => {
-
-    const confirmacion = window.confirm(
-      "¿Estás seguro de activar este usuario?"
-    );
+    const confirmacion = window.confirm( "¿Estás seguro de activar este usuario?" );
 
     if (!confirmacion) return;
-
     try {
+      setMsg("");
+      setErrorMsg("");
 
-      await activarUsuarioRequest(id);
+      const res = await activarUsuarioRequest(id);
 
       setUsuarios((prev) =>
         prev.map((user) =>
@@ -104,17 +89,15 @@ const Usuarios = () => {
             : user
         )
       );
+      setMsg(res.msg || "Usuario activado");
 
     } catch (error) {
-
       console.error(error);
+      setErrorMsg( error.response?.data?.msg || "Error al activar usuario");
 
     }
   };
-
-  // EDITAR
   const handleEditar = (usuario) => {
-
     setUsuarioSeleccionado(usuario);
     setModoModal("editar");
     setShowModal(true);
@@ -144,13 +127,17 @@ const Usuarios = () => {
     <div>
 
       <div className="flex justify-between items-center mb-4">
-
+        {msg && (
+          <p className="mb-4 rounded bg-green-100 text-green-700">{msg}</p>
+        )}
+        {errorMsg && (
+          <p className="mb-4 rounded bg-red-100 text-red-700">{errorMsg}</p>
+        )}
         <h1 className="text-2xl font-bold">
           Gestión de Usuarios
         </h1>
 
         <div className="flex gap-2">
-
           <Input
             type="text"
             placeholder="Buscar usuario..."
@@ -158,7 +145,6 @@ const Usuarios = () => {
             onChange={(e) => setSearch(e.target.value)}
             className="p-2 border rounded w-64"
           />
-
           <button
             onClick={() => {
               setModoModal("crear");
@@ -169,51 +155,24 @@ const Usuarios = () => {
           >
             + Nuevo
           </button>
-
         </div>
-
       </div>
 
       <table className="w-full bg-white shadow rounded">
-
         <thead className="bg-gray-200">
-
           <tr>
-
-            <th className="p-2">
-              Nombre
-            </th>
-
-            <th>
-              Email
-            </th>
-
-            <th>
-              Rol
-            </th>
-
-            <th>
-              Año Escolar
-            </th>
-
-            <th>
-              Estado
-            </th>
-
-            <th>
-              Acciones
-            </th>
-
+            <th className="p-2"> Nombre </th>
+            <th> Email </th>
+            <th> Rol </th>
+            <th> Año Escolar </th>
+            <th> Estado </th>
+            <th> Acciones </th>
           </tr>
-
         </thead>
 
         <tbody>
-
           {usuarios.length > 0 ? (
-
             usuarios.map((user) => (
-
               <tr
                 key={user._id}
                 className="text-center border-t"
@@ -232,15 +191,12 @@ const Usuarios = () => {
                 </td>
 
                 <td>
-
                   {user.rol === "estudiante"
                     ? user.nivelAcademico || "No asignado"
                     : "-"}
-
                 </td>
 
                 <td>
-
                   <span
                     className={`px-2 py-1 rounded text-white text-sm ${
                       user.isActive
@@ -248,79 +204,55 @@ const Usuarios = () => {
                         : "bg-gray-400"
                     }`}
                   >
-
                     {user.isActive
                       ? "Activo"
                       : "Inactivo"}
-
                   </span>
-
                 </td>
 
                 <td className="flex justify-center gap-2 p-2">
-
                   {user.isActive ? (
-
                     <button
                       onClick={() => handleDesactivar(user._id)}
                       className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
                     >
                       Desactivar
                     </button>
-
                   ) : (
-
                     <button
                       onClick={() => handleActivar(user._id)}
                       className="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600"
                     >
                       Activar
                     </button>
-
                   )}
-
                   <button
                     onClick={() => handleEditar(user)}
                     className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
                   >
                     Editar
                   </button>
-
                 </td>
-
               </tr>
-
             ))
-
           ) : (
-
             <tr>
-
               <td colSpan="6" className="text-center p-4">
-
                 No hay usuarios disponibles
-
               </td>
-
             </tr>
-
           )}
-
         </tbody>
-
       </table>
 
       {showModal && (
-
         <ModalCrearUsuario
           onClose={() => setShowModal(false)}
           onUsuarioCreado={() => cargarUsuarios(search, false)}
           modo={modoModal}
           usuarioSeleccionado={usuarioSeleccionado}
         />
-
       )}
-
     </div>
   );
 };

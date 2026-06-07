@@ -14,6 +14,11 @@ const obtenerCuestionarioPorIdRequest = async(id)=>{
     return res.data;
 };
 
+//Validar si el cuestionario esta disponible para el estudiante
+const verificarAccesoCuestionarioRequest = async(id)=>{
+    const res = await axios.get(`/cuestionario/${id}/verificar-acceso`);
+    return res.data;
+} 
 // Resolver cuestionario
 
 const resolverCuestionarioRequest = async(id,data)=>{
@@ -84,4 +89,4 @@ const verificarDiagnosticoMateriaRequest = async(materiaId)=>{
 
 export { obtenerCuestionariosDisponiblesRequest, obtenerCuestionarioPorIdRequest, resolverCuestionarioRequest, crearCuestionarioRequest, 
          obtenerCuestionariosRequest, obtenerCuestionarioAdminRequest, actualizarCuestionarioRequest, eliminarCuestionarioRequest,
-         verificarDiagnosticoMateriaRequest };
+         verificarDiagnosticoMateriaRequest, verificarAccesoCuestionarioRequest };

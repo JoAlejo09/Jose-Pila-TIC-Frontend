@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { obtenerCuestionariosDisponiblesRequest} from "../../../services/cuestionarioService.js";
+import { obtenerCuestionariosDisponiblesRequest, verificarAccesoCuestionarioRequest} from "../../../services/cuestionarioService.js";
 
 const CuestionariosEstudiantes =()=>{
 
@@ -23,6 +23,19 @@ const CuestionariosEstudiantes =()=>{
         }
         obtenerCuestionarios();
     },[]);
+
+    const iniciarCuestionario = async(id)=>{
+        try{
+            const data = await verificarAccesoCuestionarioRequest(id);
+            if(!data.puedeResolver){
+                alert(data.msg);
+                return;
+            }
+            navigate(`/dashboard/estudiante/cuestionarios/${id}`);
+        } catch(error){
+            alert(error?.response?.data?.msg || "No se pudo acceder al cuestionario");
+        }
+    };
 
     if(loading){
         return(
@@ -100,7 +113,7 @@ const CuestionariosEstudiantes =()=>{
                                 </div>
                             </div>
                             <button
-                            onClick={()=> navigate(`/dashboard/estudiante/cuestionarios/${cuestionario._id}`)}
+                            onClick={()=> iniciarCuestionario(cuestionario._id)}
                             className="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white py-3
                                        rounded-xl font-medium transition-all duration-300">
                             Resolver

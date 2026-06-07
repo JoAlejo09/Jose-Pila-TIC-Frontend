@@ -8,8 +8,10 @@ const RecuperarPassword = () => {
     const [msg, setMsg]= useState("");
     const [error, setError] = useState("");
 
-    const handleSubmit = async (e) =>{
+    const handleSubmit = async (e) =>{       
         e.preventDefault();
+        setMsg("");
+        setError("");
 
         try{
             const res = await recuperarPasswordRequest(email);

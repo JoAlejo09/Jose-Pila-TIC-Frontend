@@ -17,63 +17,37 @@ import PasswordInput from "../../components/ui/PasswordInput.jsx";
 const ResetPassword = () => {
 
     const navigate = useNavigate();
-
     const { token } = useParams();
-
-    const [valido, setValido] =
-        useState(false);
-
-    const [msg, setMsg] =
-        useState("");
-
-    const [error, setError] =
-        useState("");
-
-    const [loading, setLoading] =
-        useState(false);
+    const [valido, setValido] = useState(false);
+    const [msg, setMsg] =  useState("");
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const [form, setForm] = useState({
-
         password: "",
-
         confirmpassword: ""
-
     });
 
-    // VALIDAR TOKEN
     useEffect(() => {
-
         const validar = async () => {
-
             try {
-
                 await validarTokenRequest(token);
-
                 setValido(true);
-
             } catch (error) {
-
                 console.log(error);
-
-                setError("Token inválido");
+                setError(error.response?.data?.msg || "Token inválido");
 
             }
 
         };
-
         validar();
 
     }, [token]);
 
-    // CAMBIOS INPUT
     const handleChange = (e) => {
-
         setForm({
-
             ...form,
-
-            [e.target.name]:
-                e.target.value
+            [e.target.name]: e.target.value
 
         });
 
@@ -81,100 +55,54 @@ const ResetPassword = () => {
 
     // ENVIAR NUEVO PASSWORD
     const handleSubmit = async (e) => {
-
         e.preventDefault();
-
         setError("");
-
         setMsg("");
 
         try {
 
-            // VALIDAR CAMPOS
-            if (
-                !form.password ||
-                !form.confirmpassword
-            ) {
-
-                return setError(
-                    "Todos los campos son obligatorios"
-                );
-
+            if ( !form.password || !form.confirmpassword ) {
+                return setError( "Todos los campos son obligatorios" );
             }
 
-            // VALIDAR COINCIDENCIA
-            if (
-                form.password !==
-                form.confirmpassword
-            ) {
-
-                return setError(
-                    "Las contraseñas no coinciden"
-                );
-
+            if ( form.password !== form.confirmpassword ) {
+                return setError( "Las contraseñas no coinciden");
             }
 
             setLoading(true);
-
-            const res =
-                await nuevoPasswordRequest(
-                    token,
-                    form
-                );
-
+            const res = await nuevoPasswordRequest( token, form);
             setMsg(res.msg);
-
             setTimeout(() => {
-
                 navigate("/login");
-
             }, 2000);
 
         } catch (error) {
-
             console.log(error);
-
             setError(
-
                 error.response?.data?.msg ||
-
                 "Error al actualizar contraseña"
-
             );
 
         } finally {
-
             setLoading(false);
-
         }
 
     };
 
     // TOKEN INVALIDO
     if (!valido) {
-
         return (
-
             <div className="min-h-screen flex items-center justify-center">
-
                 <Card className="w-full max-w-md">
-
                     <p className="text-red-500 text-center">
-
                         {error}
-
                     </p>
-
                 </Card>
-
             </div>
-
         );
-
     }
 
     return (
-
         <div className="min-h-screen flex items-center justify-center px-4">
 
             <Card className="w-full max-w-md">
@@ -230,28 +158,19 @@ const ResetPassword = () => {
                         value={form.confirmpassword}
                         onChange={handleChange}
                     />
-
                     <div className="flex justify-center">
-
                         <Button
                             type="submit"
                             disabled={loading}
                         >
-
                             {loading
                                 ? "Guardando..."
                                 : "Guardar"}
-
                         </Button>
-
                     </div>
-
                 </form>
-
             </Card>
-
         </div>
-
     );
 
 };

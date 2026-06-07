@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "../../api/axios.js";
 
-const API = "http://localhost:4000/api";
 const VerificarCuenta = () =>{
     const {token} = useParams();
     const navigate = useNavigate();
@@ -17,7 +16,7 @@ const VerificarCuenta = () =>{
 
         const verificarCuenta = async() =>{
             try{
-                const res = await axios.get(`${API}/auth/confirmar/${token}`);
+                const res = await axios.get(`/auth/confirmar/${token}`);
                 setMensaje(res.data.msg);
                 setTimeout(() => {
                     navigate("/login");
@@ -36,6 +35,7 @@ const VerificarCuenta = () =>{
         };
         verificarCuenta();
     }, [token, navigate]);
+    
     return(
         <div className="min-h-screen flex items-center justify-center bg-background px-4">
 

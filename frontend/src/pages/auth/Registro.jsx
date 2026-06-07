@@ -25,11 +25,9 @@ const Registro = () => {
     const [success, setSuccess] = useState("");
     const [loading, setLoading] = useState(false);
 
-    // HANDLE CHANGE
+    //Cambio de estado del formulario
     const handleChange = (e) => {
-
         const { name, value } = e.target;
-
         setForm({
             ...form,
             [name]: value
@@ -37,30 +35,30 @@ const Registro = () => {
 
     };
 
-    // SUBMIT
+    // Enviar formulario
     const handleSubmit = async (e) => {
-
         e.preventDefault();
-
         setError("");
         setSuccess("");
 
-        // VALIDACIONES
-        if (
-            !form.nombre ||
-            !form.apellido ||
-            !form.email ||
-            !form.password ||
-            !form.confirmpassword
-        ) {
+        const nombre = form.nombre.trim();
+        const apellido = form.apellido.trim(); 
+        const email = form.email.trim().toLowerCase();
+
+        if(!nombre || !apellido || !email || !form.password || !form.confirmpassword) {
             return setError(
                 "Todos los campos son obligatorios"
             );
         }
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-        if (
-            form.password !== form.confirmpassword
-        ) {
+        if (!emailRegex.test(email)) {
+            return setError(
+                "Ingrese un correo electrónico válido"
+            );
+        }
+
+        if (form.password !== form.confirmpassword) {
             return setError(
                 "Las contraseñas no coinciden"
             );
@@ -71,9 +69,9 @@ const Registro = () => {
             setLoading(true);
 
             const payload = {
-                nombre: form.nombre,
-                apellido: form.apellido,
-                email: form.email,
+                nombre,
+                apellido,
+                email,
                 password: form.password,
                 confirmpassword: form.confirmpassword,
                 rol: form.rol
@@ -116,27 +114,22 @@ const Registro = () => {
                     Registrarse
                 </h2>
 
-                {/* ERROR */}
                 {error && (
                     <p className="text-red-500 text-sm mb-3 text-center">
                         {error}
                     </p>
                 )}
 
-                {/* SUCCESS */}
                 {success && (
                     <p className="text-green-600 text-sm mb-3 text-center">
                         {success}
                     </p>
                 )}
 
-                {/* FORM */}
                 <form
                     onSubmit={handleSubmit}
                     className="space-y-3"
                 >
-
-                    {/* NOMBRE */}
                     <Input
                         type="text"
                         name="nombre"
@@ -145,7 +138,6 @@ const Registro = () => {
                         onChange={handleChange}
                     />
 
-                    {/* APELLIDO */}
                     <Input
                         type="text"
                         name="apellido"
@@ -154,7 +146,6 @@ const Registro = () => {
                         onChange={handleChange}
                     />
 
-                    {/* EMAIL */}
                     <Input
                         type="email"
                         name="email"
@@ -163,7 +154,6 @@ const Registro = () => {
                         onChange={handleChange}
                     />
 
-                    {/* PASSWORD */}
                     <PasswordInput
                         name="password"
                         placeholder="Contraseña"
@@ -172,7 +162,6 @@ const Registro = () => {
                         className="w-full border p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                     />
 
-                    {/* CONFIRM PASSWORD */}
                     <PasswordInput
                         name="confirmpassword"
                         placeholder="Confirmar contraseña"
@@ -181,45 +170,30 @@ const Registro = () => {
                         className="w-full border p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                     />
 
-                    {/* ROL */}
                     <select
                         name="rol"
                         value={form.rol}
                         onChange={handleChange}
                         className="w-full border p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                     >
-                        <option value="estudiante">
-                            Estudiante
-                        </option>
+                        <option value="estudiante">Estudiante </option>
 
-                        <option value="tutor">
-                            Tutor
-                        </option>
+                        <option value="tutor"> Tutor </option>
                     </select>
 
-                    {/* BOTON */}
                     <div className="flex justify-center">
-
                         <Button type="submit">
-
-                            {
-                                loading
+                            { loading
                                     ? "Registrando..."
                                     : "Registrarse"
                             }
 
                         </Button>
-
                     </div>
-
                 </form>
-
             </Card>
-
         </div>
-
     );
-
 };
 
 export default Registro;
