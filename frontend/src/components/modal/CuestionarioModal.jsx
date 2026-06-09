@@ -1,21 +1,8 @@
 import { useEffect, useState } from "react";
-
-import {
-    crearCuestionarioRequest,
-    actualizarCuestionarioRequest
-} from "../../services/cuestionarioService.js";
-
-import {
-    obtenerMateriasRequest
-} from "../../services/materiaService.js";
-
-import {
-    obtenerUnidadesPorMateriaRequest
-} from "../../services/unidadService.js";
-
-import {
-    obtenerPreguntasRequest
-} from "../../services/preguntaService.js";
+import { crearCuestionarioRequest, actualizarCuestionarioRequest } from "../../services/cuestionarioService.js";
+import { obtenerMateriasRequest } from "../../services/materiaService.js";
+import { obtenerUnidadesPorMateriaRequest } from "../../services/unidadService.js";
+import { obtenerPreguntasRequest } from "../../services/preguntaService.js";
 
 import PasoInformacion from "../cuestionario/Informacion.jsx";
 import PasoConfiguracion from "../cuestionario/Configuracion.jsx";
@@ -30,166 +17,87 @@ const CuestionarioModal = ({
     const modoEdicion = !!cuestionarioEditar;
 
     const [paso,setPaso] = useState(1);
-
     const [materias,setMaterias] = useState([]);
     const [unidades,setUnidades] = useState([]);
 
-    const [
-        preguntasDisponibles,
-        setPreguntasDisponibles
-    ] = useState([]);
-
+    const [ preguntasDisponibles, setPreguntasDisponibles ] = useState([]);
     const [loading,setLoading] = useState(false);
-
     const [form,setForm] = useState({
 
         titulo:"",
         descripcion:"",
         instrucciones:"",
-
         materia:"",
         unidad:"",
-
         nivelAcademico:"1ro BGU",
-
         tipoEvaluacion:"diagnostico",
-
         alcanceEvaluacion:"unidad",
-
         modoGeneracion:"manual",
-
         preguntas:[],
-
         cantidadPreguntas:1,
-
         tiempoLimite:30,
-
         nivel:"medio",
-
         aleatorio:false,
-
         mostrarRevision:true,
-
         mostrarRespuestasCorrectas:true,
-
         permitirReintento:false
     });
 
-    // =========================================
-    // EDICION
-    // =========================================
-
+    // Para editar
     useEffect(()=>{
-
         if(cuestionarioEditar){
-
             setForm({
-
-                titulo:
-                    cuestionarioEditar.titulo || "",
-
-                descripcion:
-                    cuestionarioEditar.descripcion || "",
-
-                instrucciones:
-                    cuestionarioEditar.instrucciones || "",
-
-                materia:
-                    cuestionarioEditar.materia?._id || "",
-
-                unidad:
-                    cuestionarioEditar.unidad?._id || "",
-
-                nivelAcademico:
-                    cuestionarioEditar.nivelAcademico || "1ro BGU",
-
-                tipoEvaluacion:
-                    cuestionarioEditar.tipoEvaluacion || "diagnostico",
-
-                alcanceEvaluacion:
-                    cuestionarioEditar.alcanceEvaluacion || "unidad",
-
-                modoGeneracion:
-                    cuestionarioEditar.modoGeneracion || "manual",
-
-                preguntas:
-                    cuestionarioEditar.preguntas?.map(
-                        (pregunta)=>
-                            pregunta._id || pregunta
-                    ) || [],
-
-                cantidadPreguntas:
-                    cuestionarioEditar.cantidadPreguntas || 1,
-
-                tiempoLimite:
-                    cuestionarioEditar.tiempoLimite || 30,
-
-                nivel:
-                    cuestionarioEditar.nivel || "medio",
-
-                aleatorio:
-                    cuestionarioEditar.aleatorio || false,
-
-                mostrarRevision:
-                    cuestionarioEditar.mostrarRevision ?? true,
-
-                mostrarRespuestasCorrectas:
-                    cuestionarioEditar.mostrarRespuestasCorrectas ?? true,
-
-                permitirReintento:
-                    cuestionarioEditar.permitirReintento || false
+                titulo: cuestionarioEditar.titulo || "",
+                descripcion: cuestionarioEditar.descripcion || "",
+                instrucciones: cuestionarioEditar.instrucciones || "",
+                materia: cuestionarioEditar.materia?._id || "",
+                unidad: cuestionarioEditar.unidad?._id || "",
+                nivelAcademico: cuestionarioEditar.nivelAcademico || "1ro BGU",
+                tipoEvaluacion: cuestionarioEditar.tipoEvaluacion || "diagnostico",
+                alcanceEvaluacion: cuestionarioEditar.alcanceEvaluacion || "unidad",
+                modoGeneracion: cuestionarioEditar.modoGeneracion || "manual",
+                preguntas: cuestionarioEditar.preguntas?.map(
+                    (pregunta)=>
+                        pregunta._id || pregunta
+                ) || [],
+                cantidadPreguntas: cuestionarioEditar.cantidadPreguntas || 1,
+                tiempoLimite: cuestionarioEditar.tiempoLimite || 30,
+                nivel: cuestionarioEditar.nivel || "medio",
+                aleatorio: cuestionarioEditar.aleatorio || false,
+                mostrarRevision: cuestionarioEditar.mostrarRevision ?? true,
+                mostrarRespuestasCorrectas: cuestionarioEditar.mostrarRespuestasCorrectas ?? true,
+                permitirReintento: cuestionarioEditar.permitirReintento || false
             });
         }
 
     },[cuestionarioEditar]);
 
-    // =========================================
-    // MATERIAS
-    // =========================================
+    // Para materias
 
     useEffect(()=>{
-
         const cargarMaterias = async()=>{
-
             try {
-
-                const data =
-                    await obtenerMateriasRequest();
-
+                const data = await obtenerMateriasRequest();
                 setMaterias(data);
-
             } catch (error) {
-
                 console.log(error);
-
             }
         };
-
         cargarMaterias();
-
     },[]);
 
-    // =========================================
-    // UNIDADES
-    // =========================================
-
+    // Para unidades
     useEffect(()=>{
-
         const cargarUnidades = async()=>{
-
             if(!form.materia){
-
                 setUnidades([]);
-
                 return;
             }
 
             try {
-
-                const data =
-                    await obtenerUnidadesPorMateriaRequest(
-                        form.materia
-                    );
+                const data = await obtenerUnidadesPorMateriaRequest(
+                    form.materia
+                );
 
                 setUnidades(data);
 
@@ -204,25 +112,15 @@ const CuestionarioModal = ({
 
     },[form.materia]);
 
-    // =========================================
     // PREGUNTAS
-    // =========================================
 
     useEffect(()=>{
-
         const cargarPreguntas = async()=>{
-
             try {
-
-                const data =
-                    await obtenerPreguntasRequest();
-
+                const data = await obtenerPreguntasRequest();
                 setPreguntasDisponibles(data);
-
             } catch (error) {
-
                 console.log(error);
-
             }
         };
 
@@ -230,21 +128,13 @@ const CuestionarioModal = ({
 
     },[]);
 
-    // =========================================
     // AUTO CANTIDAD
-    // =========================================
-
     useEffect(()=>{
 
         if(form.modoGeneracion === "manual"){
-
             setForm((prev)=>({
-
                 ...prev,
-
-                cantidadPreguntas:
-                    prev.preguntas.length
-
+                cantidadPreguntas: prev.preguntas.length
             }));
         }
 
@@ -253,9 +143,7 @@ const CuestionarioModal = ({
         form.modoGeneracion
     ]);
 
-    // =========================================
-    // FILTRAR PREGUNTAS
-    // =========================================
+    // filtrar preguntas solo para materia, nivel y unidad seleccionada (si aplica)
 
     const preguntasFiltradas =
         preguntasDisponibles.filter((pregunta)=>{

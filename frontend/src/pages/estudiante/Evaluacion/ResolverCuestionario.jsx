@@ -13,6 +13,7 @@ const ResolverCuestionario = ()=>{
 
     const [cuestionario,setCuestionario] = useState(null);
     const [loading,setLoading] = useState(true);
+    const [error, setError] = useState ("")
     const [preguntaActual,setPreguntaActual] = useState(0);
     const [respuestas,setRespuestas] = useState({});
     const [enviando,setEnviando] = useState(false);
@@ -36,6 +37,11 @@ const ResolverCuestionario = ()=>{
 
             } catch (error) {
                 console.log(error);
+                setError(
+                    error.response?.data?.msg
+                    ||
+                    "Error al cargar evaluación"
+                );
             } finally {
                 setLoading(false);
             }
@@ -119,16 +125,23 @@ const ResolverCuestionario = ()=>{
     const finalizarCuestionario = async(
         automatico = false
     )=>{
-
+        if(!inicioTiempo){
+            return;
+        }   
         if(enviando){
             return;
         }
 
         if(!automatico){
-
             const preguntasSinResponder = cuestionario.preguntas.filter(
-                pregunta =>
-                    !respuestas[pregunta._id]
+                (pregunta)=>{
+                    const respuesta = respuestas[pregunta._id];
+                    return(
+                        respuesta === undefined ||
+                        respuesta === null ||
+                        respuesta.toString().trim() === ""
+                    );
+                }
             );
 
             if(preguntasSinResponder.length > 0){
@@ -196,6 +209,16 @@ const ResolverCuestionario = ()=>{
         }
 
     };
+    //Para errores
+    if(error){
+        return(
+            <div className= "p-6">
+                <div className = "bg-red-100 text-red-700 p-4 rounded-xl">
+                {error}
+                </div>
+            </div>
+        );
+    }
 
     // Loading
     if(loading){
@@ -737,6 +760,7 @@ const ResolverCuestionario = ()=>{
                             </button>
 
                             <button
+                                disabled={enviando}
                                 onClick={()=>
                                     finalizarCuestionario()
                                 }

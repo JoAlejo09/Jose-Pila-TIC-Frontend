@@ -14,99 +14,56 @@ const Cuestionarios = ()=>{
 
     const [abrirModal,setAbrirModal] = useState(false);
 
-    const [
-        cuestionarioEditar,
-        setCuestionarioEditar
-    ] = useState(null);
+    const [ cuestionarioEditar, setCuestionarioEditar] = useState(null);
 
-    // =========================================
-    // CARGAR CUESTIONARIOS
-    // =========================================
 
     const cargarCuestionarios = async()=>{
-
         try {
-
             setLoading(true);
-
-            const data =
-                await obtenerCuestionariosRequest();
-
+            const data = await obtenerCuestionariosRequest();
             setCuestionarios(data);
-
         } catch (error) {
-
             console.log(error);
-
         } finally {
-
             setLoading(false);
-
         }
     };
 
     useEffect(()=>{
-
         cargarCuestionarios();
-
     },[]);
 
-    // =========================================
     // CAMBIAR ESTADO
-    // =========================================
-
     const cambiarEstado = async(id)=>{
-
         try {
 
             await eliminarCuestionarioRequest(id);
-
-            cargarCuestionarios();
-
+            await cargarCuestionarios();
         } catch (error) {
-
             console.log(error);
-
         }
     };
-
-    // =========================================
     // LOADING
-    // =========================================
 
     if(loading){
-
         return(
-
             <div className="min-h-screen bg-gray-50 p-6">
-
                 <div className="bg-white rounded-2xl shadow-sm p-8 text-center">
-
                     <p className="text-lg text-gray-600">
                         Cargando cuestionarios...
                     </p>
-
                 </div>
-
             </div>
-
         );
     }
 
     return(
-
         <div className="min-h-screen bg-gray-50 p-6">
-
-            {/* HEADER */}
-
             <div className="flex justify-between items-center mb-6">
-
                 <div>
-
                     <h1 className="text-4xl font-bold text-gray-800">
-                        Gestión de Cuestionarios
+                        Gestión de Evaluaciones
                     </h1>
-
                     <p className="text-gray-500 mt-2">
                         Administra cuestionarios académicos
                     </p>
@@ -118,124 +75,60 @@ const Cuestionarios = ()=>{
                         setCuestionarioEditar(null);
                         setAbrirModal(true);
                     }}
-                    className="
-                        bg-blue-600
-                        hover:bg-blue-700
-                        text-white
-                        px-5 py-3
-                        rounded-xl
-                        font-medium
-                        transition-all
-                    "
+                    className=" bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl font-medium transition-all "
                 >
                     + Nuevo Cuestionario
                 </button>
-
             </div>
 
-            {/* TABLA */}
-
             <div className="bg-white rounded-2xl shadow-sm overflow-hidden overflow-x-auto">
-
                 <table className="w-full min-w-[1200px]">
-
                     <thead className="bg-gray-100">
-
                         <tr>
-
-                            <th className="p-4 text-left">
-                                Título
-                            </th>
-
-                            <th className="p-4 text-left">
-                                Materia
-                            </th>
-
-                            <th className="p-4 text-left">
-                                Tema
-                            </th>
-
-                            <th className="p-4 text-left">
-                                Nivel Académico
-                            </th>
-
-                            <th className="p-4 text-left">
-                                Tipo Evaluación
-                            </th>
-
-                            <th className="p-4 text-left">
-                                Alcance
-                            </th>
-
-                            <th className="p-4 text-left">
-                                Modo
-                            </th>
-
-                            <th className="p-4 text-left">
-                                Dificultad
-                            </th>
-
-                            <th className="p-4 text-left">
-                                Preguntas
-                            </th>
-
-                            <th className="p-4 text-left">
-                                Tiempo
-                            </th>
-
-                            <th className="p-4 text-left">
-                                Estado
-                            </th>
-
-                            <th className="p-4 text-center">
-                                Acciones
-                            </th>
-
+                            <th className="p-4 text-left"> Título </th>
+                            <th className="p-4 text-left"> Materia </th>
+                            <th className="p-4 text-left"> Tema </th>
+                            <th className="p-4 text-left"> Nivel Académico </th>
+                            <th className="p-4 text-left"> Tipo Evaluación </th>
+                            <th className="p-4 text-left"> Alcance </th>
+                            <th className="p-4 text-left"> Modo </th>
+                            <th className="p-4 text-left"> Dificultad </th>
+                            <th className="p-4 text-left"> Preguntas </th>
+                            <th className="p-4 text-left"> Tiempo </th>
+                            <th className="p-4 text-left"> Estado </th>
+                            <th className="p-4 text-center"> Acciones </th>
                         </tr>
-
                     </thead>
 
                     <tbody>
-
-                        {
-                            cuestionarios.length > 0
+                        { cuestionarios.length > 0
                             ? cuestionarios.map((cuestionario)=>(
-
                                 <tr
                                     key={cuestionario._id}
                                     className="border-t hover:bg-gray-50"
                                 >
-
                                     <td className="p-4 font-medium text-gray-800">
                                         {cuestionario.titulo}
                                     </td>
 
                                     <td className="p-4">
-                                        {
-                                            cuestionario.materia?.nombre
-                                            || "Sin materia"
-                                        }
+                                        { cuestionario.materia?.nombre || "Sin materia" }
                                     </td>
 
                                     <td className="p-4">
-
                                         {
                                             cuestionario.alcanceEvaluacion
                                             === "tema"
                                                 ? cuestionario.tema?.nombre
                                                 : "General"
                                         }
-
                                     </td>
 
                                     <td className="p-4">
                                         {cuestionario.nivelAcademico}
                                     </td>
 
-                                    {/* TIPO EVALUACION */}
-
                                     <td className="p-4">
-
                                         <span
                                             className={`
                                                 px-3 py-1 rounded-full text-xs font-medium
@@ -246,24 +139,17 @@ const Cuestionarios = ()=>{
                                                 }
                                             `}
                                         >
-
                                             {
                                                 cuestionario.tipoEvaluacion === "diagnostico"
                                                 ? "Diagnóstico"
                                                 : "Refuerzo"
                                             }
-
                                         </span>
-
                                     </td>
 
-                                    {/* ALCANCE */}
-
                                     <td className="p-4">
-
                                         <span
-                                            className={`
-                                                px-3 py-1 rounded-full text-xs font-medium
+                                            className={`px-3 py-1 rounded-full text-xs font-medium
                                                 ${
                                                     cuestionario.alcanceEvaluacion === "tema"
                                                     ? "bg-purple-100 text-purple-700"
@@ -271,15 +157,11 @@ const Cuestionarios = ()=>{
                                                 }
                                             `}
                                         >
-
-                                            {
-                                                cuestionario.alcanceEvaluacion === "tema"
+                                            { cuestionario.alcanceEvaluacion === "tema"
                                                 ? "Por Tema"
                                                 : "Por Materia"
                                             }
-
                                         </span>
-
                                     </td>
 
                                     <td className="p-4 capitalize">
@@ -299,10 +181,8 @@ const Cuestionarios = ()=>{
                                     </td>
 
                                     <td className="p-4">
-
                                         <span
-                                            className={`
-                                                px-3 py-1 rounded-full text-sm
+                                            className={` px-3 py-1 rounded-full text-sm
                                                 ${
                                                     cuestionario.estado
                                                     ? "bg-green-100 text-green-700"
@@ -310,35 +190,21 @@ const Cuestionarios = ()=>{
                                                 }
                                             `}
                                         >
-
-                                            {
-                                                cuestionario.estado
+                                            { cuestionario.estado
                                                 ? "Activo"
                                                 : "Inactivo"
                                             }
-
                                         </span>
-
                                     </td>
 
                                     <td className="p-4 text-center">
-
                                         <div className="flex justify-center gap-3">
-
                                             <button
                                                 onClick={()=>{
-                                                    setCuestionarioEditar(
-                                                        cuestionario
-                                                    );
-
+                                                    setCuestionarioEditar(cuestionario);
                                                     setAbrirModal(true);
                                                 }}
-                                                className="
-                                                    px-4 py-2 rounded-lg
-                                                    bg-yellow-100
-                                                    text-yellow-700
-                                                    hover:bg-yellow-200
-                                                "
+                                                className=" px-4 py-2 rounded-lg bg-yellow-100 text-yellow-700 hover:bg-yellow-200"
                                             >
                                                 Editar
                                             </button>
@@ -349,72 +215,40 @@ const Cuestionarios = ()=>{
                                                         cuestionario._id
                                                     )
                                                 }
-                                                className="
-                                                    px-4 py-2 rounded-lg
-                                                    bg-gray-200
-                                                    text-gray-700
-                                                    hover:bg-gray-300
-                                                "
+                                                className="px-4 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300"
                                             >
-
-                                                {
-                                                    cuestionario.estado
+                                                { cuestionario.estado
                                                     ? "Desactivar"
                                                     : "Activar"
                                                 }
-
                                             </button>
-
                                         </div>
-
                                     </td>
-
                                 </tr>
-
                             ))
                             :
                             <tr>
-
                                 <td
                                     colSpan="12"
                                     className="p-10 text-center text-gray-500"
                                 >
 
                                     No existen cuestionarios registrados
-
                                 </td>
-
                             </tr>
                         }
-
                     </tbody>
-
                 </table>
-
             </div>
 
-            {/* MODAL */}
-
-            {
-                abrirModal
+            { abrirModal
                 &&
                 <CuestionarioModal
-
-                    onClose={()=>
-                        setAbrirModal(false)
-                    }
-
-                    recargarCuestionarios={
-                        cargarCuestionarios
-                    }
-
-                    cuestionarioEditar={
-                        cuestionarioEditar
-                    }
-
+                    onClose={()=> setAbrirModal(false)}
+                    recargarCuestionarios={ cargarCuestionarios }
+                    cuestionarioEditar={ cuestionarioEditar }
                 />
             }
-
         </div>
     );
 };
