@@ -71,7 +71,6 @@ const CuestionarioModal = ({
         }
 
     },[cuestionarioEditar]);
-
     // Para materias
 
     useEffect(()=>{
@@ -112,8 +111,7 @@ const CuestionarioModal = ({
 
     },[form.materia]);
 
-    // PREGUNTAS
-
+    // Para Preguntas
     useEffect(()=>{
         const cargarPreguntas = async()=>{
             try {
@@ -123,14 +121,12 @@ const CuestionarioModal = ({
                 console.log(error);
             }
         };
-
         cargarPreguntas();
 
     },[]);
-
+ 
     // AUTO CANTIDAD
     useEffect(()=>{
-
         if(form.modoGeneracion === "manual"){
             setForm((prev)=>({
                 ...prev,
@@ -145,25 +141,18 @@ const CuestionarioModal = ({
 
     // filtrar preguntas solo para materia, nivel y unidad seleccionada (si aplica)
 
-    const preguntasFiltradas =
-        preguntasDisponibles.filter((pregunta)=>{
+    const preguntasFiltradas = preguntasDisponibles.filter((pregunta)=>{
 
-            const coincideMateria =
-                pregunta.materia?._id?.toString()
+            const coincideMateria = pregunta.materia?._id?.toString()
                 ===
                 form.materia?.toString();
 
-            const coincideNivel =
-                pregunta.nivelAcademico
+            const coincideNivel = pregunta.nivelAcademico
                 ===
                 form.nivelAcademico;
 
-            if(
-                form.alcanceEvaluacion === "unidad"
-            ){
-
-                const coincideUnidad =
-                    pregunta.unidad?._id?.toString()
+            if( form.alcanceEvaluacion === "unidad" ){
+                const coincideUnidad = pregunta.unidad?._id?.toString()
                     ===
                     form.unidad?.toString();
 
@@ -180,32 +169,17 @@ const CuestionarioModal = ({
             );
         });
 
-    // =========================================
-    // HANDLE CHANGE
-    // =========================================
+    // Cambios de formulario
 
     const handleChange = (e)=>{
-
-        const {
-            name,
-            value,
-            type,
-            checked
-        } = e.target;
-
-        const valor =
-            type === "checkbox"
+        const { name, value, type, checked } = e.target;
+        const valor = type === "checkbox"
             ? checked
             : value;
-
         setForm((prev)=>({
-
             ...prev,
-
             [name]:valor,
-
-            ...(name === "alcanceEvaluacion"
-            &&
+            ...(name === "alcanceEvaluacion" &&
             valor === "materia"
                 ? {
                     unidad:"",
@@ -234,19 +208,12 @@ const CuestionarioModal = ({
         }));
     };
 
-    // =========================================
     // SELECCION PREGUNTAS
-    // =========================================
 
     const handlePregunta = (id)=>{
-
-        const existe =
-            form.preguntas.includes(id);
-
+        const existe = form.preguntas.includes(id);
         if(existe){
-
             setForm((prev)=>({
-
                 ...prev,
 
                 preguntas:
@@ -259,9 +226,7 @@ const CuestionarioModal = ({
         } else{
 
             setForm((prev)=>({
-
                 ...prev,
-
                 preguntas:[
                     ...prev.preguntas,
                     id
@@ -322,17 +287,19 @@ const CuestionarioModal = ({
         return true;
     };
 
-    // =========================================
     // NAVEGACION
-    // =========================================
-
     const siguientePaso = ()=>{
+        console.log("Antes", paso)
 
         const valido = validarPaso();
 
         if(valido){
 
-            setPaso((prev)=> prev + 1);
+            setPaso((prev)=> {
+                console.log("CAMBIANDO A:", prev + 1);
+                return prev + 1;
+            }
+        );
         }
     };
 
@@ -346,7 +313,7 @@ const CuestionarioModal = ({
     // =========================================
 
     const handleSubmit = async(e)=>{
-
+    
         e.preventDefault();
 
         if(
@@ -489,7 +456,10 @@ const CuestionarioModal = ({
                 </div>
 
                 <form
-                    onSubmit={handleSubmit}
+                    onSubmit={(e)=>{
+                        console.log("FORM SUBMIT");
+                        handleSubmit(e);
+                    }}
                     className="p-6 space-y-6"
                 >
 
@@ -512,7 +482,7 @@ const CuestionarioModal = ({
                     }
 
                     {
-                        paso === 3 &&
+                        paso === 3 &&                        
                         <PasoPreguntas
                             form={form}
                             handleChange={handleChange}
@@ -553,7 +523,12 @@ const CuestionarioModal = ({
                                 ? (
                                     <button
                                         type="button"
-                                        onClick={siguientePaso}
+                                        onClick={(e)=>{
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            console.log("CLICK SIGUIENTE")
+                                            siguientePaso();
+                                        }}
                                         className="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white"
                                     >
                                         Siguiente

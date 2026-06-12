@@ -147,6 +147,7 @@ const PasoPreguntas = ({
                                                 }
                                                 className="mt-1"
                                             />
+                                        
 
                                             <div className="flex-1">
 

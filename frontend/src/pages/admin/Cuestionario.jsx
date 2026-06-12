@@ -36,7 +36,6 @@ const Cuestionarios = ()=>{
     // CAMBIAR ESTADO
     const cambiarEstado = async(id)=>{
         try {
-
             await eliminarCuestionarioRequest(id);
             await cargarCuestionarios();
         } catch (error) {
@@ -244,7 +243,12 @@ const Cuestionarios = ()=>{
             { abrirModal
                 &&
                 <CuestionarioModal
-                    onClose={()=> setAbrirModal(false)}
+                    onClose={()=>{
+                        //BORRAR ESTO DESPUES
+                        console.log("ONCLOSE EJECUTADO")
+                        setAbrirModal(false)
+                    }
+                    }
                     recargarCuestionarios={ cargarCuestionarios }
                     cuestionarioEditar={ cuestionarioEditar }
                 />

@@ -290,7 +290,8 @@ const MiPerfil = () => {
                                     name="fechaNacimiento"
                                     value={form.fechaNacimiento}
                                     onChange={handleChange}
-                                    className="w-full border p-2 rounded mt-1"
+                                    className="w-full border p-2 rounded mt-1 bg-gray-100 text-gray-500 cursor-not-allowed"
+                                    disabled
                                 />
                             ) : (
                                 <p className="mt-1">
