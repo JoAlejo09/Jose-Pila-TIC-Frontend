@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-import { loginUserRequest, reenviarConfirmacionRequest } from "../../services/authService";
+import { loginUserRequest, reenviarConfirmacionRequest } from "../../services/authService.js";
 
-import { useAuth } from "../../context/useAuth";
+import { useAuth } from "../../context/useAuth.js";
 
 import Card from "../../components/ui/Card.jsx";
 import Button from "../../components/ui/Button.jsx";
