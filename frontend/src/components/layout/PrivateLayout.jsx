@@ -12,7 +12,7 @@ const PrivateLayout = () =>{
       <PrivateNavbar toggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
       <div className="flex flex-1">
         <Sidebar isOpen={sidebarOpen} />
-        <main className="flex-1 p-6 bg-gray-50">
+        <main className="flex-1 min-w-0 p-6 bg-gray-50 overflow-auto">
           <Outlet />
         </main>
       </div>

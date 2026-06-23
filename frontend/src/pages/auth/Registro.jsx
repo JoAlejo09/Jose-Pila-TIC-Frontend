@@ -106,69 +106,79 @@ const Registro = () => {
 
     return (
 
-        <div className="min-h-screen flex items-center justify-center bg-background px-4">
+        <div className="min-h-screen bg-background px-4 py-8 overflow-y-auto">
+            <div className="flex justify-center">
 
-            <Card className="w-full max-w-md">
+                <Card className="w-full max-w-md">
 
-                <h2 className="text-2xl font-bold mb-4 text-center">
-                    Registrarse
-                </h2>
-
-                {error && (
-                    <p className="text-red-500 text-sm mb-3 text-center">
-                        {error}
+                    <h2 className="text-2xl font-bold mb-4 text-center">
+                        Registrarse
+                    </h2>
+                    <p className="text-sm text-muted-foreground text-center mt-2 mb-4">
+                        Regístrate para acceder al sistema de refuerzo académico y realizar evaluaciones, consultar recursos y dar seguimiento a tu progreso.
                     </p>
-                )}
 
-                {success && (
-                    <p className="text-green-600 text-sm mb-3 text-center">
-                        {success}
-                    </p>
-                )}
+                    {error && (
+                        <p className="text-red-500 text-sm mb-3 text-center">
+                            {error}
+                        </p>
+                    )}
 
-                <form
-                    onSubmit={handleSubmit}
-                    className="space-y-3"
-                >
-                    <Input
-                        type="text"
-                        name="nombre"
-                        placeholder="Nombre"
-                        value={form.nombre}
-                        onChange={handleChange}
-                    />
+                    {success && (
+                        <p className="text-green-600 text-sm mb-3 text-center">
+                            {success}
+                        </p>
+                    )}
 
-                    <Input
-                        type="text"
-                        name="apellido"
-                        placeholder="Apellido"
-                        value={form.apellido}
-                        onChange={handleChange}
-                    />
+                    <form
+                        onSubmit={handleSubmit}
+                        className="space-y-3"
+                    >
+                        <Input
+                            type="text"
+                            name="nombre"   
+                            placeholder="Nombre"
+                            value={form.nombre}
+                        onChange={handleChange} 
+                        />
 
-                    <Input
-                        type="email"
-                        name="email"
-                        placeholder="Correo electrónico"
-                        value={form.email}
-                        onChange={handleChange}
-                    />
+                        <Input
+                            type="text"
+                            name="apellido"
+                            placeholder="Apellido"
+                            value={form.apellido}
+                            onChange={handleChange}
+                        />
 
-                    <PasswordInput
-                        name="password"
-                        placeholder="Contraseña"
-                        value={form.password}
-                        onChange={handleChange}
-                        className="w-full border p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                    />
+                        <Input
+                            type="email"
+                            name="email"
+                            placeholder="Correo electrónico"
+                            value={form.email}
+                            onChange={handleChange}
+                        />
 
-                    <PasswordInput
-                        name="confirmpassword"
-                        placeholder="Confirmar contraseña"
-                        value={form.confirmpassword}
-                        onChange={handleChange}
-                        className="w-full border p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                    />
+                       <PasswordInput
+                            name="password"
+                            placeholder="Contraseña"
+                            value={form.password}
+                            onChange={handleChange}
+                            className="w-full border p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                        />
+                        <p className="text-xs text-gray-500">
+                            La contraseña debe contener al menos 8 caracteres.
+                        </p>
+                        <p className="text-xs text-gray-500">
+                            Debe incluir letras mayúsculas, minúsculas y números.
+                        </p>
+
+                        <PasswordInput
+                            name="confirmpassword"  
+                            placeholder="Confirmar contraseña"
+                            value={form.confirmpassword}
+                            onChange={handleChange} 
+                            className="w-full border p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                        />
 
                     <select
                         name="rol"
@@ -177,9 +187,12 @@ const Registro = () => {
                         className="w-full border p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                     >
                         <option value="estudiante">Estudiante </option>
-
                         <option value="tutor"> Tutor </option>
                     </select>
+                    <p className="text-xs text-gray-500">
+                        Estudiante: accede a recursos y evaluaciones.
+                        Tutor: puede brindar acompañamiento académico.
+                    </p>
 
                     <div className="flex justify-center">
                         <Button type="submit">
@@ -192,6 +205,7 @@ const Registro = () => {
                     </div>
                 </form>
             </Card>
+            </div>
         </div>
     );
 };

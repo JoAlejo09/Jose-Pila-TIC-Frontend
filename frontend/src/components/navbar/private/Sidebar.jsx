@@ -176,8 +176,9 @@ const Sidebar = ({ isOpen }) => {
 
         <aside
             className={`
+                flex-shrink-0
                 bg-slate-900 text-white
-                min-h-screen
+                h-full
                 transition-all duration-300
                 border-r border-slate-800
                 overflow-hidden

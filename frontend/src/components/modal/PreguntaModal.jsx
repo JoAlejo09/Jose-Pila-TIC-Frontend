@@ -30,65 +30,38 @@ const PreguntaModal = ({
     const [loading,setLoading] = useState(false);
 
     const [form,setForm] = useState({
-
         enunciado:"",
-
         nivelAcademico:"1ro BGU",
-
         tipoPregunta:"opcion_multiple",
-
         opciones:["","","",""],
-
         respuestaCorrecta:"",
-
         explicacion:"",
-
         nivelDificultad:"facil",
-
         materia:"",
         unidad:"",
         tema:"",
-
         recursoApoyo:{
             tipo:"",
             url:"",
             contenido:""
         }
     });
-
-    // =========================================
-    // EDITAR
-    // =========================================
-
+    // EDITAR UNA PREGUNTA EXISTENTE
     useEffect(()=>{
-
         if(preguntaEditar){
-
             setForm({
-
-                enunciado:
-                    preguntaEditar.enunciado || "",
-
-                nivelAcademico:
-                    preguntaEditar.nivelAcademico || "1ro BGU",
-
-                tipoPregunta:
-                    preguntaEditar.tipoPregunta || "opcion_multiple",
-
-                opciones:
-                    preguntaEditar.opciones?.length > 0
+                enunciado: preguntaEditar.enunciado || "",
+                nivelAcademico: preguntaEditar.nivelAcademico || "1ro BGU",
+                tipoPregunta: preguntaEditar.tipoPregunta || "opcion_multiple",
+                opciones: preguntaEditar.opciones?.length > 0
                     ? preguntaEditar.opciones.map((opcion)=>
                         typeof opcion === "string"
                         ? opcion
                         : opcion.texto
                     )
                     : ["","","",""],
-
-                respuestaCorrecta:
-                    preguntaEditar.respuestaCorrecta || "",
-
-                explicacion:
-                    preguntaEditar.explicacion || "",
+                respuestaCorrecta: preguntaEditar.respuestaCorrecta || "",
+                explicacion: preguntaEditar.explicacion || "",
 
                 nivelDificultad:
                     preguntaEditar.nivelDificultad || "facil",
@@ -213,10 +186,6 @@ const PreguntaModal = ({
 
     },[form.unidad]);
 
-    // =========================================
-    // HANDLE CHANGE
-    // =========================================
-
     const handleChange = (e)=>{
 
         const { name, value } = e.target;
@@ -239,10 +208,6 @@ const PreguntaModal = ({
 
     };
 
-    // =========================================
-    // OPCIONES
-    // =========================================
-
     const handleOpcionChange = (index,valor)=>{
 
         const nuevasOpciones = [...form.opciones];
@@ -256,12 +221,7 @@ const PreguntaModal = ({
 
     };
 
-    // =========================================
-    // RECURSO
-    // =========================================
-
     const handleRecursoChange = (e)=>{
-
         setForm({
             ...form,
             recursoApoyo:{
@@ -272,22 +232,13 @@ const PreguntaModal = ({
 
     };
 
-    // =========================================
-    // SUBMIT
-    // =========================================
-
     const handleSubmit = async(e)=>{
-
         e.preventDefault();
-
         setLoading(true);
-
         try {
 
             const payload = {
-
                 ...form,
-
                 opciones:
                     form.tipoPregunta === "respuesta_corta"
                     ? []
@@ -301,42 +252,23 @@ const PreguntaModal = ({
             };
 
             if(preguntaEditar){
-
                 await actualizarPreguntaRequest(
                     preguntaEditar._id,
                     payload
                 );
-
             } else{
-
                 await crearPreguntaRequest(payload);
-
             }
-
             await recargarPreguntas();
-
             onClose();
-
         } catch (error) {
-
             console.log(error);
-
         } finally {
-
             setLoading(false);
-
         }
-
     };
-
     return(
-
-        <div className="
-            fixed inset-0 z-50
-            flex items-center justify-center
-            bg-black/50 backdrop-blur-sm
-            p-4
-        ">
+        <div className=" fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4        ">
 
             <div className="
                 bg-white w-full max-w-5xl
@@ -438,7 +370,6 @@ const PreguntaModal = ({
                         </div>
 
                         <div>
-
                             <label className="block mb-2 font-medium">
                                 Dificultad
                             </label>
@@ -447,31 +378,16 @@ const PreguntaModal = ({
                                 name="nivelDificultad"
                                 value={form.nivelDificultad}
                                 onChange={handleChange}
-                                className="
-                                    w-full border border-gray-300
-                                    rounded-xl p-3
+                                className=" w-full border border-gray-300 rounded-xl p-3
                                 "
                             >
-
-                                <option value="facil">
-                                    Fácil
-                                </option>
-
-                                <option value="medio">
-                                    Medio
-                                </option>
-
-                                <option value="dificil">
-                                    Difícil
-                                </option>
-
+                                <option value="facil"> Fácil </option>
+                                <option value="medio"> Medio </option>
+                                <option value="dificil"> Difícil </option>
                             </select>
-
                         </div>
-
                     </div>
 
-                    {/* MATERIA / UNIDAD / TEMA */}
                     <div className="grid md:grid-cols-3 gap-4">
 
                         <div>
@@ -485,15 +401,9 @@ const PreguntaModal = ({
                                 value={form.materia}
                                 onChange={handleChange}
                                 required
-                                className="
-                                    w-full border border-gray-300
-                                    rounded-xl p-3
-                                "
+                                className=" w-full border border-gray-300 |rounded-xl p-3 "
                             >
-
-                                <option value="">
-                                    Seleccione una materia
-                                </option>
+                                <option value=""> Seleccione una materia </option>
 
                                 {
                                     materias.map((materia)=>(
@@ -507,9 +417,7 @@ const PreguntaModal = ({
 
                                     ))
                                 }
-
                             </select>
-
                         </div>
 
                         <div>
@@ -523,35 +431,24 @@ const PreguntaModal = ({
                                 value={form.unidad}
                                 onChange={handleChange}
                                 required
-                                className="
-                                    w-full border border-gray-300
-                                    rounded-xl p-3
-                                "
+                                className=" w-full border border-gray-300 rounded-xl p-3"
                             >
-
-                                <option value="">
-                                    Seleccione una unidad
-                                </option>
+                                <option value=""> Seleccione una unidad </option>
 
                                 {
                                     unidades.map((unidad)=>(
-
                                         <option
                                             key={unidad._id}
                                             value={unidad._id}
                                         >
                                             {unidad.nombre}
                                         </option>
-
                                     ))
                                 }
-
                             </select>
-
                         </div>
 
                         <div>
-
                             <label className="block mb-2 font-medium">
                                 Tema
                             </label>
@@ -561,36 +458,25 @@ const PreguntaModal = ({
                                 value={form.tema}
                                 onChange={handleChange}
                                 required
-                                className="
-                                    w-full border border-gray-300
-                                    rounded-xl p-3
-                                "
+                                className=" w-full border border-gray-300 rounded-xl p-3"
                             >
-
                                 <option value="">
                                     Seleccione un tema
                                 </option>
-
                                 {
                                     temas.map((tema)=>(
-
                                         <option
                                             key={tema._id}
                                             value={tema._id}
                                         >
                                             {tema.nombre}
                                         </option>
-
                                     ))
                                 }
-
                             </select>
-
                         </div>
-
                     </div>
 
-                    {/* TIPO */}
                     <div>
 
                         <label className="block mb-2 font-medium">
@@ -622,13 +508,8 @@ const PreguntaModal = ({
                         </select>
 
                     </div>
-                    
-                    {/* =========================================
-    OPCION MULTIPLE
-========================================= */}
 
-{
-    form.tipoPregunta === "opcion_multiple"
+{ form.tipoPregunta === "opcion_multiple"
     &&
     <div className="space-y-5">
 
@@ -678,19 +559,10 @@ const PreguntaModal = ({
                 value={form.respuestaCorrecta}
                 onChange={handleChange}
                 required
-                className="
-                    w-full border border-gray-300
-                    rounded-xl p-3
-                "
+                className=" w-full border border-gray-300 rounded-xl p-3"
             >
-
-                <option value="">
-                    Seleccione la respuesta correcta
-                </option>
-
-                {
-                    form.opciones.map((opcion,index)=>(
-
+                <option value=""> Seleccione la respuesta correcta </option>
+                { form.opciones.map((opcion,index)=>(
                         opcion.trim() !== ""
                         &&
                         <option
@@ -709,10 +581,6 @@ const PreguntaModal = ({
 
     </div>
 }
-
-{/* =========================================
-    VERDADERO / FALSO
-========================================= */}
 
 {
     form.tipoPregunta === "verdadero_falso"
@@ -769,10 +637,6 @@ const PreguntaModal = ({
     </div>
 }
 
-{/* =========================================
-    RESPUESTA CORTA
-========================================= */}
-
 {
     form.tipoPregunta === "respuesta_corta"
     &&
@@ -799,7 +663,6 @@ const PreguntaModal = ({
 }
                     {/* EXPLICACION */}
                     <div>
-
                         <label className="block mb-2 font-medium">
                             Explicación
                         </label>
@@ -808,20 +671,11 @@ const PreguntaModal = ({
                             name="explicacion"
                             value={form.explicacion}
                             onChange={handleChange}
-                            className="
-                                w-full border border-gray-300
-                                rounded-xl p-4
-                                min-h-[100px]
-                            "
+                            className=" w-full border border-gray-300 rounded-xl p-4 min-h-[100px] "
                         />
-
                     </div>
 
-                    {/* RECURSO */}
-                    <div className="
-                        border border-gray-200
-                        rounded-2xl p-5
-                        space-y-4
+                    <div className=" border border-gray-200 rounded-2xl p-5 space-y-4
                     ">
 
                         <h3 className="font-semibold text-lg">
@@ -832,28 +686,13 @@ const PreguntaModal = ({
                             name="tipo"
                             value={form.recursoApoyo.tipo}
                             onChange={handleRecursoChange}
-                            className="
-                                w-full border border-gray-300
-                                rounded-xl p-3
+                            className=" w-full border border-gray-300 rounded-xl p-3
                             "
                         >
-
-                            <option value="">
-                                Sin recurso
-                            </option>
-
-                            <option value="video">
-                                Video
-                            </option>
-
-                            <option value="documento">
-                                Documento
-                            </option>
-
-                            <option value="texto">
-                                Texto
-                            </option>
-
+                            <option value=""> Sin recurso </option>
+                            <option value="video"> Video </option>
+                            <option value="documento"> Documento </option>
+                            <option value="texto"> Texto </option>
                         </select>
 
                         <input
@@ -862,10 +701,7 @@ const PreguntaModal = ({
                             placeholder="URL recurso"
                             value={form.recursoApoyo.url}
                             onChange={handleRecursoChange}
-                            className="
-                                w-full border border-gray-300
-                                rounded-xl p-3
-                            "
+                            className=" w-full border border-gray-300 rounded-xl p-3 "
                         />
 
                         <textarea
@@ -873,44 +709,23 @@ const PreguntaModal = ({
                             placeholder="Contenido adicional"
                             value={form.recursoApoyo.contenido}
                             onChange={handleRecursoChange}
-                            className="
-                                w-full border border-gray-300
-                                rounded-xl p-4
-                                min-h-[100px]
-                            "
+                            className="w-full border border-gray-300 rounded-xl p-4 min-h-[100px]"
                         />
-
                     </div>
 
-                    {/* BOTONES */}
-                    <div className="
-                        flex justify-end gap-4
-                        pt-6 border-t border-gray-200
-                    ">
-
+                    <div className=" flex justify-end gap-4 pt-6 border-t border-gray-200">
                         <button
                             type="button"
                             onClick={onClose}
-                            className="
-                                px-6 py-3 rounded-xl
-                                bg-gray-300 hover:bg-gray-400
-                                text-gray-800 font-medium
-                            "
+                            className="px-6 py-3 rounded-xl bg-gray-300 hover:bg-gray-400 text-gray-800 font-medium "
                         >
                             Cancelar
                         </button>
-
                         <button
                             type="submit"
                             disabled={loading}
-                            className="
-                                px-6 py-3 rounded-xl
-                                bg-blue-600 hover:bg-blue-700
-                                text-white font-medium
-                                disabled:opacity-50
-                            "
+                            className="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium disabled:opacity-50"
                         >
-
                             {
                                 loading
                                 ? "Guardando..."
@@ -918,19 +733,12 @@ const PreguntaModal = ({
                                     ? "Actualizar Pregunta"
                                     : "Guardar Pregunta"
                             }
-
                         </button>
-
                     </div>
-
                 </form>
-
             </div>
-
         </div>
-
     );
-
 };
 
 export default PreguntaModal;
