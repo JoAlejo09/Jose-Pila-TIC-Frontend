@@ -134,52 +134,86 @@ const Registro = () => {
                         onSubmit={handleSubmit}
                         className="space-y-3"
                     >
+                    <div className="space-y-1">
+                         <label
+                            htmlFor="nombre"
+                            className="text-sm font-medium text-gray-700"
+                         > Nombre </label>
+
                         <Input
                             type="text"
                             name="nombre"   
-                            placeholder="Nombre"
+                            placeholder="Ej. Jose, Andres, Ana, Carol, etc"
                             value={form.nombre}
                         onChange={handleChange} 
                         />
-
+                    </div>
+                    <div className="space-y-1">
+                        <label
+                            htmlFor="apellido"
+                            className="text-sm font-medium text-gray-700"
+                         > Apellido </label>
                         <Input
                             type="text"
                             name="apellido"
-                            placeholder="Apellido"
+                            placeholder="Ej. Perez, Torres, Erazo, etc"
                             value={form.apellido}
                             onChange={handleChange}
                         />
-
+                    </div>
+                    <div className="space-y-1">
+                        <label
+                            htmlFor="email"
+                            className="text-sm font-medium text-gray-700"
+                         > Correo electrónico </label>
                         <Input
                             type="email"
                             name="email"
-                            placeholder="Correo electrónico"
+                            placeholder="Ej. micorreo@outlook.com"
                             value={form.email}
                             onChange={handleChange}
                         />
-
+                    </div>
+                    <div className="space-y-1">
+                        <label
+                            htmlFor="password"
+                            className="text-sm font-medium text-gray-700"
+                         > Contraseña </label>
                        <PasswordInput
                             name="password"
-                            placeholder="Contraseña"
+                            placeholder="********"
                             value={form.password}
                             onChange={handleChange}
                             className="w-full border p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                         />
+                    </div>
                         <p className="text-xs text-gray-500">
                             La contraseña debe contener al menos 8 caracteres.
                         </p>
                         <p className="text-xs text-gray-500">
                             Debe incluir letras mayúsculas, minúsculas y números.
                         </p>
-
+                    <div className="space-y-1">
+                        <label
+                            htmlFor="confirmpassword"
+                            className="text-sm font-medium text-gray-700"
+                         > Confirmación contraseña </label>
                         <PasswordInput
                             name="confirmpassword"  
-                            placeholder="Confirmar contraseña"
+                            placeholder="********"
                             value={form.confirmpassword}
                             onChange={handleChange} 
                             className="w-full border p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                         />
-
+                    </div>
+                        <p className="text-xs text-gray-500">
+                            Recuerda debe coincidir ambas contraseñas
+                        </p>
+                    <div className="space-y-1">
+                        <label
+                            htmlFor="rol"
+                            className="text-sm font-medium text-gray-700"
+                         >Rol del usuario </label>
                     <select
                         name="rol"
                         value={form.rol}
@@ -189,6 +223,7 @@ const Registro = () => {
                         <option value="estudiante">Estudiante </option>
                         <option value="tutor"> Tutor </option>
                     </select>
+                    </div>
                     <p className="text-xs text-gray-500">
                         Estudiante: accede a recursos y evaluaciones.
                         Tutor: puede brindar acompañamiento académico.

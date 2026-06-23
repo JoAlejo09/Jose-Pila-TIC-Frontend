@@ -126,25 +126,31 @@ const Login = () => {
           onSubmit={handleSubmit}
           className="space-y-3"
         >
-
-          {/* EMAIL */}
-          <input
-            type="email"
-            name="email"
-            placeholder="Correo electrónico"
-            value={form.email}
-            onChange={handleChange}
-            className="w-full border p-2 rounded-lg focus:ring-2 focus:ring-primary"
+        <div className="space-y-1">
+          <label htmlFor="email"
+                 className="text-sm font-medium text-gray-700">
+                  Correo Electrónico
+          </label>
+          <input type="email"
+                name="email"
+                placeholder="Ej. micorreo@outlook.com"
+                value={form.email}
+                onChange={handleChange}
+                className="w-full border p-2 rounded-lg focus:ring-2 focus:ring-primary"
           />
-
-          {/* PASSWORD */}
+        </div>
+        <div className="space-y-1">
+          <label htmlFor="email"
+                 className="text-sm font-medium text-gray-700">
+                  Correo Electrónico
+          </label>
           <PasswordInput
             name="password"
-            placeholder="Contraseña"
+            placeholder="********"
             value={form.password}
             onChange={handleChange}
           />
-
+        </div>
           {/* RECUPERAR PASSWORD */}
           <div className="text-right">
             <Link
