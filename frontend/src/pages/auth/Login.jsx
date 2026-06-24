@@ -142,7 +142,7 @@ const Login = () => {
         <div className="space-y-1">
           <label htmlFor="email"
                  className="text-sm font-medium text-gray-700">
-                  Correo Electrónico
+                  Contraseña
           </label>
           <PasswordInput
             name="password"
