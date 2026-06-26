@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { UserCheck } from "lucide-react";
 
 import {
     obtenerPerfilRequest,
@@ -14,12 +15,13 @@ const CompletarPerfil = () => {
     const [usuario, setUsuario] = useState(null);
 
     const [form, setForm] = useState({
+        //Para estudiante
         telefono: "",
         direccion: "",
         fechaNacimiento: "",
         institucion: "",
         nivelAcademico: "",
-
+        //Para tutor
         especialidad: "",
         experiencia: "",
         titulacion: "",
@@ -27,41 +29,24 @@ const CompletarPerfil = () => {
     });
 
     const [imagen, setImagen] = useState(null);
-
     const [loading, setLoading] = useState(true);
-
     const [guardar, setGuardar] = useState(false);
-
     const [error, setError] = useState("");
-
     const [msg, setMsg] = useState("");
 
     useEffect(() => {
-
         const cargarUsuario = async () => {
-
             try {
-
                 const data = await obtenerPerfilRequest();
-
                 setUsuario(data.usuario);
-
             } catch (error) {
-
                 console.log(error);
-
                 setError("Error al cargar usuario");
-
             } finally {
-
                 setLoading(false);
-
             }
-
         };
-
         cargarUsuario();
-
     }, []);
 
     const handleChange = (e) => {
@@ -109,7 +94,7 @@ const CompletarPerfil = () => {
 
             setTimeout(() => {
                 if(usuario.rol === "estudiante"){
-                    navigate("/dashboard/estudiante");
+                    navigate("/dashboard/");
                 }else{
                     navigate("/dashboard/tutor");
                 }
@@ -148,13 +133,26 @@ const CompletarPerfil = () => {
 
             <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-2xl">
 
-                <h1 className="text-3xl font-bold mb-2 text-center">
-                    Completar Perfil
+                <div className="text-center mb-6">
+                    <UserCheck
+                    size={52}
+                    className="mx-auto text-blue-600 mb-3"/>
+                 <h1 className="text-3xl font-bold">
+                    ¡Bienvenido a RefAcademy!
                 </h1>
 
-                <p className="text-gray-500 text-center mb-6">
-                    Complete su información personal
+                <p className="text-gray-500 mt-2">
+                    Antes de acceder al sistema es necesario completar su perfil.
                 </p>
+                <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
+                    <h3 className="font-semibold text-blue-700 mb-2">
+                        Primer acceso al sistema
+                    </h3>
+                    <p className="text-sm text-blue-700">
+                        Este proceso solo debe realizarse una vez. La información registrada permitirá personalizar su experiencia dentro del sistema y habilitar todas las funcionalidades disponibles.
+                        </p>
+                </div>
+            </div>
 
                 {error && (
                     <p className="bg-red-100 text-red-600 p-3 rounded mb-4">
@@ -167,7 +165,14 @@ const CompletarPerfil = () => {
                         {msg}
                     </p>
                 )}
-
+                <div className="bg-gray-50 border rounded-xl p-4 mb-6">
+                    <p className="text-sm text-gray-600">
+                        Tipo de cuenta
+                    </p>
+                    <p className="font-semibold text-blue-600 capitalize">
+                        {usuario?.rol}
+                    </p>
+                </div>
                 <form
                     onSubmit={handleSubmit}
                     className="space-y-4"
@@ -179,7 +184,11 @@ const CompletarPerfil = () => {
                         <label className="block mb-1 font-semibold">
                             Foto de Perfil
                         </label>
-
+                        <p className="text-xs text-gray-500 mb-2">
+                            Seleccione una fotografía que permita identificar su perfil dentro del sistema. <br/>
+                            Puede dejar sin seleccionar
+                        </p>
+                        
                         <input
                             type="file"
                             accept="image/*"
@@ -188,7 +197,9 @@ const CompletarPerfil = () => {
                         />
 
                     </div>
-
+                    <h2 className="text-lg font-semibold border-b pb-2 mb-4">
+                        Información General
+                    </h2>
                     {/* TELEFONO */}
                     <div>
 
@@ -199,6 +210,7 @@ const CompletarPerfil = () => {
                         <input
                             type="text"
                             name="telefono"
+                            placeholder="Ej. 2313221 o 0948112342"
                             value={form.telefono}
                             onChange={handleChange}
                             className="w-full border p-2 rounded"
@@ -212,7 +224,9 @@ const CompletarPerfil = () => {
 
                             {/* INSTITUCION */}
                             <div>
-
+                                <h2 className="text-lg font-semibold border-b pb-2 mb-4 mt-6">
+                                    Información Académica
+                                </h2>
                                 <label className="block mb-1 font-semibold">
                                     Institución
                                 </label>
@@ -220,6 +234,7 @@ const CompletarPerfil = () => {
                                 <input
                                     type="text"
                                     name="institucion"
+                                    placeholder="Unidad educativa a la que pertenece"
                                     value={form.institucion}
                                     onChange={handleChange}
                                     className="w-full border p-2 rounded"
@@ -271,6 +286,7 @@ const CompletarPerfil = () => {
                                 <input
                                     type="text"
                                     name="direccion"
+                                    placeholder="Direccion exacta requerida"
                                     value={form.direccion}
                                     onChange={handleChange}
                                     className="w-full border p-2 rounded"
@@ -304,6 +320,9 @@ const CompletarPerfil = () => {
 
                             {/* ESPECIALIDAD */}
                             <div>
+                                <h2 className="text-lg font-semibold border-b pb-2 mb-4 mt-6">
+                                    Información Profesional
+                                </h2>
 
                                 <label className="block mb-1 font-semibold">
                                     Especialidad
@@ -312,6 +331,7 @@ const CompletarPerfil = () => {
                                 <input
                                     type="text"
                                     name="especialidad"
+                                    placeholder="Nombre de la carrera o Titulo obtenido"
                                     value={form.especialidad}
                                     onChange={handleChange}
                                     className="w-full border p-2 rounded"
@@ -329,6 +349,7 @@ const CompletarPerfil = () => {
                                 <input
                                     type="text"
                                     name="experiencia"
+                                    placeholder="Tiene experiencia en temas de tutorías"
                                     value={form.experiencia}
                                     onChange={handleChange}
                                     className="w-full border p-2 rounded"
@@ -346,6 +367,7 @@ const CompletarPerfil = () => {
                                 <input
                                     type="text"
                                     name="titulacion"
+                                    placeholder="Titulo de tercer o cuarto nivel"
                                     value={form.titulacion}
                                     onChange={handleChange}
                                     className="w-full border p-2 rounded"
@@ -362,6 +384,7 @@ const CompletarPerfil = () => {
 
                                 <textarea
                                     name="descripcion"
+                                    placeholder="Detalles y características de su forma de dar tutorías"
                                     value={form.descripcion}
                                     onChange={handleChange}
                                     className="w-full border p-2 rounded"
@@ -382,13 +405,15 @@ const CompletarPerfil = () => {
                         {
                             guardar
                                 ? "Guardando..."
-                                : "Completar Perfil"
+                                : "Guardar información y continuar"
                         }
 
                     </button>
 
                 </form>
-
+                <p className="text-xs text-center text-gray-500 mt-4">
+                    Una vez completado el perfil será redirigido automáticamente al panel principal.
+                </p>
             </div>
 
         </div>

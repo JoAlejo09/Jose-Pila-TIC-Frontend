@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
-import {
-    obtenerCuestionarioPorIdRequest,
-    resolverCuestionarioRequest
-} from "../../../services/cuestionarioService.js";
+import { obtenerCuestionarioPorIdRequest, resolverCuestionarioRequest} from "../../../services/cuestionarioService.js";
 
 const ResolverCuestionario = ()=>{
 
@@ -145,21 +142,16 @@ const ResolverCuestionario = ()=>{
             );
 
             if(preguntasSinResponder.length > 0){
-
                 const confirmar = window.confirm(
                     `Aún existen ${preguntasSinResponder.length} preguntas sin responder. ¿Desea finalizar igualmente?`
                 );
-
                 if(!confirmar){
                     return;
                 }
-
             }
-
         }
 
         try {
-
             setEnviando(true);
 
             const respuestasFormateadas = Object.entries(respuestas).map(
@@ -182,19 +174,12 @@ const ResolverCuestionario = ()=>{
             );
 
             setResultado(data.resultado);
-
             if(automatico){
-
-                alert(
-                    "Tiempo finalizado. Evaluación enviada automáticamente."
-                );
-
+                alert("Tiempo finalizado. Evaluación enviada automáticamente." );
             }
 
         } catch (error) {
-
             console.log(error);
-
             alert(
                 error.response?.data?.msg
                 ||
@@ -202,7 +187,6 @@ const ResolverCuestionario = ()=>{
             );
 
         } finally {
-
             setEnviando(false);
             setMostrarConfirmacion(false);
 
@@ -220,144 +204,93 @@ const ResolverCuestionario = ()=>{
         );
     }
 
-    // Loading
+    // Carga de la evaluacion
     if(loading){
-
         return(
-
             <div className="min-h-screen bg-gray-50 p-6">
-
                 <div className="bg-white rounded-2xl shadow-sm p-8 text-center">
-
                     <p className="text-lg text-gray-600">
                         Cargando evaluación...
                     </p>
-
                 </div>
-
             </div>
-
         );
-
     }
-
     // Validar cuestionario
     if(!cuestionario){
-
         return(
-
             <div className="p-6">
                 Evaluación no encontrada
             </div>
 
         );
-
     }
 
     // Resultado final
     if(resultado){
-
         return(
-
             <div className="min-h-screen bg-gray-50 p-6">
-
                 <div className="max-w-5xl mx-auto bg-white rounded-2xl shadow-sm p-8">
-
                     <h1 className="text-4xl font-bold text-gray-800 mb-8">
                         Resultado Final
                     </h1>
 
                     <div className="grid md:grid-cols-4 gap-5">
-
                         <div className="bg-green-100 rounded-2xl p-6 text-center">
-
                             <h2 className="text-4xl font-bold text-green-700">
                                 {resultado.correctas}
                             </h2>
-
                             <p className="mt-2 text-green-700">
                                 Correctas
                             </p>
-
                         </div>
 
                         <div className="bg-red-100 rounded-2xl p-6 text-center">
-
                             <h2 className="text-4xl font-bold text-red-700">
                                 {resultado.incorrectas}
                             </h2>
-
                             <p className="mt-2 text-red-700">
                                 Incorrectas
                             </p>
-
                         </div>
 
                         <div className="bg-gray-200 rounded-2xl p-6 text-center">
-
                             <h2 className="text-4xl font-bold text-gray-700">
                                 {resultado.sinResponder}
                             </h2>
-
                             <p className="mt-2 text-gray-700">
                                 Sin responder
                             </p>
-
                         </div>
 
                         <div className="bg-blue-100 rounded-2xl p-6 text-center">
-
                             <h2 className="text-4xl font-bold text-blue-700">
                                 {resultado.puntaje}%
                             </h2>
-
                             <p className="mt-2 text-blue-700">
                                 Puntaje
                             </p>
-
                         </div>
-
                     </div>
                     <div className="mt-10 flex flex-wrap gap-4">
 
     <button
-
         onClick={()=>
             navigate(`/dashboard/estudiante/resultados/${resultado._id}`)
         }
-
-        className="
-            bg-blue-600
-            hover:bg-blue-700
-            text-white
-            px-6
-            py-3
-            rounded-xl
-            transition-all
-        "
+        className=" bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl transition-all"
     >
         Ver detalle
     </button>
 
     <button
-
         onClick={()=>
             navigate("/dashboard/estudiante/cuestionarios")
         }
-
-        className="
-            bg-gray-200
-            hover:bg-gray-300
-            text-gray-700
-            px-6
-            py-3
-            rounded-xl
-            transition-all
-        "
+        className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-3 rounded-xl transition-all"
     >
         Volver
     </button>
-
 </div>
                 </div>
             </div>
@@ -366,11 +299,8 @@ const ResolverCuestionario = ()=>{
 
     return(
         <div className="min-h-screen bg-gray-50 p-6">
-
             {/* HEADER */}
-
             <div className="bg-white rounded-2xl shadow-sm p-8 mb-6">
-
                 <div className="flex justify-between items-center flex-wrap gap-4">
 
                     <div>
@@ -401,15 +331,12 @@ const ResolverCuestionario = ()=>{
             {/* PROGRESO */}
 
             <div className="bg-white rounded-2xl shadow-sm p-6 mb-6">
-
                 <div className="flex justify-between items-center mb-3">
-
                     <h2 className="text-lg font-semibold">
                         Pregunta {preguntaActual + 1}
                     </h2>
 
                     <span className="text-sm text-gray-500">
-
                         {respondidas}
                         {" "}de{" "}
                         {cuestionario.preguntas.length}
@@ -419,7 +346,6 @@ const ResolverCuestionario = ()=>{
                 </div>
 
                 <div className="w-full bg-gray-200 rounded-full h-3">
-
                     <div className=" bg-blue-600 h-3 rounded-full transition-all"
                         style={{
                             width: `${
@@ -431,34 +357,21 @@ const ResolverCuestionario = ()=>{
             </div>
 
             {/* NAVEGACION */}
-
             <div className="bg-white rounded-2xl shadow-sm p-6 mb-6">
                 <div className="flex flex-wrap gap-3">
-
                     { cuestionario.preguntas.map(
                          (pregunta,index)=>(
                                 <button
                                     key={pregunta._id}
+                                    onClick={()=> setPreguntaActual(index) }
 
-                                    onClick={()=>
-                                        setPreguntaActual(index)
-                                    }
-
-                                    className={`
-                                        w-12
-                                        h-12
-                                        rounded-xl
-                                        font-semibold
-                                        transition-all
-
+                                    className={`w-12 h-12 rounded-xl font-semibold transition-all
                                         ${
                                             preguntaActual === index
                                             ? "bg-blue-600 text-white"
-
                                             : respuestas[pregunta._id]
 
                                             ? "bg-green-100 text-green-700 border border-green-300"
-
                                             : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                                         }
                                     `}
@@ -469,13 +382,10 @@ const ResolverCuestionario = ()=>{
                             )
                         )
                     }
-
                 </div>
-
             </div>
 
             {/* PREGUNTA */}
-
             { pregunta &&
 
                 <div className="bg-white rounded-2xl shadow-sm p-8">
@@ -485,7 +395,6 @@ const ResolverCuestionario = ()=>{
                     </h2>
 
                     {/* RECURSO APOYO */}
-
                     {
                         pregunta.recursoApoyo
                         &&
@@ -493,7 +402,6 @@ const ResolverCuestionario = ()=>{
                         &&
 
                         <div className="mt-6 bg-amber-50 border border-amber-200 rounded-2xl p-5">
-
                             <h3 className="text-lg font-semibold text-amber-800 mb-4">
                                 Recurso de apoyo
                             </h3>
@@ -501,9 +409,7 @@ const ResolverCuestionario = ()=>{
                             {
                                 pregunta.recursoApoyo.tipo === "formula"
                                 &&
-
                                 <div className="bg-white border rounded-xl p-5 text-center">
-
                                     <p className="text-2xl font-mono text-gray-800">
                                         {pregunta.recursoApoyo.contenido}
                                     </p>
@@ -541,11 +447,9 @@ const ResolverCuestionario = ()=>{
                                     Abrir PDF
                                 </a>
                             }
-
                             {
                                 pregunta.recursoApoyo.tipo === "enlace"
                                 &&
-
                                 <a
                                     href={pregunta.recursoApoyo.url}
                                     target="_blank"
@@ -556,14 +460,11 @@ const ResolverCuestionario = ()=>{
                                     Abrir enlace
                                 </a>
                             }
-
                         </div>
                     }
 
                     {/* RESPUESTAS */}
-
                     <div className="mt-8 space-y-4">
-
                         {
                             pregunta.tipoPregunta === "opcion_multiple"
                             &&
@@ -573,33 +474,18 @@ const ResolverCuestionario = ()=>{
 
                                     <button
                                         key={index}
+                                        onClick={()=> handleRespuesta(opcion.texto) }
 
-                                        onClick={()=>
-                                            handleRespuesta(opcion.texto)
-                                        }
-
-                                        className={`
-                                            w-full
-                                            text-left
-                                            border
-                                            rounded-xl
-                                            p-4
-                                            transition-all
-
+                                        className={`w-full text-left border rounded-xl p-4 transition-all
                                             ${
-                                                respuestas[pregunta._id]
-                                                ===
-                                                opcion.texto
-
+                                                respuestas[pregunta._id] === opcion.texto
                                                 ? "border-blue-600 bg-blue-50"
-
                                                 : "border-gray-200 hover:border-blue-400"
                                             }
                                         `}
                                     >
                                         {opcion.texto}
                                     </button>
-
                                 )
                             )
                         }
@@ -613,25 +499,12 @@ const ResolverCuestionario = ()=>{
 
                                     <button
                                         key={index}
-
-                                        onClick={()=>
-                                            handleRespuesta(valor)
-                                        }
-
-                                        className={`
-                                            w-full
-                                            text-left
-                                            border
-                                            rounded-xl
-                                            p-4
-                                            transition-all
-
+                                        onClick={()=> handleRespuesta(valor) }
+                                        className={` w-full text-left border rounded-xl p-4 transition-all
                                             ${
                                                 respuestas[pregunta._id]
                                                 === valor
-
                                                 ? "border-green-600 bg-green-50"
-
                                                 : "border-gray-200 hover:border-green-400"
                                             }
                                         `}
@@ -648,30 +521,10 @@ const ResolverCuestionario = ()=>{
                             &&
 
                             <textarea
-
-                                value={
-                                    respuestas[pregunta._id]
-                                    || ""
-                                }
-
-                                onChange={(e)=>
-                                    handleRespuesta(e.target.value)
-                                }
-
+                                value={ respuestas[pregunta._id] || "" }
+                                onChange={(e)=> handleRespuesta(e.target.value) }
                                 placeholder="Escribe tu respuesta aquí..."
-
-                                className="
-                                    w-full
-                                    border
-                                    border-gray-300
-                                    rounded-xl
-                                    p-4
-                                    min-h-[140px]
-                                    resize-none
-                                    focus:outline-none
-                                    focus:ring-2
-                                    focus:ring-blue-500
-                                "
+                                className=" w-full border border-gray-300 rounded-xl p-4 min-h-[140px] resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 "
                             />
                         }
 
@@ -699,9 +552,7 @@ const ResolverCuestionario = ()=>{
                         <div className="flex gap-3">
 
                             {
-                                preguntaActual
-                                <
-                                cuestionario.preguntas.length - 1
+                                preguntaActual < cuestionario.preguntas.length - 1
                                 &&
                                 <button
                                     onClick={()=>
@@ -709,16 +560,13 @@ const ResolverCuestionario = ()=>{
                                             preguntaActual + 1
                                         )
                                     }
-                                    className=" px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white  
-                                    "
+                                    className=" px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white"
                                 >
                                     Siguiente
                                 </button>
                             }
                             {
-                                preguntaActual
-                                ===
-                                cuestionario.preguntas.length - 1
+                                preguntaActual === cuestionario.preguntas.length - 1
                                 &&
                                 <button
                                     onClick={()=>
