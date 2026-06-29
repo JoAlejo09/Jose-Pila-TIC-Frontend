@@ -11,12 +11,26 @@ const obtenerRecursoRequest = async(id)=>{
 };
 
 const crearRecursoRequest = async(data)=>{
-    const res = await axios.post( "/recurso", data);
+    const config = data instanceof FormData
+    ?{
+        headers:{
+            "Content-Type": "multipart/form-data"
+        }
+    }:{};
+    const res = await axios.post( "/recurso", data, config);
     return res.data;
 };
 
 const actualizarRecursoRequest = async(id,data)=>{
-    const res = await axios.put( `/recurso/${id}`, data );
+     const config = data instanceof FormData
+        ? {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        }
+        : {};
+
+    const res = await axios.put( `/recurso/${id}`, data, config);
     return res.data;
 };
 

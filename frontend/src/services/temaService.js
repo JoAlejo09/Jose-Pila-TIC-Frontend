@@ -20,8 +20,8 @@ const cambiarEstadoTemaRequest = async(id)=>{
     const res = await axios.patch(`/tema/estado/${id}`);
     return res.data
 }
-const obtenerTemasPorUnidadRequest = async(unidadId)=>{
-    const res = await axios.get(`/tema/unidad/${unidadId}`);
+const obtenerTemasPorUnidadRequest = async(unidadId, params={})=>{
+    const res = await axios.get(`/tema/unidad/${unidadId}`, {params});
     return res.data
 }
 

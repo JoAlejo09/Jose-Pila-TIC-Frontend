@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-
 import { obtenerCuestionarioPorIdRequest, resolverCuestionarioRequest} from "../../../services/cuestionarioService.js";
+import ReactMarkdown from "react-markdown";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
 
 const ResolverCuestionario = ()=>{
 
@@ -101,10 +103,18 @@ const ResolverCuestionario = ()=>{
         }`;
 
     };
+    //Para formatear formulas y expresiones matematicas
+    const renderizarLatex = (texto) => {
+    if (!texto) return "";
+
+    return texto
+        .replace(/\\\((.*?)\\\)/g, "$$$1$$")
+        .replace(/\\\[(.*?)\\\]/gs, "$$$$\n$1\n$$$$");
+};
 
     // Pregunta actual
     const pregunta = cuestionario?.preguntas[preguntaActual];
-
+    
     // Preguntas respondidas
     const respondidas = Object.keys(respuestas).length;
 
@@ -391,8 +401,13 @@ const ResolverCuestionario = ()=>{
                 <div className="bg-white rounded-2xl shadow-sm p-8">
 
                     <h2 className=" text-2xl font-semibold text-gray-800 leading-relaxed ">
-                        {pregunta.enunciado}
-                    </h2>
+                        <ReactMarkdown
+                        remarkPlugins={[remarkMath]}
+                        rehypePlugins={[rehypeKatex]}>
+                            {renderizarLatex(pregunta.enunciado)}                        
+                        </ReactMarkdown>
+                    </h2> 
+
 
                     {/* RECURSO APOYO */}
                     {
@@ -484,7 +499,11 @@ const ResolverCuestionario = ()=>{
                                             }
                                         `}
                                     >
-                                        {opcion.texto}
+                                        <ReactMarkdown
+                                            remarkPlugins={[remarkMath]}
+                                            rehypePlugins={[rehypeKatex]}>  
+                                                 {renderizarLatex(opcion.texto)}                       
+                                        </ReactMarkdown>                                       
                                     </button>
                                 )
                             )

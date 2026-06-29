@@ -1,78 +1,39 @@
 import { useEffect, useMemo, useState } from "react";
-
-import {
-    BookOpen,
-    FileText,
-    Video
-} from "lucide-react";
-
+import { BookOpen, Camera, FileText, Video } from "lucide-react";
 import Input from "../../components/ui/Input.jsx";
-
 import ModalRecurso from "../../components/modal/RecursoModal.jsx";
-
-import {
-    cambiarEstadoRecursoRequest,
-    obtenerRecursosRequest
-} from "../../services/recursoService.js";
-
+import { cambiarEstadoRecursoRequest, obtenerRecursosRequest } from "../../services/recursoService.js";
 const Recursos = ()=>{
 
     const [recursos, setRecursos] = useState([]);
-
     const [loading, setLoading] = useState(true);
-
     const [error, setError] = useState(null);
-
     const [buscar, setBuscar] = useState("");
-
     const [modal, setModal] = useState(false);
-
     const [modoModal, setModoModal] = useState("crear");
-
     const [recursoSeleccionado, setRecursoSeleccionado]= useState(null);
-
 
     // CARGAR
     const cargarRecursos = async()=>{
-
         try {
-
             setLoading(true);
-
-            const data =
-                await obtenerRecursosRequest();
-
+            const data = await obtenerRecursosRequest();
             setRecursos(data);
-
         } catch (error) {
-
             console.log(error);
-
-            setError(
-                "Error al cargar recursos"
-            );
-
+            setError( "Error al cargar recursos" );
         } finally {
-
             setLoading(false);
-
         }
-
     };
 
-
     useEffect(()=>{
-
         cargarRecursos();
-
     },[]);
-
 
     // FILTRAR
     const recursosFiltrados = useMemo(()=>{
-
         return recursos.filter((recurso)=>
-
             recurso.titulo
                 .toLowerCase()
                 .includes(
@@ -86,49 +47,33 @@ const Recursos = ()=>{
 
     // CAMBIAR ESTADO
     const handleEstado = async(id)=>{
-
         try {
-
             await cambiarEstadoRecursoRequest(id);
-
             cargarRecursos();
-
         } catch (error) {
-
             console.log(error);
-
         }
-
     };
-
 
     // EDITAR
     const handleEditar = (recurso)=>{
-
         setRecursoSeleccionado(recurso);
-
         setModoModal("editar");
-
         setModal(true);
-
     };
 
 
     // ICONOS
     const obtenerIcono = (tipo)=>{
-
         if(tipo === "pdf"){
-
             return <FileText size={28}/>;
-
         }
-
         if(tipo === "youtube"){
-
             return <Video size={28}/>;
-
         }
-
+        if(tipo === "imagen"){
+            return <Camera size={28}/>
+        }
         return <BookOpen size={28}/>;
 
     };
@@ -209,35 +154,21 @@ const Recursos = ()=>{
                                 e.target.value
                             )
                         }
-                        className="
-                            w-64 border border-gray-300
-                            rounded-xl px-4 py-3
-                            outline-none
-                            focus:ring-2 focus:ring-green-500
-                        "
+                        className=" w-64 border border-gray-300 rounded-xl px-4 py-3
+                                    outline-none focus:ring-2 focus:ring-green-500"
                     />
-
                     <button
                         onClick={()=>{
-
                             setModoModal("crear");
-
                             setRecursoSeleccionado(null);
-
                             setModal(true);
-
                         }}
-                        className="
-                            bg-green-600 hover:bg-green-700
-                            text-white px-5 py-3
-                            rounded-xl transition
-                        "
+                        className=" bg-green-600 hover:bg-green-700
+                                    text-white px-5 py-3 rounded-xl transition"
                     >
                         + Nuevo
                     </button>
-
                 </div>
-
             </div>
 
 

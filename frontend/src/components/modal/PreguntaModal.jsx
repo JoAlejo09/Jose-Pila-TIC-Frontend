@@ -1,34 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { crearPreguntaRequest, actualizarPreguntaRequest} from "../../services/preguntaService.js";
+import { obtenerMateriasRequest } from "../../services/materiaService.js";
+import { obtenerUnidadesPorMateriaRequest } from "../../services/unidadService.js";
+import { obtenerTemasPorUnidadRequest } from "../../services/temaService.js";
 
-import {
-    crearPreguntaRequest,
-    actualizarPreguntaRequest
-} from "../../services/preguntaService.js";
-
-import {
-    obtenerMateriasRequest
-} from "../../services/materiaService.js";
-
-import {
-    obtenerUnidadesPorMateriaRequest
-} from "../../services/unidadService.js";
-
-import {
-    obtenerTemasPorUnidadRequest
-} from "../../services/temaService.js";
-
-const PreguntaModal = ({
-    onClose,
-    recargarPreguntas,
-    preguntaEditar = null
-})=>{
-
+const PreguntaModal = ({ onClose, recargarPreguntas, preguntaEditar = null })=>{
     const [materias,setMaterias] = useState([]);
     const [unidades,setUnidades] = useState([]);
     const [temas,setTemas] = useState([]);
-
     const [loading,setLoading] = useState(false);
-
     const [form,setForm] = useState({
         enunciado:"",
         nivelAcademico:"1ro BGU",
@@ -48,6 +28,8 @@ const PreguntaModal = ({
     });
     // EDITAR UNA PREGUNTA EXISTENTE
     useEffect(()=>{
+        if(!preguntaEditar) return;
+
         if(preguntaEditar){
             setForm({
                 enunciado: preguntaEditar.enunciado || "",
@@ -63,115 +45,108 @@ const PreguntaModal = ({
                 respuestaCorrecta: preguntaEditar.respuestaCorrecta || "",
                 explicacion: preguntaEditar.explicacion || "",
 
-                nivelDificultad:
-                    preguntaEditar.nivelDificultad || "facil",
-
-                materia:
-                    preguntaEditar.materia?._id || "",
-
-                unidad:
-                    preguntaEditar.unidad?._id || "",
-
-                tema:
-                    preguntaEditar.tema?._id || "",
-
-                recursoApoyo:
-                    preguntaEditar.recursoApoyo || {
-                        tipo:"",
-                        url:"",
-                        contenido:""
-                    }
+                nivelDificultad: preguntaEditar.nivelDificultad || "facil",
+                materia: preguntaEditar.materia?._id || "",
+                unidad: preguntaEditar.tema?.unidad?._id || "",
+                tema: preguntaEditar.tema?._id || "",
+                recursoApoyo: preguntaEditar.recursoApoyo || {
+                    tipo:"",
+                    url:"",
+                    contenido:""
+                }
             });
-
         }
 
     },[preguntaEditar]);
 
-    // =========================================
+    //Para actualizar los distintas opciones al editar
+    useEffect(() => {
+        if (!preguntaEditar) return;
+        const cargarDatos = async () => {
+            try {
+                const unidadesData = await obtenerUnidadesPorMateriaRequest(
+                        preguntaEditar.materia._id,
+                        {
+                            estado:true,
+                            nivelAcademico:
+                                preguntaEditar.nivelAcademico
+                        }
+                    );
+                setUnidades(unidadesData);
+                const temasData = await obtenerTemasPorUnidadRequest(
+                        preguntaEditar.tema.unidad._id,
+                        {
+                            estado:true,
+                            nivelAcademico: preguntaEditar.nivelAcademico
+                    }
+                );
+                setTemas(temasData);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        cargarDatos();
+    }, [preguntaEditar]);
+
     // OBTENER MATERIAS
-    // =========================================
-
     useEffect(()=>{
-
+        if(preguntaEditar) return;
         const obtenerMaterias = async()=>{
 
             try {
 
-                const data =
-                    await obtenerMateriasRequest();
-
+                const data = await obtenerMateriasRequest({
+                    nivelAcademico: form.nivelAcademico,
+                    estado:true
+                });
                 setMaterias(data);
-
             } catch (error) {
-
                 console.log(error);
-
             }
-
         };
-
         obtenerMaterias();
+    },[form.nivelAcademico]);
 
-    },[]);
-
-    // =========================================
     // OBTENER UNIDADES
-    // =========================================
-
     useEffect(()=>{
-
+        if(preguntaEditar) return;
         const obtenerUnidades = async()=>{
-
             if(!form.materia){
-
                 setUnidades([]);
                 return;
-
             }
 
             try {
-
-                const data =
-                    await obtenerUnidadesPorMateriaRequest(
-                        form.materia
+                const data = await obtenerUnidadesPorMateriaRequest(
+                        form.materia,
+                        {
+                            estado:true,
+                            nivelAcademico: form.nivelAcademico
+                        }
                     );
-
                 setUnidades(data);
-
             } catch (error) {
-
                 console.log(error);
-
             }
-
         };
-
         obtenerUnidades();
+    },[form.materia, form.nivelAcademico]);
 
-    },[form.materia]);
-
-    // =========================================
     // OBTENER TEMAS
-    // =========================================
-
     useEffect(()=>{
-
+        if(preguntaEditar) return;
         const obtenerTemas = async()=>{
-
             if(!form.unidad){
-
                 setTemas([]);
                 return;
-
             }
-
             try {
-
-                const data =
-                    await obtenerTemasPorUnidadRequest(
-                        form.unidad
-                    );
-
+                const data = await obtenerTemasPorUnidadRequest(
+                    form.unidad,
+                    {estado:true,
+                        nivelAcademico: form.nivelAcademico
+                    }
+                );
                 setTemas(data);
 
             } catch (error) {
@@ -184,18 +159,21 @@ const PreguntaModal = ({
 
         obtenerTemas();
 
-    },[form.unidad]);
+    },[form.unidad, form.nivelAcademico]);
 
+    const textAreaEnunciadoRef = useRef(null);
     const handleChange = (e)=>{
 
         const { name, value } = e.target;
 
         setForm((prev)=>({
-
             ...prev,
-
             [name]:value,
-
+            ...(name === "nivelAcademico" &&{
+                materia: "",
+                unidad:"",
+                tema:""
+            }),
             ...(name === "materia" && {
                 unidad:"",
                 tema:""
@@ -232,6 +210,33 @@ const PreguntaModal = ({
 
     };
 
+    //Para insertar formulas matemáticas con Latex
+    const insertarLatex = (codigo) => {
+
+        const textarea = textAreaEnunciadoRef.current;
+
+        if (!textarea) return;
+
+        const inicio = textarea.selectionStart;
+        const fin = textarea.selectionEnd;
+
+        const textoAnterior = form.enunciado.substring(0, inicio);
+        const textoSeleccionado = form.enunciado.substring(inicio, fin);
+        const textoPosterior = form.enunciado.substring(fin);
+
+        const nuevoCodigo = codigo.replace("{}", `{${textoSeleccionado}}`);
+
+        const nuevoTexto = textoAnterior + nuevoCodigo + textoPosterior;
+
+        setForm((prev) => ({
+        ...prev,
+        enunciado: nuevoTexto
+    }));
+
+    setTimeout(() => {
+        textarea.focus();
+    }, 0);
+};
     const handleSubmit = async(e)=>{
         e.preventDefault();
         setLoading(true);
@@ -269,22 +274,12 @@ const PreguntaModal = ({
     };
     return(
         <div className=" fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4        ">
-
-            <div className="
-                bg-white w-full max-w-5xl
-                rounded-2xl shadow-2xl
-                max-h-[95vh] overflow-y-auto
-            ">
+            <div className="bg-white w-full max-w-5xl rounded-2xl shadow-2xl max-h-[95vh] overflow-y-auto">
 
                 {/* HEADER */}
-                <div className="
-                    flex justify-between items-center
-                    border-b border-gray-200
-                    p-6
-                ">
+                <div className=" flex justify-between items-center border-b border-gray-200 p-6 ">
 
-                    <h2 className="
-                        text-2xl font-bold text-gray-800
+                    <h2 className=" text-2xl font-bold text-gray-800
                     ">
 
                         {
@@ -297,15 +292,10 @@ const PreguntaModal = ({
 
                     <button
                         onClick={onClose}
-                        className="
-                            text-gray-500
-                            hover:text-gray-700
-                            text-2xl
-                        "
+                        className="text-gray-500 hover:text-gray-700 text-2xl "
                     >
                         ×
                     </button>
-
                 </div>
 
                 <form
@@ -315,30 +305,61 @@ const PreguntaModal = ({
 
                     {/* ENUNCIADO */}
                     <div>
-
                         <label className="block mb-2 font-medium">
                             Enunciado
                         </label>
-
+                        <div className="flex flex-wrap gap-2 mb-3">
+                            <button type="button"
+                                    onClick={() => insertarLatex("$x^{}$")}
+                                    className="px-3 py-2 border rounded-lg hover:bg-gray-100">
+                                        x²
+                            </button>
+                            <button type="button"
+                                    onClick={() => insertarLatex("$x_{}$")}
+                                    className="px-3 py-2 border rounded-lg hover:bg-gray-100" >
+                                        xₙ
+                            </button>
+                            <button type="button" 
+                                    onClick={() => insertarLatex("$\\sqrt{}$")}
+                                    className="px-3 py-2 border rounded-lg hover:bg-gray-100">
+                                        √
+                            </button>
+                            <button type="button"
+                                    onClick={() => insertarLatex("$\\frac{}{}$")}
+                                    className="px-3 py-2 border rounded-lg hover:bg-gray-100">
+                                        a/b
+                            </button>
+                            <button type="button"
+                                    onClick={() => insertarLatex("$\\pi$")}
+                                    className="px-3 py-2 border rounded-lg hover:bg-gray-100">
+                                        π
+                            </button>
+                            <button type="button"
+                                    onClick={() => insertarLatex("$\\rho$")}
+                                    className="px-3 py-2 border rounded-lg hover:bg-gray-100">
+                                        ρ
+                            </button>
+                            <button type="button"
+                                    onClick={() => insertarLatex("$\\rightarrow$")}
+                                    className="px-3 py-2 border rounded-lg hover:bg-gray-100">
+                                        →
+                            </button>
+                        </div>
                         <textarea
                             name="enunciado"
+                            ref={textAreaEnunciadoRef}
                             value={form.enunciado}
                             onChange={handleChange}
                             required
-                            className="
-                                w-full border border-gray-300
-                                rounded-xl p-4
-                                min-h-[120px]
-                            "
+                            className=" w-full border border-gray-300
+                                        rounded-xl p-4 min-h-[120px] "
                         />
 
                     </div>
 
                     {/* NIVEL */}
                     <div className="grid md:grid-cols-2 gap-4">
-
                         <div>
-
                             <label className="block mb-2 font-medium">
                                 Nivel académico
                             </label>
@@ -347,33 +368,18 @@ const PreguntaModal = ({
                                 name="nivelAcademico"
                                 value={form.nivelAcademico}
                                 onChange={handleChange}
-                                className="
-                                    w-full border border-gray-300
-                                    rounded-xl p-3
-                                "
+                                className=" w-full border border-gray-300 rounded-xl p-3"
                             >
-
-                                <option value="1ro BGU">
-                                    1ro BGU
-                                </option>
-
-                                <option value="2do BGU">
-                                    2do BGU
-                                </option>
-
-                                <option value="3ro BGU">
-                                    3ro BGU
-                                </option>
-
+                                <option value="1ro BGU"> 1ro BGU </option>
+                                <option value="2do BGU"> 2do BGU </option>
+                                <option value="3ro BGU"> 3ro BGU </option>
                             </select>
-
                         </div>
 
                         <div>
                             <label className="block mb-2 font-medium">
                                 Dificultad
                             </label>
-
                             <select
                                 name="nivelDificultad"
                                 value={form.nivelDificultad}
@@ -391,7 +397,6 @@ const PreguntaModal = ({
                     <div className="grid md:grid-cols-3 gap-4">
 
                         <div>
-
                             <label className="block mb-2 font-medium">
                                 Materia
                             </label>
@@ -414,14 +419,12 @@ const PreguntaModal = ({
                                         >
                                             {materia.nombre}
                                         </option>
-
                                     ))
                                 }
                             </select>
                         </div>
 
                         <div>
-
                             <label className="block mb-2 font-medium">
                                 Unidad
                             </label>
@@ -431,8 +434,7 @@ const PreguntaModal = ({
                                 value={form.unidad}
                                 onChange={handleChange}
                                 required
-                                className=" w-full border border-gray-300 rounded-xl p-3"
-                            >
+                                className=" w-full border border-gray-300 rounded-xl p-3"                            >
                                 <option value=""> Seleccione una unidad </option>
 
                                 {
@@ -478,7 +480,6 @@ const PreguntaModal = ({
                     </div>
 
                     <div>
-
                         <label className="block mb-2 font-medium">
                             Tipo de pregunta
                         </label>
@@ -487,40 +488,23 @@ const PreguntaModal = ({
                             name="tipoPregunta"
                             value={form.tipoPregunta}
                             onChange={handleChange}
-                            className="
-                                w-full border border-gray-300
-                                rounded-xl p-3
-                            "
+                            className=" w-full border border-gray-300 rounded-xl p-3 "
                         >
-
-                            <option value="opcion_multiple">
-                                Opción múltiple
-                            </option>
-
-                            <option value="verdadero_falso">
-                                Verdadero/Falso
-                            </option>
-
-                            <option value="respuesta_corta">
-                                Respuesta corta
-                            </option>
-
+                            <option value="opcion_multiple"> Opción múltiple </option>
+                            <option value="verdadero_falso"> Verdadero/Falso </option>
+                            <option value="respuesta_corta"> Respuesta corta </option>
                         </select>
-
                     </div>
 
 { form.tipoPregunta === "opcion_multiple"
     &&
     <div className="space-y-5">
-
         <div>
-
             <h3 className="font-semibold text-lg mb-4">
                 Opciones
             </h3>
 
             <div className="space-y-3">
-
                 {
                     form.opciones.map((opcion,index)=>(
 
@@ -535,21 +519,14 @@ const PreguntaModal = ({
                                     e.target.value
                                 )
                             }
-                            className="
-                                w-full border border-gray-300
-                                rounded-xl p-3
-                            "
+                            className=" w-full border border-gray-300 rounded-xl p-3"
                         />
-
                     ))
                 }
-
             </div>
-
         </div>
 
         <div>
-
             <label className="block mb-2 font-medium">
                 Respuesta correcta
             </label>
@@ -574,14 +551,10 @@ const PreguntaModal = ({
 
                     ))
                 }
-
             </select>
-
         </div>
-
     </div>
 }
-
 {
     form.tipoPregunta === "verdadero_falso"
     &&
@@ -604,14 +577,10 @@ const PreguntaModal = ({
                         type="radio"
                         name="respuestaCorrecta"
                         value="Verdadero"
-                        checked={
-                            form.respuestaCorrecta === "Verdadero"
-                        }
+                        checked={ form.respuestaCorrecta === "Verdadero" }
                         onChange={handleChange}
                     />
-
                     Verdadero
-
                 </label>
 
                 <label className="flex items-center gap-2">
@@ -620,20 +589,13 @@ const PreguntaModal = ({
                         type="radio"
                         name="respuestaCorrecta"
                         value="Falso"
-                        checked={
-                            form.respuestaCorrecta === "Falso"
-                        }
+                        checked={ form.respuestaCorrecta === "Falso" }
                         onChange={handleChange}
                     />
-
                     Falso
-
                 </label>
-
             </div>
-
         </div>
-
     </div>
 }
 

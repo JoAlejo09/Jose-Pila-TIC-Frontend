@@ -1,6 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Search, Plus, Pencil, Power } from "lucide-react";
 import { obtenerPreguntasRequest, cambiarEstadoPreguntaRequest } from "../../services/preguntaService.js";
+import ReactMarkdown from "react-markdown";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
 
 import PreguntaModal from "../../components/modal/PreguntaModal.jsx";
 
@@ -20,6 +23,7 @@ const Preguntas = ()=>{
     const cargarPreguntas = async()=>{
         try {
             const data = await obtenerPreguntasRequest();
+            console.log("Preguntas:",data);
             setPreguntas(data);
         } catch (error) {
             console.log(error);
@@ -386,14 +390,13 @@ const Preguntas = ()=>{
                                         >
 
                                             <td className="p-4">
-
-                                                <p className="
-                                                    line-clamp-2
-                                                    max-w-[350px]
-                                                ">
-                                                    {pregunta.enunciado}
-                                                </p>
-
+                                                <div className="max-w-[350px] line-clamp-2">
+                                                    <ReactMarkdown
+                                                    remarkPlugins={[remarkMath]}
+                                                    rehypePlugins={[rehypeKatex]}>
+                                                        {pregunta.enunciado}
+                                                    </ReactMarkdown>
+                                                </div>
                                             </td>
 
                                             <td className="p-4">
@@ -441,168 +444,92 @@ const Preguntas = ()=>{
                                                     px-3 py-1
                                                     rounded-full
                                                     text-xs
-                                                    bg-yellow-100
-                                                    text-yellow-700
-                                                ">
+                                                    bg-yellow-100 text-yellow-700">
                                                     {pregunta.nivelDificultad}
                                                 </span>
 
                                             </td>
 
                                             <td className="p-4">
-
                                                 {
                                                     pregunta.recursoApoyo
                                                     ?(
-                                                        <span className="
-                                                            px-3 py-1
-                                                            rounded-full
-                                                            text-xs
-                                                            bg-indigo-100
-                                                            text-indigo-700
-                                                        ">
+                                                        <span className="px-3 py-1 rounded-full text-xs bg-indigo-100 text-indigo-700">
                                                             {
                                                                 pregunta.recursoApoyo.tipo
                                                             }
                                                         </span>
                                                     ):(
-                                                        <span className="
-                                                            text-xs
-                                                            text-gray-400
-                                                        ">
+                                                        <span className="text-xstext-gray-400">
                                                             Sin recurso
                                                         </span>
                                                     )
                                                 }
-
                                             </td>
 
                                             <td className="p-4">
 
                                                 <span
-                                                    className={`
-                                                        px-3 py-1
-                                                        rounded-full
-                                                        text-xs
+                                                    className={`px-3 py-1 rounded-full text-xs
                                                         ${
                                                             pregunta.estado
                                                             ? "bg-green-100 text-green-700"
                                                             : "bg-red-100 text-red-700"
                                                         }
-                                                    `}
-                                                >
-
-                                                    {
-                                                        pregunta.estado
+                                                    `}>
+                                                    { pregunta.estado
                                                         ? "Activo"
                                                         : "Inactivo"
                                                     }
-
                                                 </span>
-
                                             </td>
 
                                             <td className="p-4">
-
-                                                <div className="
-                                                    flex
-                                                    justify-center
-                                                    gap-3
-                                                ">
+                                                <div className="flex justify-center gap-3 ">
 
                                                     <button
                                                         onClick={()=>{
-
-                                                            setPreguntaEditar(
-                                                                pregunta
-                                                            );
-
+                                                            setPreguntaEditar(pregunta);
                                                             setAbrirModal(true);
                                                         }}
-
-                                                        className="
-                                                            p-2
-                                                            rounded-lg
-                                                            bg-yellow-100
-                                                            text-yellow-700
-                                                            hover:bg-yellow-200
-                                                        "
-                                                    >
-
+                                                        className="p-2 rounded-lg bg-yellow-100 text-yellow-700 hover:bg-yellow-200">
                                                         <Pencil size={18}/>
-
                                                     </button>
-
                                                     <button
                                                         onClick={()=>
                                                             cambiarEstado(
                                                                 pregunta._id
                                                             )
                                                         }
-
-                                                        className="
-                                                            p-2
-                                                            rounded-lg
-                                                            bg-gray-200
-                                                            text-gray-700
-                                                            hover:bg-gray-300
-                                                        "
-                                                    >
-
+                                                        className=" p-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300">
                                                         <Power size={18}/>
-
                                                     </button>
-
                                                 </div>
-
                                             </td>
-
                                         </tr>
                                     ))
                                 ):(
-
                                     <tr>
-
                                         <td
                                             colSpan="9"
-
-                                            className="
-                                                text-center
-                                                py-10
-                                                text-gray-500
-                                            "
-                                        >
-
+                                            className=" text-center py-10 text-gray-500 ">
                                             No existen preguntas registradas
-
                                         </td>
-
                                     </tr>
                                 )
                             }
-
                         </tbody>
-
                     </table>
-
                 </div>
-
             </div>
-
             {
                 abrirModal &&
-
                 <PreguntaModal
-                    onClose={()=>
-                        setAbrirModal(false)
-                    }
-
+                    onClose={()=> setAbrirModal(false) }
                     recargarPreguntas={cargarPreguntas}
-
                     preguntaEditar={preguntaEditar}
                 />
             }
-
         </div>
     );
 };

@@ -12,12 +12,28 @@
     "test:coverage": "vitest --coverage"
   },
   "dependencies": {
+    "@aarkue/tiptap-math-extension": "^1.4.0",
+    "@tiptap/extension-color": "^3.27.1",
+    "@tiptap/extension-highlight": "^3.27.1",
+    "@tiptap/extension-image": "^3.27.1",
+    "@tiptap/extension-link": "^3.27.1",
+    "@tiptap/extension-text-align": "^3.27.1",
+    "@tiptap/extension-text-style": "^3.27.1",
+    "@tiptap/extension-underline": "^3.27.1",
+    "@tiptap/pm": "^3.27.1",
+    "@tiptap/react": "^3.27.1",
+    "@tiptap/starter-kit": "^3.27.1",
     "axios": "^1.15.2",
     "jwt-decode": "^4.0.0",
+    "katex": "^0.17.0",
     "lucide-react": "^1.14.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
-    "react-router-dom": "^7.14.2"
+    "react-katex": "^3.1.0",
+    "react-markdown": "^10.1.0",
+    "react-router-dom": "^7.14.2",
+    "rehype-katex": "^7.0.1",
+    "remark-math": "^6.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

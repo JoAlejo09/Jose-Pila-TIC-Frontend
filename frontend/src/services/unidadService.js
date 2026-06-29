@@ -5,8 +5,8 @@ const obtenerUnidadesRequest = async()=>{
     return res.data
 }
 
-const obtenerUnidadesPorMateriaRequest = async(materiaId)=>{
-    const res = await axios.get(`/unidad/materia/${materiaId}`)
+const obtenerUnidadesPorMateriaRequest = async(materiaId, params={})=>{
+    const res = await axios.get(`/unidad/materia/${materiaId}`,params)
     return res.data;
 }
 const obtenerUnidadIdRequest = async(id)=>{

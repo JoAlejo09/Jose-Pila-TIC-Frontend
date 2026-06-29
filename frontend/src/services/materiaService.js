@@ -1,7 +1,9 @@
 import axios from "../api/axios.js";
 
-const obtenerMateriasRequest = async()=>{
-    const res = await axios.get("/materia");
+const obtenerMateriasRequest = async(params={})=>{
+    const res = await axios.get("/materia",{
+        params
+    });
     return res.data
 }
 const obtenerMateriaRequest = async(id)=>{
