@@ -62,26 +62,6 @@ const DetalleRecursoEstudiante = ()=>{
 
     },[id]);
 
-    // YOUTUBE EMBED
-    const obtenerYoutubeEmbed = (url)=>{
-
-        try {
-
-            const videoId =
-                new URL(url)
-                    .searchParams
-                    .get("v");
-
-            return `https://www.youtube.com/embed/${videoId}`;
-
-        } catch {
-
-            return "";
-
-        }
-
-    };
-
     // ICONOS
     const obtenerIcono = ()=>{
 
@@ -243,9 +223,7 @@ const DetalleRecursoEstudiante = ()=>{
 
                             <iframe
                                 src={
-                                    obtenerYoutubeEmbed(
                                         recurso.url
-                                    )
                                 }
                                 title={recurso.titulo}
                                 className="
