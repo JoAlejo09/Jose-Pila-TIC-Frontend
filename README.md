@@ -5,6 +5,8 @@ Frontend desarrollado con React y Vite para el **Sistema Web de Refuerzo Académ
 El sistema proporciona una interfaz moderna e intuitiva que permite la interacción entre estudiantes, tutores y administradores mediante una arquitectura basada en componentes y comunicación con una API REST.
 
 ---
+<img width="1300" height="627" alt="image" src="https://github.com/user-attachments/assets/5d0f60cc-4b25-460d-b1de-9581b14c64ae" />
+
 
 # Características
 
