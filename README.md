@@ -59,7 +59,7 @@ Además, el backend debe encontrarse en ejecución para que la aplicación pueda
 ## 1. Clonar el repositorio
 
 ```bash
-git clone https://github.com/TU_USUARIO/frontend-refacademy.git
+git clone https://github.com/JoAlejo09/Jose-Pila-TIC-Frontend.git
 ```
 
 ## 2. Acceder al proyecto
@@ -81,7 +81,7 @@ Crear un archivo llamado `.env` en la raíz del proyecto.
 ```env
 VITE_API_LOCALHOST=http://localhost:4000/api
 
-VITE_API_URL=https://tu-backend.onrender.com/api
+VITE_API_URL=https://tic-backend-refacademy.onrender.com
 ```
 
 > En desarrollo se utiliza `VITE_API_LOCALHOST`.
@@ -215,10 +215,10 @@ npm run preview
 
 Este frontend requiere el backend del proyecto para funcionar correctamente.
 
-Backend:
+Backend:https://github.com/JoAlejo09/Jose-Pila-TIC-Backend.git
 
 ```
-https://github.com/TU_USUARIO/backend-refacademy
+https://github.com/
 ```
 
 ---
