@@ -10,6 +10,7 @@ const Usuarios = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [msg, setMsg] = useState("");
+  const [buscar, setBuscar] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [search, setSearch] = useState("");
   const [showModal, setShowModal] = useState(false);
@@ -18,7 +19,11 @@ const Usuarios = () => {
 
   const cargarUsuarios = async (searchWord = "", isInitial = false) => {
     try {
-      if (isInitial) setLoading(true);
+      if (isInitial) {
+        setLoading(true);
+      }else{
+        setBuscar(true);
+      }
       const data = await obtenerUsuariosRequest(searchWord);
       setUsuarios(Array.isArray(data) ? data : []);
     } catch (err) {
@@ -26,7 +31,10 @@ const Usuarios = () => {
       setError("Error al cargar usuarios");
 
     } finally {
-      if (isInitial) setLoading(false);
+      if (isInitial){ setLoading(false);
+      }else{
+        setBuscar(false);
+      }
     }
   };
 
@@ -42,6 +50,16 @@ const Usuarios = () => {
     }, 400);
     return () => clearTimeout(time);
   }, [search]);
+
+  //LIMPIAR TEXTOS
+  useEffect(() => {
+    if(!msg && !errorMsg) return;
+    const time = setTimeout(() => {
+      setMsg("");
+      setErrorMsg("");
+    }, 4000);
+    return () => clearTimeout(time);
+  }, [msg, errorMsg]);
 
   // DESACTIVAR
   const handleDesactivar = async (id) => {
@@ -156,94 +174,110 @@ const Usuarios = () => {
             + Nuevo
           </button>
         </div>
+        {buscar && (
+          <p className="text-sm text-gray-500">
+            Buscando usuarios...
+          </p>
+        )}
       </div>
+      <div className="overflow-x-auto">
+        <table className="w-full bg-white shadow rounded">
+          <thead className="bg-gray-200">
+            <tr>
+              <th className="p-2"> Nombre </th>
+              <th> Email </th>
+              <th> Rol </th>
+              <th> Año Escolar </th>
+              <th> Estado </th>
+              <th> Acciones </th>
+            </tr>
+          </thead>
 
-      <table className="w-full bg-white shadow rounded">
-        <thead className="bg-gray-200">
-          <tr>
-            <th className="p-2"> Nombre </th>
-            <th> Email </th>
-            <th> Rol </th>
-            <th> Año Escolar </th>
-            <th> Estado </th>
-            <th> Acciones </th>
-          </tr>
-        </thead>
+          <tbody>
+            {usuarios.length > 0 ? (
+              usuarios.map((user) => (
+                <tr
+                  key={user._id}
+                  className="text-center border-t"
+                >
 
-        <tbody>
-          {usuarios.length > 0 ? (
-            usuarios.map((user) => (
-              <tr
-                key={user._id}
-                className="text-center border-t"
-              >
+                  <td>
+                    {user.nombre} {user.apellido}
+                  </td>
 
-                <td>
-                  {user.nombre} {user.apellido}
-                </td>
+                  <td>
+                    {user.email}
+                  </td> 
 
-                <td>
-                  {user.email}
-                </td>
-
-                <td className="capitalize">
-                  {user.rol}
-                </td>
-
-                <td>
-                  {user.rol === "estudiante"
-                    ? user.nivelAcademico || "No asignado"
-                    : "-"}
-                </td>
-
-                <td>
-                  <span
-                    className={`px-2 py-1 rounded text-white text-sm ${
-                      user.isActive
-                        ? "bg-green-500"
-                        : "bg-gray-400"
-                    }`}
-                  >
-                    {user.isActive
-                      ? "Activo"
-                      : "Inactivo"}
-                  </span>
-                </td>
-
-                <td className="flex justify-center gap-2 p-2">
-                  {user.isActive ? (
-                    <button
-                      onClick={() => handleDesactivar(user._id)}
-                      className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+                  <td>
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium text-white
+                          ${user.rol==="admin"
+                            ? "bg-purple-600"
+                            : user.rol==="tutor"
+                              
+                            ? "bg-blue-600"
+                            : "bg-green-600"
+                          }`}
                     >
-                      Desactivar
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => handleActivar(user._id)}
-                      className="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600"
+                      {user.rol}
+                    </span>
+                  </td>
+
+                  <td>
+                    {user.rol === "estudiante"
+                      ? user.nivelAcademico || "No asignado"
+                      : "-"}
+                  </td>
+
+                  <td>
+                    <span
+                      className={`px-2 py-1 rounded text-white text-sm ${
+                        user.isActive
+                          ? "bg-green-500"
+                          : "bg-gray-400"
+                      }`}
                     >
-                      Activar
+                      {user.isActive
+                        ? "Activo"
+                        : "Inactivo"}
+                    </span>
+                  </td>
+
+                  <td className="flex justify-center gap-2 p-2">
+                    {user.isActive ? (
+                      <button
+                        onClick={() => handleDesactivar(user._id)}
+                        className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+                      >
+                        Desactivar
+                      </button>
+                    ) : (
+                      <button 
+                        onClick={() => handleActivar(user._id)}
+                        className="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600"
+                      >
+                        Activar
+                      </button>
+                    )}
+                    <button
+                      onClick={() => handleEditar(user)}
+                      className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
+                    >
+                      Editar
                     </button>
-                  )}
-                  <button
-                    onClick={() => handleEditar(user)}
-                    className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
-                  >
-                    Editar
-                  </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="6" className="text-center p-4">
+                  No hay usuarios disponibles
                 </td>
               </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="6" className="text-center p-4">
-                No hay usuarios disponibles
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+            )}
+          </tbody>
+        </table>
+      </div>
 
       {showModal && (
         <ModalCrearUsuario

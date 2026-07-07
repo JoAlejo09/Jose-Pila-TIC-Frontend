@@ -11,6 +11,7 @@ const ModalCrearUsuario = ({ onClose, onUsuarioCreado, modo = "crear", usuarioSe
     rol:"estudiante",
     nivelAcademico:""
   });
+  const [error, setError] = useState("");
 
   // CARGAR DATOS EDITAR
 
@@ -54,9 +55,8 @@ const ModalCrearUsuario = ({ onClose, onUsuarioCreado, modo = "crear", usuarioSe
         form.rol === "estudiante" &&
         !form.nivelAcademico
       ){
-        return alert(
-          "Seleccione un año escolar"
-        );
+        setError("Seleccione un año escolar para el estudiante");
+        return;
       }
       if(modo === "crear"){
         await crearUsuarioRequest(form);
@@ -78,6 +78,11 @@ const ModalCrearUsuario = ({ onClose, onUsuarioCreado, modo = "crear", usuarioSe
           : "Editar Usuario"
         }
       </h2>
+      {error && (
+        <p className="text-red-500 text-sm mb-3 text-center">
+          {error}
+        </p>
+      )}
       <form
         onSubmit={handleSubmit}
         className="space-y-4"
@@ -87,6 +92,7 @@ const ModalCrearUsuario = ({ onClose, onUsuarioCreado, modo = "crear", usuarioSe
           type="text"
           name="nombre"
           placeholder="Nombre"
+          autoComplete="given-name"
           value={form.nombre}
           onChange={handleChange}
           className="w-full border border-gray-300 p-3 rounded-lg outline-none focus:ring-2 focus:ring-green-500"
@@ -96,6 +102,7 @@ const ModalCrearUsuario = ({ onClose, onUsuarioCreado, modo = "crear", usuarioSe
           type="text"
           name="apellido"
           placeholder="Apellido"
+          autoComplete="family-name"
           value={form.apellido}
           onChange={handleChange}
           className="w-full border border-gray-300 p-3 rounded-lg outline-none focus:ring-2 focus:ring-green-500"
@@ -105,6 +112,7 @@ const ModalCrearUsuario = ({ onClose, onUsuarioCreado, modo = "crear", usuarioSe
           type="email"
           name="email"
           placeholder="Correo"
+          autoComplete="email"
           value={form.email}
           onChange={handleChange}
           className="w-full border border-gray-300 p-3 rounded-lg outline-none focus:ring-2 focus:ring-green-500"

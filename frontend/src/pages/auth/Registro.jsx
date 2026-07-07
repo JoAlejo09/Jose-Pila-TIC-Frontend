@@ -57,17 +57,13 @@ const Registro = () => {
                 "Ingrese un correo electrónico válido"
             );
         }
-
         if (form.password !== form.confirmpassword) {
             return setError(
                 "Las contraseñas no coinciden"
             );
         }
-
         try {
-
             setLoading(true);
-
             const payload = {
                 nombre,
                 apellido,
@@ -80,28 +76,21 @@ const Registro = () => {
             const res = await registerUserRequest(
                 payload
             );
-
             setSuccess(res.msg);
-
             setTimeout(() => {
                 navigate("/login");
             }, 2000);
 
         } catch (err) {
-
             console.log(err);
-
             setError(
                 err.response?.data?.msg ||
                 "Error al registrar usuario"
             );
 
         } finally {
-
             setLoading(false);
-
         }
-
     };
 
     return (
@@ -133,7 +122,7 @@ const Registro = () => {
                     <form
                         onSubmit={handleSubmit}
                         className="space-y-3"
-                    >
+                    > 
                     <div className="space-y-1">
                          <label
                             htmlFor="nombre"
@@ -143,6 +132,7 @@ const Registro = () => {
                         <Input
                             type="text"
                             name="nombre"   
+                            autoComplete="given-name"
                             placeholder="Ej. Jose, Andres, Ana, Carol, etc"
                             value={form.nombre}
                         onChange={handleChange} 
@@ -156,6 +146,7 @@ const Registro = () => {
                         <Input
                             type="text"
                             name="apellido"
+                            autoComplete="family-name"
                             placeholder="Ej. Perez, Torres, Erazo, etc"
                             value={form.apellido}
                             onChange={handleChange}
@@ -169,6 +160,7 @@ const Registro = () => {
                         <Input
                             type="email"
                             name="email"
+                            autoComplete="email"
                             placeholder="Ej. micorreo@outlook.com"
                             value={form.email}
                             onChange={handleChange}
@@ -231,6 +223,7 @@ const Registro = () => {
 
                     <div className="flex justify-center">
                         <Button type="submit">
+                            disabled = {loading}
                             { loading
                                     ? "Registrando..."
                                     : "Registrarse"

@@ -13,105 +13,54 @@ const CambiarPassword = () => {
 
     const navigate = useNavigate();
 
-    const [msg, setMsg] =
-        useState("");
-
-    const [error, setError] =
-        useState("");
-
-    const [loading, setLoading] =
-        useState(false);
-
+    const [msg, setMsg] = useState("");
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
     const [form, setForm] = useState({
-
         password: "",
-
         confirmpassword: ""
-
     });
 
     // CAMBIOS INPUT
     const handleChange = (e) => {
-
         setForm({
-
             ...form,
-
-            [e.target.name]:
-                e.target.value
-
+            [e.target.name]: e.target.value
         });
-
     };
 
     // ENVIAR PASSWORD
     const handleSubmit = async (e) => {
-
         e.preventDefault();
-
         setError("");
-
         setMsg("");
-
         try {
-
             // VALIDAR CAMPOS
-            if (
-                !form.password ||
-                !form.confirmpassword
-            ) {
-
-                return setError(
-                    "Todos los campos son obligatorios"
-                );
-
+            if ( !form.password || !form.confirmpassword) {
+                return setError( "Todos los campos son obligatorios" );
             }
 
             // VALIDAR COINCIDENCIA
-            if (
-                form.password !==
-                form.confirmpassword
-            ) {
-
-                return setError(
-                    "Las contraseñas no coinciden"
-                );
-
+            if ( form.password !== form.confirmpassword) {
+                return setError( "Las contraseñas no coinciden");
             }
-
             setLoading(true);
 
-            const res =
-                await cambiarPasswordRequest(
-                    form
-                );
-
+            const res = await cambiarPasswordRequest( form );
             setMsg(res.msg);
-
             setTimeout(() => {
-
                 navigate("/dashboard");
-
             }, 2000);
 
         } catch (error) {
-
             console.log(error);
-
             setError(
-
                 error.response?.data?.msg ||
-
                 "Error al cambiar contraseña"
-
             );
-
         } finally {
-
             setLoading(false);
-
         }
-
     };
 
     return (
@@ -157,13 +106,18 @@ const CambiarPassword = () => {
                     onSubmit={handleSubmit}
                     className="space-y-3"
                 >
-
                     <PasswordInput
                         name="password"
                         placeholder="Nueva contraseña"
                         value={form.password}
                         onChange={handleChange}
                     />
+                    <p className="text-xs text-gray-500">
+                        La contraseña debe contener al menos 8 caracteres.
+                    </p>
+                    <p className="text-xs text-gray-500">
+                        Debe incluir letras mayúsculas, minúsculas y números.
+                    </p>
 
                     <PasswordInput
                         name="confirmpassword"
@@ -178,23 +132,15 @@ const CambiarPassword = () => {
                             type="submit"
                             disabled={loading}
                         >
-
                             {loading
                                 ? "Guardando..."
                                 : "Guardar"}
-
                         </Button>
-
                     </div>
-
                 </form>
-
             </Card>
-
         </div>
-
     );
-
 };
 
 export default CambiarPassword;

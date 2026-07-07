@@ -65,7 +65,6 @@ const Login = () => {
     } catch (error) {
       console.log(error);
       const backendError = error.response?.data;
-
       setError(
         backendError?.msg ||
         "Error al iniciar sesión"
@@ -133,6 +132,7 @@ const Login = () => {
           </label>
           <input type="email"
                 name="email"
+                autoComplete="email"
                 placeholder="Ej. micorreo@outlook.com"
                 value={form.email}
                 onChange={handleChange}
@@ -179,7 +179,7 @@ const Login = () => {
         {mostrarReenvio && (
           <div className="mt-5 border-t pt-4 text-center">
             <p className="text-sm text-gray-600 mb-3">
-              ¿No recibiste el correo de confirmación?
+              Tu cuenta aún no ha sido verificada. Puedes solicitar un nuevo correo de confirmación.
             </p>
             <button
               onClick={handleReenviar}

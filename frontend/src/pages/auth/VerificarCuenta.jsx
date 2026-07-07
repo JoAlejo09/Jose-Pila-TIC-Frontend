@@ -14,18 +14,20 @@ const VerificarCuenta = () =>{
         if(ejecutado.current) return;
         ejecutado.current = true;
 
+        let timer;
+
         const verificarCuenta = async() =>{
             try{
                 const res = await axios.get(`/auth/confirmar/${token}`);
                 setMensaje(res.data.msg);
-                setTimeout(() => {
+                timer = setTimeout(() => {
                     navigate("/login");
                 },3000);
             }catch(err){
                 const msg = err.response?.data?.msg;
                 if(msg?.toLowerCase().includes("confirmada")){
                     setMensaje("Tu cuenta ya fue confirmada anteriormente");
-                    setTimeout(() => {
+                    timer = setTimeout(() => {
                         navigate("/login");
                     }, 2000);
                 }else{
@@ -34,6 +36,11 @@ const VerificarCuenta = () =>{
             }
         };
         verificarCuenta();
+        return () => {
+            if (timer){
+                clearTimeout(timer);
+            }
+        };
     }, [token, navigate]);
     
     return(
@@ -42,7 +49,7 @@ const VerificarCuenta = () =>{
       <div className="bg-white p-6 rounded-xl shadow-md text-center max-w-md">
 
         <h2 className="text-2xl font-bold mb-4">
-          Verificación de cuenta
+          Confirmación de cuenta
         </h2>
 
         {mensaje && (
@@ -53,10 +60,21 @@ const VerificarCuenta = () =>{
           <p className="text-red-500 mb-3">{error}</p>
         )}
 
-        <p className="text-sm text-gray-500">
-          Serás redirigido al login...
-        </p>
-
+        {mensaje && (
+            <p className="text-sm text-gray-500">
+              Serás redirigido al login...
+            </p>
+        )}
+        {error &&(
+            <div className="mt-4">
+                <button 
+                onClick={() => navigate("/login")}
+                className ="bg-primary text-white px-4 py-2 rounded-lg hover:opacity-90"
+                >
+                    Volver al Inicio de Sesión
+                </button>
+            </div>
+        )}
       </div>
 
     </div>

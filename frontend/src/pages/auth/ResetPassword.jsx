@@ -1,14 +1,6 @@
 import { useEffect, useState } from "react";
-
-import {
-  useNavigate,
-  useParams
-} from "react-router-dom";
-
-import {
-  validarTokenRequest,
-  nuevoPasswordRequest
-} from "../../services/authService.js";
+import { useNavigate, useParams } from "react-router-dom";
+import { validarTokenRequest, nuevoPasswordRequest } from "../../services/authService.js";
 
 import Card from "../../components/ui/Card.jsx";
 import Button from "../../components/ui/Button.jsx";
@@ -20,8 +12,10 @@ const ResetPassword = () => {
     const { token } = useParams();
     const [valido, setValido] = useState(false);
     const [msg, setMsg] =  useState("");
-    const [error, setError] = useState("");
+    const [errorFormulario, setErrorFormulario] = useState("");
+    const [errorToken, setErrorToken] = useState("");
     const [loading, setLoading] = useState(false);
+    const [verificando, setVerificando] = useState(true);
 
     const [form, setForm] = useState({
         password: "",
@@ -35,13 +29,13 @@ const ResetPassword = () => {
                 setValido(true);
             } catch (error) {
                 console.log(error);
-                setError(error.response?.data?.msg || "Token inválido");
-
+                setErrorToken(error.response?.data?.msg || "Token inválido");
             }
-
+            finally{
+                setVerificando(false);
+            }
         };
         validar();
-
     }, [token]);
 
     const handleChange = (e) => {
@@ -56,17 +50,17 @@ const ResetPassword = () => {
     // ENVIAR NUEVO PASSWORD
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError("");
+        setErrorFormulario("");
         setMsg("");
 
         try {
 
             if ( !form.password || !form.confirmpassword ) {
-                return setError( "Todos los campos son obligatorios" );
+                return setErrorFormulario( "Todos los campos son obligatorios" );
             }
 
             if ( form.password !== form.confirmpassword ) {
-                return setError( "Las contraseñas no coinciden");
+                return setErrorFormulario( "Las contraseñas no coinciden");
             }
 
             setLoading(true);
@@ -78,7 +72,7 @@ const ResetPassword = () => {
 
         } catch (error) {
             console.log(error);
-            setError(
+            setErrorFormulario(
                 error.response?.data?.msg ||
                 "Error al actualizar contraseña"
             );
@@ -90,13 +84,39 @@ const ResetPassword = () => {
     };
 
     // TOKEN INVALIDO
+    if (verificando) {
+        return (
+        <div className="min-h-screen flex items-center justify-center">
+            <Card className="w-full max-w-md text-center">
+                <h2 className="text-xl font-semibold">
+                    Verificando enlace...
+                </h2>
+
+                <p className="text-sm text-gray-500 mt-3">
+                    Espere un momento.
+                </p>
+            </Card>
+        </div>
+        )
+    }
     if (!valido) {
         return (
             <div className="min-h-screen flex items-center justify-center">
                 <Card className="w-full max-w-md">
                     <p className="text-red-500 text-center">
-                        {error}
+                        {errorToken}
                     </p>
+                    <p className="text-sm text-gray-500 text-center mt-3">
+                    Solicite un nuevo enlace para restablecer su contraseña.
+                    </p>
+                     <div className="flex justify-center mt-5">
+                    <Button
+                        type="button"
+                        onClick={() => navigate("/recuperar-password")}
+                    >
+                        Solicitar nuevo enlace
+                    </Button>
+                </div>
                 </Card>
             </div>
         );
@@ -130,12 +150,9 @@ const ResetPassword = () => {
 
                 )}
 
-                {error && (
-
+                {errorFormulario && (
                     <p className="text-red-500 text-center mb-3">
-
-                        {error}
-
+                        {errorFormulario}
                     </p>
 
                 )}
@@ -151,7 +168,12 @@ const ResetPassword = () => {
                         value={form.password}
                         onChange={handleChange}
                     />
-
+                    <p className="text-xs text-gray-500">
+                        La contraseña debe contener al menos 8 caracteres.
+                    </p>
+                    <p className="text-xs text-gray-500">
+                        Debe incluir letras mayúsculas, minúsculas y números.
+                    </p>
                     <PasswordInput
                         name="confirmpassword"
                         placeholder="Confirmar contraseña"
