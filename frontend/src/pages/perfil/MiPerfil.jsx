@@ -36,6 +36,7 @@ const MiPerfil = () => {
                     titulacion: data.perfil?.titulacion || "",
                     descripcion: data.perfil?.descripcion || ""
                 });
+                setEditando(false);
             } catch (error) {
                 console.log(error);
                 setError("Error al cargar perfil");
@@ -93,6 +94,26 @@ const MiPerfil = () => {
             setCargarFoto(false);
             setMostrarMenuFoto(false);
         }
+    };
+    const cancelarEdicion = () => {
+
+        setForm({
+            nombre: perfil.usuario?.nombre || "",
+            apellido: perfil.usuario?.apellido || "",
+            telefono: perfil.perfil?.telefono || "",
+            direccion: perfil.perfil?.direccion || "",
+            fechaNacimiento: perfil.perfil?.fechaNacimiento
+                ? perfil.perfil.fechaNacimiento.split("T")[0]
+                : "",
+            institucion: perfil.perfil?.institucion || "",
+            nivelAcademico: perfil.perfil?.nivelAcademico || "",
+            especialidad: perfil.perfil?.especialidad || "",
+            experiencia: perfil.perfil?.experiencia || "",
+            titulacion: perfil.perfil?.titulacion || "",
+            descripcion: perfil.perfil?.descripcion || ""
+        });
+
+        setEditando(false);
     };
 
     if (loading) {
@@ -423,7 +444,7 @@ const MiPerfil = () => {
                     <div className="flex justify-end gap-3 pt-4">
                         <button
                             type="button"
-                            onClick={() => setEditando(false)}
+                            onClick={cancelarEdicion}
                             className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded">
                             Cancelar
                         </button>

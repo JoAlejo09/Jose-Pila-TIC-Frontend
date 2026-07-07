@@ -33,6 +33,7 @@ const CompletarPerfil = () => {
     const [guardar, setGuardar] = useState(false);
     const [error, setError] = useState("");
     const [msg, setMsg] = useState("");
+    const [previa, setPrevia] = useState("");
 
     useEffect(() => {
         const cargarUsuario = async () => {
@@ -65,6 +66,7 @@ const CompletarPerfil = () => {
         if (!file) return;
 
         setImagen(file);
+        setPrevia(URL.createObjectURL(file));
 
     };
 
@@ -195,6 +197,13 @@ const CompletarPerfil = () => {
                             onChange={handleImagenChange}
                             className="w-full border p-2 rounded"
                         />
+                        {previa && (
+                            <img
+                            src={previa}
+                            alt="Vista previa"
+                            className="w-28 h-28 object-cover rounded-full mt-3"
+                            />
+                        )}
 
                     </div>
                     <h2 className="text-lg font-semibold border-b pb-2 mb-4">
@@ -307,6 +316,7 @@ const CompletarPerfil = () => {
                                     value={form.fechaNacimiento}
                                     onChange={handleChange}
                                     className="w-full border p-2 rounded"
+                                    max={new Date().toISOString().split("T")[0]}
                                 />
 
                             </div>
