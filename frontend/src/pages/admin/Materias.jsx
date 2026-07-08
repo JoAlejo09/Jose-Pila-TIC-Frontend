@@ -1,9 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 
-import {
-    obtenerMateriasRequest,
-    cambiarEstadoMateriaRequest
-} from "../../services/materiaService";
+import { obtenerMateriasRequest, cambiarEstadoMateriaRequest } from "../../services/materiaService";
 
 import Input from "../../components/ui/Input.jsx";
 import ModalMateria from "../../components/modal/MateriaModal.jsx";
@@ -13,51 +10,33 @@ const Materias = () => {
     const [materias, setMaterias] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-
+    const [msg, setMsg] = useState(null);
     const [buscar, setBuscar] = useState("");
-
     const [filtroNivelAcademico, setFiltroNivelAcademico] = useState("");
-
     const [modal, setModal] = useState(false);
-
     const [modoModal, setModoModal] = useState("crear");
-
-    const [materiaSeleccionada, setMateriaSeleccionada] =
-        useState(null);
+    const [materiaSeleccionada, setMateriaSeleccionada] = useState(null);
 
     // CARGAR MATERIAS
     const cargarMaterias = async () => {
-
         try {
-
             setLoading(true);
-
             const data = await obtenerMateriasRequest();
-
             setMaterias(data);
-
         } catch (error) {
-
             console.log(error);
-
             setError("Error al cargar las materias");
-
         } finally {
-
             setLoading(false);
-
         }
     };
 
     useEffect(() => {
-
         cargarMaterias();
-
     }, []);
 
     // NIVELES ÚNICOS
     const nivelesAcademicos = useMemo(() => {
-
         return [
             ...new Set(
                 materias.map(
@@ -66,87 +45,65 @@ const Materias = () => {
                 )
             )
         ].filter(Boolean);
-
     }, [materias]);
 
     // FILTRADO
     const materiasFiltradas = useMemo(() => {
-
         return materias.filter((materia) => {
-
-            const textoBusqueda =
-                buscar.toLowerCase();
-
-            const coincideBusqueda =
-
-                materia.nombre
+            const textoBusqueda = buscar.toLowerCase();
+            const coincideBusqueda = materia.nombre
                     ?.toLowerCase()
                     .includes(textoBusqueda)
-
                 ||
-
                 materia.descripcion
                     ?.toLowerCase()
                     .includes(textoBusqueda)
-
                 ||
-
                 materia.nivelAcademico
                     ?.toLowerCase()
                     .includes(textoBusqueda);
-
             const coincideNivelAcademico =
-
                 filtroNivelAcademico === ""
                 ||
                 materia.nivelAcademico === filtroNivelAcademico;
-
             return (
-
                 coincideBusqueda
                 &&
                 coincideNivelAcademico
-
             );
-
         });
-
-    }, [
-        materias,
-        buscar,
-        filtroNivelAcademico
-    ]);
+    }, [ materias, buscar, filtroNivelAcademico ]);
 
     // CAMBIAR ESTADO
     const handleEstado = async (id) => {
+         const confirmar = window.confirm(
+            "¿Está seguro de cambiar el estado de esta materia?"
+        );
+        if(!confirmar) return;
 
         try {
+            setMsg("");
+            setError("");
 
-            await cambiarEstadoMateriaRequest(id);
+            const res = await cambiarEstadoMateriaRequest(id);
+            setMsg(res.msg);
 
-            cargarMaterias();
-
+            await cargarMaterias();
         } catch (error) {
-
             console.log(error);
-
+            setError("Error al cambiar el estado de la materia");
         }
     };
 
     // EDITAR
     const handleEditar = (materia) => {
-
         setMateriaSeleccionada(materia);
-
         setModoModal("editar");
-
         setModal(true);
-
     };
 
     // LOADING
     if (loading) {
-
         return (
             <p className="text-center mt-10">
                 Cargando materias...
@@ -156,7 +113,6 @@ const Materias = () => {
 
     // ERROR
     if (error) {
-
         return (
             <p className="text-center mt-10 text-red-500">
                 {error}
@@ -165,29 +121,26 @@ const Materias = () => {
     }
 
     return (
+        <div className=" bg-white p-6 rounded-2xl shadow-sm">
 
-        <div className="
-            bg-white p-6 rounded-2xl shadow-sm
-        ">
-
-            {/* HEADER */}
-            <div className="
-                flex flex-col md:flex-row
-                md:items-center md:justify-between
-                gap-4 mb-6
+            <div className=" flex flex-col md:flex-row md:items-center 
+                             md:justify-between gap-4 mb-6
             ">
-
                 <div>
-
-                    <h1 className="
-                        text-3xl font-bold text-gray-800
-                    ">
+                    <h1 className=" text-3xl font-bold text-gray-800">
                         Gestión de Materias
                     </h1>
-
-                    <p className="
-                        text-gray-500 mt-1
-                    ">
+                    {msg && (
+                       <div className=" mb-4 rounded-lg bg-green-100 text-green-70">
+                        {msg}
+                        </div>
+                    )}
+                    {error && (
+                        <div className="mb-4 rounded-lg bg-red-100 p-3 text-red-700">
+                            {error}
+                        </div>
+                    )}
+                    <p className=" text-gray-500 mt-1">
                         Administra las materias académicas.
                     </p>
 
@@ -195,31 +148,18 @@ const Materias = () => {
 
                 <button
                     onClick={() => {
-
                         setModoModal("crear");
-
                         setMateriaSeleccionada(null);
-
                         setModal(true);
-
                     }}
-                    className="
-                        bg-green-600 hover:bg-green-700
-                        text-white px-5 py-3
-                        rounded-xl transition
-                    "
-                >
+                    className=" bg-green-600 hover:bg-green-700
+                                text-white px-5 py-3 rounded-xl transition
+                    ">
                     + Nueva
                 </button>
-
             </div>
 
-            {/* FILTROS */}
-            <div className="
-                flex flex-col lg:flex-row
-                gap-4 mb-6
-            ">
-
+            <div className=" flex flex-col lg:flex-row gap-4 mb-6">
                 {/* BUSCADOR */}
                 <Input
                     type="text"
@@ -228,12 +168,7 @@ const Materias = () => {
                     onChange={(e) =>
                         setBuscar(e.target.value)
                     }
-                    className="
-                        flex-1
-                        border border-gray-300
-                        rounded-xl p-3
-                    "
-                />
+                    className=" flex-1 border border-gray-300 rounded-xl p-3 "/>
 
                 {/* FILTRO NIVEL */}
                 <select
@@ -243,109 +178,68 @@ const Materias = () => {
                             e.target.value
                         )
                     }
-                    className="
-                        border border-gray-300
-                        rounded-xl px-4 py-3
-                        bg-white
-                    "
+                    className=" border border-gray-300 rounded-xl px-4 py-3 bg-white"
                 >
 
-                    <option value="">
-                        Todos los cursos
-                    </option>
-
+                    <option value=""> Todos los cursos</option>
                     {
                         nivelesAcademicos.map(
                             (nivel) => (
-
                                 <option
                                     key={nivel}
                                     value={nivel}
                                 >
                                     {nivel}
                                 </option>
-
                             )
                         )
                     }
-
                 </select>
-
             </div>
 
             {/* TABLA */}
             <div className="overflow-x-auto">
-
-                <table className="
-                    w-full bg-white
-                    rounded-2xl overflow-hidden
-                ">
-
+                <table className=" w-full bg-white rounded-2xl overflow-hidden">
                     <thead className="bg-gray-100">
-
                         <tr className="text-gray-700">
-
-                            <th className="
-                                p-4 text-left font-semibold
-                            ">
+                            <th className="p-4 text-left font-semibold">
                                 Nombre
                             </th>
 
-                            <th className="
-                                p-4 text-left font-semibold
-                            ">
+                            <th className="p-4 text-left font-semibold">
                                 Descripción
                             </th>
 
-                            <th className="
-                                p-4 text-left font-semibold
-                            ">
+                            <th className=" p-4 text-left font-semibold">
                                 Año Escolar
                             </th>
 
-                            <th className="
-                                p-4 text-center font-semibold
-                            ">
+                            <th className=" p-4 text-center font-semibold">
                                 Estado
                             </th>
 
-                            <th className="
-                                p-4 text-center font-semibold
-                            ">
+                            <th className=" p-4 text-center font-semibold">
                                 Acciones
                             </th>
-
                         </tr>
-
                     </thead>
 
                     <tbody>
-
                         {
                             materiasFiltradas.length > 0
                                 ? (
                                     materiasFiltradas.map((materia) => (
-
                                         <tr
                                             key={materia._id}
-                                            className="
-                                                border-t
-                                                hover:bg-gray-50
-                                                transition
-                                            "
+                                            className="border-t hover:bg-gray-50 transition"
                                         >
-
                                             {/* NOMBRE */}
-                                            <td className="
-                                                p-4 font-medium text-gray-800
-                                            ">
+                                            <td className=" p-4 font-medium text-gray-800">
                                                 {materia.nombre}
                                             </td>
 
                                             {/* DESCRIPCION */}
-                                            <td className="
-                                                p-4 text-gray-600
-                                            ">
+                                            <td className="p-4 text-gray-600">
                                                 {
                                                     materia.descripcion ||
                                                     "-"
@@ -354,11 +248,8 @@ const Materias = () => {
 
                                             {/* NIVEL ACADÉMICO */}
                                             <td className="p-4">
-
-                                                <span className="
-                                                    px-3 py-1 rounded-full
-                                                    text-xs
-                                                    bg-blue-100 text-blue-700
+                                                <span className="px-3 py-1 rounded-full
+                                                        text-xs bg-blue-100 text-blue-700
                                                 ">
                                                     {
                                                         materia.nivelAcademico ||
@@ -369,48 +260,32 @@ const Materias = () => {
                                             </td>
 
                                             {/* ESTADO */}
-                                            <td className="
-                                                p-4 text-center
-                                            ">
+                                            <td className="p-4 text-center">
 
-                                                <span className={`
-                                                    px-3 py-1 rounded-full
-                                                    text-white text-sm
+                                                <span className={`px-3 py-1 rounded-full text-white text-sm
                                                     ${
                                                         materia.estado
                                                             ? "bg-green-500"
                                                             : "bg-gray-400"
                                                     }
                                                 `}>
-
                                                     {
                                                         materia.estado
                                                             ? "Activa"
                                                             : "Inactiva"
                                                     }
-
                                                 </span>
-
                                             </td>
 
                                             {/* ACCIONES */}
-                                            <td className="
-                                                p-4
-                                            ">
-
-                                                <div className="
-                                                    flex justify-center gap-2
-                                                ">
-
+                                            <td className="p-4">
+                                                <div className="flex justify-center gap-2">
                                                     <button
                                                         onClick={() =>
                                                             handleEditar(materia)
                                                         }
-                                                        className="
-                                                            bg-blue-500 hover:bg-blue-600
-                                                            text-white
-                                                            px-4 py-2
-                                                            rounded-lg transition
+                                                        className=" bg-blue-500 hover:bg-blue-600 text-white
+                                                                px-4 py-2rounded-lg transition
                                                         "
                                                     >
                                                         Editar
@@ -422,10 +297,7 @@ const Materias = () => {
                                                                 materia._id
                                                             )
                                                         }
-                                                        className={`
-                                                            px-4 py-2
-                                                            rounded-lg
-                                                            text-white transition
+                                                        className={`px-4 py-2 rounded-lg text-white transition
                                                             ${
                                                                 materia.estado
                                                                     ? "bg-red-500 hover:bg-red-600"
@@ -433,44 +305,34 @@ const Materias = () => {
                                                             }
                                                         `}
                                                     >
-
                                                         {
                                                             materia.estado
                                                                 ? "Desactivar"
                                                                 : "Activar"
                                                         }
-
                                                     </button>
-
                                                 </div>
-
                                             </td>
-
                                         </tr>
-
                                     ))
                                 )
                                 : (
                                     <tr>
-
                                         <td
                                             colSpan="5"
-                                            className="
-                                                text-center p-8
-                                                text-gray-500
-                                            "
+                                            className=" text-center p-8text-gray-500"
                                         >
-                                            No hay materias registradas
-                                        </td>
+                                            {buscar ||filtroNivelAcademico
+                                                ? "No existen materias que coincidan con los filtros"
+                                                : "No hay materias registradas"
 
+                                            }
+                                        </td>
                                     </tr>
                                 )
                         }
-
                     </tbody>
-
                 </table>
-
             </div>
 
             {/* MODAL */}
@@ -485,7 +347,6 @@ const Materias = () => {
                     />
                 )
             }
-
         </div>
     );
 };
