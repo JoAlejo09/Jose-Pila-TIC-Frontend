@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { obtenerUnidadesRequest,cambiarEstadoUnidadRequest } from "../../services/unidadService.js";
 
 import UnidadModal from "../../components/modal/UnidadModal.jsx";
+import { obtenerMateriasRequest } from "../../services/materiaService.js";
 
 const Unidades = () => {
 
@@ -10,36 +11,47 @@ const Unidades = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [buscar, setBuscar] = useState("");
+    const [filtroMateria, setFiltroMateria] = useState("");
+    const [filtroNivel, setFiltroNivel] = useState("");
+    const [materias, setMaterias] = useState([]);
     const [modal, setModal] = useState(false);
     const [modoModal, setModoModal] = useState("crear");
     const [unidadSeleccionada, setUnidadSeleccionada] = useState(null);
 
     //Carga de los datos de las unidades para mostrar en la tabla
-    const cargarUnidades = async() => {
-        try {
+    const cargarUnidades = async () => {
+        try {            
             setLoading(true);
-            const data = await obtenerUnidadesRequest();
+            const data = await obtenerUnidadesRequest({
+                search: buscar,
+                materia: filtroMateria,
+                nivelAcademico: filtroNivel
+            });
+            console.log(data);
             setUnidades(data);
         } catch (error) {
             console.log(error);
-            setError( "Error al cargar las unidades" );
+            setError("Error al cargar las unidades");
         } finally {
             setLoading(false);
         }
     };
 
+    const cargarMaterias = async()=>{
+        try {
+            const data = await obtenerMateriasRequest();
+            setMaterias(data.filter(m=>m.estado));
+        } catch (error) {
+            console.log(error)            
+        }
+    }
     useEffect(() => {
         cargarUnidades();
-    }, []);
+    }, [buscar, filtroMateria, filtroNivel]);
 
-    const unidadesFiltradas = unidades.filter((unidad) =>
-        unidad.nombre
-            .toLowerCase()
-            .includes(
-                buscar.toLowerCase()
-            )
-    );
-
+    useEffect(()=>{
+        cargarMaterias();
+    },[])
     const handleEstado = async(id) => {
         try {
             await cambiarEstadoUnidadRequest(id);
@@ -94,15 +106,37 @@ const Unidades = () => {
                         onChange={(e)=>
                             setBuscar(e.target.value)
                         }
-                        className="
-                            border border-gray-300
-                            rounded-xl px-4 py-3
-                            w-full md:w-72
-                            outline-none
-                            focus:ring-2
-                            focus:ring-blue-500
+                        className=" border border-gray-300 rounded-xl px-4 py-3
+                                    w-full md:w-72 outline-none focus:ring-2
+                                    focus:ring-blue-500
                         "
                     />
+                    <select
+                    value={filtroMateria}
+                    onChange={(e) => setFiltroMateria(e.target.value)}
+                    className="border border-gray-300 rounded-xl px-4 py-3"
+                    >
+                        <option value="">Todas las materias</option>
+                        {materias.map((materia) => (
+                            <option
+                            key={materia._id}
+                            value={materia._id}
+                        >
+                            {materia.nombre}
+                            </option>
+                        ))}
+                    </select>
+
+                    <select
+                        value={filtroNivel}
+                        onChange={(e) => setFiltroNivel(e.target.value)}
+                        className="border border-gray-300 rounded-xl px-4 py-3 "
+                    >
+                        <option value="">Todos los niveles</option>
+                        <option value="1ro BGU"> 1ro BGU </option>
+                        <option value="2do BGU"> 2do BGU </option> 
+                        <option value="3ro BGU"> 3ro BGU </option>
+                    </select>
 
                     <button
                         onClick={() => {
@@ -134,9 +168,9 @@ const Unidades = () => {
                         </thead>
 
                         <tbody>
-                            { unidadesFiltradas.length > 0
+                            { unidades.length > 0
                                 ? (
-                                    unidadesFiltradas.map((unidad)=>(
+                                    unidades.map((unidad)=>(
                                         <tr
                                             key={unidad._id}
                                             className="

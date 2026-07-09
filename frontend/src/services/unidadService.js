@@ -1,7 +1,18 @@
 import axios from "../api/axios.js";
 
-const obtenerUnidadesRequest = async()=>{
-    const res= await axios.get("/unidad")
+const obtenerUnidadesRequest = async(filtros={})=>{
+    const params = new URLSearchParams();
+    if(filtros.search){
+        params.append("search", filtros.search);
+    }
+    if(filtros.materia){
+        params.append("materia", filtros.materia);
+    }
+    if(filtros.nivelAcademico){
+        params.append("nivelAcademico", filtros.nivelAcademico);
+    }
+    const res= await axios.get(`/unidad?${params.toString()}`);
+    
     return res.data
 }
 
