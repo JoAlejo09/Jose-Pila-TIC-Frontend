@@ -222,8 +222,8 @@ const Registro = () => {
                     </p>
 
                     <div className="flex justify-center">
-                        <Button type="submit">
-                            disabled = {loading}
+                        <Button type="submit"
+                            disabled = {loading}>
                             { loading
                                     ? "Registrando..."
                                     : "Registrarse"
