@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 
-import {
-    obtenerCuestionariosRequest,
-    eliminarCuestionarioRequest
-} from "../../services/cuestionarioService.js";
+import { obtenerCuestionariosRequest, eliminarCuestionarioRequest } from "../../services/cuestionarioService.js";
 
 import CuestionarioModal from "../../components/modal/CuestionarioModal.jsx";
 

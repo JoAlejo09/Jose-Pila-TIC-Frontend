@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import {
-  cambiarPasswordRequest
-} from "../../services/authService.js";
+import { cambiarPasswordRequest } from "../../services/authService.js";
 
 import Card from "../../components/ui/Card.jsx";
 import Button from "../../components/ui/Button.jsx";
@@ -70,32 +68,22 @@ const CambiarPassword = () => {
             <Card className="w-full max-w-md">
 
                 <h2 className="text-2xl font-bold mb-4 text-center">
-
                     Cambiar Contraseña
-
                 </h2>
 
                 <p className="text-sm text-gray-500 text-center mb-4">
-
                     Debes actualizar tu contraseña
                     antes de continuar.
-
                 </p>
 
                 {msg && (
-
                     <p className="text-green-600 text-center mb-3">
-
                         {msg}
-
                     </p>
-
                 )}
 
                 {error && (
-
                     <p className="text-red-500 text-center mb-3">
-
                         {error}
 
                     </p>

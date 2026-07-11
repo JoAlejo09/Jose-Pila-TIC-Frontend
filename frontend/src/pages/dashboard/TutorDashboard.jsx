@@ -1,9 +1,4 @@
-import {
-  Users,
-  CalendarDays,
-  BookOpen,
-  ClipboardList,
-} from "lucide-react";
+import { Users, CalendarDays, BookOpen, ClipboardList } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const TutorDashboard = () => {
@@ -91,27 +86,13 @@ const TutorDashboard = () => {
               onClick={() =>
                 card.ruta !== "#" && navigate(card.ruta)
               }
-              className="
-                bg-white
-                rounded-2xl
-                shadow-sm
-                border
-                p-6
-                cursor-pointer
-                hover:shadow-lg
-                transition-all
-                duration-300
+              className="bg-white rounded-2xl shadow-sm border p-6
+                          cursor-pointer hover:shadow-lg transition-all duration-300
               "
             >
               <div
-                className={`
-                  w-14 h-14
-                  rounded-xl
-                  flex
-                  items-center
-                  justify-center
-                  text-white
-                  mb-4
+                className={`w-14 h-14 rounded-xl flex
+                            items-center justify-center text-white mb-4
                   ${card.color}
                 `}
               >

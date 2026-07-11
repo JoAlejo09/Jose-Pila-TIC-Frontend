@@ -1,13 +1,6 @@
-import {
-  Users,
-  BarChart3,
-  UserCheck,
-  ShieldCheck,
-  BookOpen,
-  ClipboardList,
-  CalendarDays,
-  ArrowRight,
-} from "lucide-react";
+import { Users, BarChart3, UserCheck, ShieldCheck, BookOpen, 
+         ClipboardList, CalendarDays, ArrowRight } from "lucide-react";
+
 import { useNavigate } from "react-router-dom";
 
 const AdminDashboard = () => {
@@ -116,15 +109,8 @@ const AdminDashboard = () => {
           return (
             <div
               key={card.title}
-              className="
-                bg-white
-                p-6
-                rounded-2xl
-                shadow-sm
-                border
-                hover:shadow-lg
-                transition-all
-                duration-300
+              className="bg-white p-6 rounded-2xl shadow-sm
+                          border hover:shadow-lg transition-all duration-300
               "
             >
               <div className="flex justify-between items-center">

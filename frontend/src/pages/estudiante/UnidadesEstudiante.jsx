@@ -1,11 +1,8 @@
 import { useEffect, useState } from "react";
-
 import { ArrowLeft, Layers } from "lucide-react";
-
 import { useNavigate, useParams } from "react-router-dom";
 
 import { obtenerMateriaRequest } from "../../services/materiaService";
-
 import { obtenerUnidadesPorMateriaRequest } from "../../services/unidadService";
 
 const UnidadesEstudiante = ()=>{

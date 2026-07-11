@@ -112,7 +112,6 @@ const ModalMateria = ({
                             name="nombre"
                             placeholder="Ej: Matemática"
                             value={form.nombre}
-                            maxLength={80}
                             onChange={handleChange}
                             className="w-full border border-gray-300 p-3 rounded-xl outline-none focus:ring-2 focus:ring-green-500"
                         />
@@ -128,10 +127,12 @@ const ModalMateria = ({
                             onChange={handleChange}
                             className="w-full border border-gray-300 p-3 rounded-xl outline-none focus:ring-2 focus:ring-green-500"
                         >
+
                             <option value="1ro BGU"> 1ro BGU </option>
-                            <option value="2do BGU"> 2do BGU </option>
+                            <option value="2do BGU">2do BGU </option>
                             <option value="3ro BGU"> 3ro BGU </option>
                         </select>
+
                     </div>
 
                     <div>
@@ -143,7 +144,6 @@ const ModalMateria = ({
                             placeholder="Descripción de la materia"
                             value={form.descripcion}
                             onChange={handleChange}
-                            maxLength={500}
                             rows={4}
                             className="w-full border border-gray-300 p-3 rounded-xl outline-none focus:ring-2 focus:ring-green-500 resize-none"
                         />
@@ -156,7 +156,6 @@ const ModalMateria = ({
                             checked={form.estado}
                             onChange={handleChange}
                         />
-
                         <label className="text-sm font-medium text-gray-700">
                             Materia activa
                         </label>
@@ -169,7 +168,6 @@ const ModalMateria = ({
                             className="px-5 py-2 rounded-xl bg-gray-400 hover:bg-gray-500 text-white transition"
                         >
                             Cancelar
-
                         </button>
                         <button
                             type="submit"
@@ -183,7 +181,6 @@ const ModalMateria = ({
                                     ? "Crear"
                                     : "Actualizar"
                             }
-
                         </button>
                     </div>
                 </form>

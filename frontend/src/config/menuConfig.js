@@ -1,19 +1,7 @@
-import {
-    Users,
-    BarChart3,
-    User,
-    ClipboardCheck,
-    BookOpen,
-    School,
-    LibraryBig,
-    Lightbulb,
-    TrendingUp,
-    FileText,
-    GraduationCap
-} from "lucide-react";
+import { Users, BarChart3, User, ClipboardCheck, BookOpen, School, LibraryBig, Lightbulb,
+         TrendingUp, FileText, GraduationCap } from "lucide-react";
 
 const menuPorRol = {
-
     // ADMIN
     admin:[
         {
@@ -96,7 +84,7 @@ const menuPorRol = {
 
         //Visualizar las materias de estudiante
         {
-            label:"Materias",
+            label:"Recursos Académicos",
             icon:BookOpen,
             path:"/dashboard/estudiante/materias"
         },

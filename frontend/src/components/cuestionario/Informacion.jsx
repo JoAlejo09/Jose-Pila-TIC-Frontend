@@ -1,20 +1,10 @@
-const PasoInformacion = ({
-    form,
-    handleChange
-})=>{
-
+const PasoInformacion = ({ form, handleChange })=>{
     return(
-
         <div className="space-y-6">
 
-            {/* TITULO */}
-
             <div>
-
                 <label className="block mb-2 font-medium text-gray-700">
-
                     Título de evaluación
-
                 </label>
 
                 <input
@@ -26,19 +16,12 @@ const PasoInformacion = ({
                     className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                 />
-
             </div>
 
-            {/* TIPO EVALUACION */}
-
             <div>
-
                 <label className="block mb-2 font-medium text-gray-700">
-
                     Tipo de evaluación
-
                 </label>
-
                 <select
                     name="tipoEvaluacion"
                     value={form.tipoEvaluacion}
@@ -46,36 +29,15 @@ const PasoInformacion = ({
                     className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
 
-                    <option value="diagnostico">
-                        Diagnóstico
-                    </option>
-
-                    <option value="refuerzo">
-                        Refuerzo
-                    </option>
-
-                    <option value="practica">
-                        Práctica
-                    </option>
-
-                    <option value="simulador">
-                        Simulador
-                    </option>
-
+                    <option value="diagnostico"> Diagnóstico </option>
+                    <option value="refuerzo"> Refuerzo </option>
                 </select>
-
             </div>
 
-            {/* DESCRIPCION */}
-
             <div>
-
                 <label className="block mb-2 font-medium text-gray-700">
-
                     Descripción
-
                 </label>
-
                 <textarea
                     name="descripcion"
                     value={form.descripcion}
@@ -83,19 +45,12 @@ const PasoInformacion = ({
                     placeholder="Descripción general de la evaluación"
                     className="w-full border border-gray-300 rounded-xl p-4 min-h-[120px] focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
-
             </div>
 
-            {/* INSTRUCCIONES */}
-
             <div>
-
                 <label className="block mb-2 font-medium text-gray-700">
-
                     Instrucciones
-
                 </label>
-
                 <textarea
                     name="instrucciones"
                     value={form.instrucciones}
@@ -103,30 +58,19 @@ const PasoInformacion = ({
                     placeholder="Indicaciones para el estudiante"
                     className="w-full border border-gray-300 rounded-xl p-4 min-h-[120px] focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
-
             </div>
 
-            {/* ALERTA */}
-
             <div className="bg-blue-50 border border-blue-200 rounded-2xl p-4">
-
                 <h3 className="font-semibold text-blue-700 mb-2">
-
                     Información importante
-
                 </h3>
-
                 <p className="text-sm text-blue-600 leading-relaxed">
-
                     Las evaluaciones diagnósticas permiten medir conocimientos
                     previos del estudiante antes del acceso a recursos académicos.
                     Las evaluaciones de refuerzo ayudan a medir el aprendizaje
                     posterior al estudio de contenidos educativos.
-
                 </p>
-
             </div>
-
         </div>
     );
 };

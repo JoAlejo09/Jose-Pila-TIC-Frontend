@@ -78,83 +78,42 @@ const MiProgreso = ()=>{
 
             </div>
 
-            {/* =========================
-                MÉTRICAS
-            ========================= */}
+            {/* MÉTRICAS */}
 
-            <div className="
-                grid
-                md:grid-cols-5
-                gap-5
-                mb-8
-            ">
-
+            <div className=" grid md:grid-cols-5 gap-5 mb-8">
                 {/* EVALUACIONES */}
-
-                <div
-                    onClick={()=>
-                        navigate(
-                            "/dashboard/estudiante/cuestionarios"
-                        )
+                <div onClick={()=> navigate(
+                        "/dashboard/estudiante/cuestionarios")
                     }
-
-                    className="
-                        bg-blue-100
-                        rounded-2xl
-                        p-6
-                        cursor-pointer
-                        hover:scale-105
-                        transition-all
-                    "
+                    className="bg-blue-100 rounded-2xl p-6 cursor-pointer 
+                                hover:scale-105 transition-all"
                 >
-
-                    <h2 className="
-                        text-4xl
-                        font-bold
-                        text-blue-700
-                    ">
+                    <h2 className=" text-4xl font-bold text-blue-700">
                         {progreso.evaluacionesRendidas}
                     </h2>
 
-                    <p className="
-                        mt-2
-                        text-blue-700
-                    ">
+                    <p className="mt-2 text-blue-700">
                         Evaluaciones rendidas
                     </p>
 
                 </div>
 
                 {/* APROBADAS */}
-
                 <div
                     onClick={()=>
-                        navigate(
-                            "/dashboard/estudiante/resultados"
-                        )
+                        navigate( "/dashboard/estudiante/resultados")
                     }
 
-                    className="
-                        bg-green-100
-                        rounded-2xl
-                        p-6
-                        cursor-pointer
-                        hover:scale-105
-                        transition-all
+                    className="bg-green-100 rounded-2xl p-6
+                                cursor-pointer hover:scale-105 transition-all
                     "
                 >
 
-                    <h2 className="
-                        text-4xl
-                        font-bold
-                        text-green-700
-                    ">
+                    <h2 className=" text-4xl font-bold text-green-700">
                         {progreso.evaluacionesAprobadas}
                     </h2>
 
-                    <p className="mt-2
-                        text-green-700
-                    ">
+                    <p className="mt-2 text-green-700">
                         Evaluaciones Aprobadas
                     </p>
 
@@ -163,34 +122,20 @@ const MiProgreso = ()=>{
                 {/* PROMEDIO */}
 
                 <div
-                    onClick={()=>
-                        navigate(
+                    onClick={()=>navigate(
                             "/dashboard/estudiante/resultados"
                         )
                     }
 
-                    className="
-                        bg-purple-100
-                        rounded-2xl
-                        p-6
-                        cursor-pointer
-                        hover:scale-105
-                        transition-all
-                    "
+                    className=" bg-purple-100 rounded-2xl p-6 cursor-pointer
+                                hover:scale-105 transition-all
+                            "
                 >
-
-                    <h2 className="
-                        text-4xl
-                        font-bold
-                        text-purple-700
-                    ">
+                    <h2 className=" text-4xl font-bold text-purple-700">
                         {progreso.promedioGeneral}%
                     </h2>
 
-                    <p className="
-                        mt-2
-                        text-purple-700
-                    ">
+                    <p className="mt-2 text-purple-700">
                         Promedio
                     </p>
 
@@ -199,27 +144,17 @@ const MiProgreso = ()=>{
                 {/* RECURSOS */}
 
                 <div
-                    onClick={()=>
-                        navigate(
+                    onClick={()=> navigate(
                             "/dashboard/estudiante/materias"
                         )
                     }
 
-                    className="
-                        bg-orange-100
-                        rounded-2xl
-                        p-6
-                        cursor-pointer
-                        hover:scale-105
-                        transition-all
+                    className="bg-orange-100 rounded-2xl p-6
+                                cursor-pointer hover:scale-105 transition-all
                     "
                 >
 
-                    <h2 className="
-                        text-4xl
-                        font-bold
-                        text-orange-700
-                    ">
+                    <h2 className=" text-4xl font-bold text-orange-700">
 
                         {
                             progreso.recursosVistos.videos
@@ -231,10 +166,7 @@ const MiProgreso = ()=>{
 
                     </h2>
 
-                    <p className="
-                        mt-2
-                        text-orange-700
-                    ">
+                    <p className="mt-2 text-orange-700">
                         Recursos vistos
                     </p>
 
@@ -249,62 +181,27 @@ const MiProgreso = ()=>{
                         )
                     }
 
-                    className="
-                        bg-red-100
-                        rounded-2xl
-                        p-6
-                        cursor-pointer
-                        hover:scale-105
-                        transition-all
-                    "
+                    className="bg-red-100 rounded-2xl p-6 
+                                cursor-pointer hover:scale-105
+                                transition-all"
                 >
-
-                    <h2 className="
-                        text-4xl
-                        font-bold
-                        text-red-700
-                    ">
+                    <h2 className="text-4xl font-bold text-red-700">
                         {
                             progreso.temasDebiles.length
                         }
                     </h2>
-
-                    <p className="
-                        mt-2
-                        text-red-700
-                    ">
+                    <p className="mt-2 text-red-700">
                         Recomendaciones
                     </p>
-
                 </div>
-
             </div>
 
-            {/* =========================
-                TEMAS
-            ========================= */}
-
-            <div className="
-                grid
-                md:grid-cols-2
-                gap-6
-                mb-8
-            ">
+        {/* TEMAS */}
+            <div className="grid md:grid-cols-2 gap-6 mb-8">
 
                 {/* TEMAS FUERTES */}
-
-                <div className="
-                    bg-white
-                    rounded-2xl
-                    shadow-sm
-                    p-6
-                ">
-
-                    <h2 className="
-                        text-2xl
-                        font-bold
-                        text-green-700
-                        mb-5
+                <div className="bg-white rounded-2xl shadow-sm p-6">
+                    <h2 className=" text-2xl font-bold text-green-700 mb-5
                     ">
                         Temas fuertes
                     </h2>
@@ -315,56 +212,27 @@ const MiProgreso = ()=>{
                             progreso.temasFuertes.map((tema)=>(
                                 <div
                                     key={tema.tema?._id}
-
-                                    className="
-                                        bg-green-50
-                                        border
-                                        border-green-200
-                                        rounded-xl
-                                        p-4
-                                    "
+                                    className="bg-green-50 border border-green-200 rounded-xl p-4"
                                 >
-
-                                    <h3 className="
-                                        font-semibold
-                                        text-green-800
-                                    ">
+                                    <h3 className=" font-semibold text-green-800">
                                         {tema.tema?.nombre}
                                     </h3>
 
-                                    <p className="
-                                        text-sm
-                                        text-green-700
-                                        mt-1
-                                    ">
+                                    <p className="text-sm text-green-700 mt-1">
                                         Correctas:
                                         {" "}
                                         {tema.correctas}
                                     </p>
-
                                 </div>
                             ))
                         }
-
                     </div>
-
                 </div>
 
                 {/* TEMAS DÉBILES */}
+                <div className="bg-white rounded-2xl shadow-sm p-6">
 
-                <div className="
-                    bg-white
-                    rounded-2xl
-                    shadow-sm
-                    p-6
-                ">
-
-                    <h2 className="
-                        text-2xl
-                        font-bold
-                        text-red-700
-                        mb-5
-                    ">
+                    <h2 className="text-2xl font-bold text-red-700 mb-5">
                         Temas débiles
                     </h2>
 
@@ -374,45 +242,26 @@ const MiProgreso = ()=>{
                             progreso.temasDebiles.map((tema)=>(
                                 <div
                                     key={tema.tema._id}
-
-                                    className="
-                                        bg-red-50
-                                        border
-                                        border-red-200
-                                        rounded-xl
-                                        p-4
-                                    "
+                                    className=" bg-red-50 border border-red-200 rounded-xl p-4"
                                 >
 
-                                    <h3 className="
-                                        font-semibold
-                                        text-red-800
-                                    ">
+                                    <h3 className="font-semibold text-red-800">
                                         {tema.tema.nombre}
                                     </h3>
 
-                                    <p className="
-                                        text-sm
-                                        text-red-700
-                                        mt-1
-                                    ">
+                                    <p className="text-sm text-red-700 mt-1">
                                         Incorrectas:
                                         {" "}
                                         {tema.incorrectas}
                                     </p>
-
                                 </div>
                             ))
                         }
-
                     </div>
-
                 </div>
-
             </div>
-            {/* =========================
-            EVALUACIONES
-            ========================= */}
+
+            {/* EVALUACIONES */}
             <div className=" bg-white rounded-2xl shadow-sm p-6">
                 <div className=" flex justify-between items-center mb-6 ">
 
@@ -460,10 +309,7 @@ const MiProgreso = ()=>{
                             <p className=" text-lg font-bold text-blue-700">
                                 {resultado.porcentaje}%
                             </p>
-                            <p className="
-                                text-sm
-                                text-gray-500
-                            ">
+                            <p className="text-sm text-gray-500">
                                 {
                                     resultado.nivelResultado
                                 }
@@ -472,10 +318,7 @@ const MiProgreso = ()=>{
 
                     </div>
                     <div className=" flex justify-between items-center mt-4 ">
-                        <span className="
-                            text-sm
-                            text-gray-500
-                        ">
+                        <span className="text-sm text-gray-500">
                             {
                                 new Date(
                                     resultado.createdAt
@@ -484,33 +327,21 @@ const MiProgreso = ()=>{
                         </span>
 
                         <button
-                            onClick={()=>
-                                navigate(
+                            onClick={()=> navigate(
                                     "/dashboard/estudiante/resultados"
                                 )
                             }
-
-                            className="
-                                text-blue-600
-                                hover:text-blue-800
-                                font-medium
-                            "
+                            className="text-blue-600 hover:text-blue-800 font-medium"
                         >
                             Ver resultado
                         </button>
-
                     </div>
-
                 </div>
             ))
         }
-
     </div>
-
 </div>
-
-
-        </div>
+</div>
     );
 };
 

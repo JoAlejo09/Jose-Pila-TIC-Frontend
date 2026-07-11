@@ -9,8 +9,7 @@ const PrivateRoute = ({ children }) => {
         return <Navigate to="/login" />;
     }
     try {
-        const decoded =
-            jwtDecode(token);
+        const decoded = jwtDecode(token);
         const currentTime =Date.now() / 1000;
         if (decoded.exp < currentTime) {
             localStorage.clear();
