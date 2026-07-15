@@ -35,7 +35,12 @@ const quitarMateriaFavoritaRequest = async(materiaId)=>{
 
     return res.data;
 };
-
+const obtenerUnidadesPorMateriaEstudianteRequest = async(materiaId)=>{
+    const res = await axios.get(
+        `/estudiante/materias/${materiaId}/unidades`
+    );
+    return res.data    
+}
 const obtenerTemasPorMateriaRequest = async(materiaId)=>{
     const res = await axios.get(
         `/estudiante/temas/${materiaId}`
@@ -43,11 +48,9 @@ const obtenerTemasPorMateriaRequest = async(materiaId)=>{
     return res.data;
 };
 const obtenerTemasPorUnidadRequest = async(unidadId)=>{
-
     const res = await axios.get(
         `/estudiante/temas/unidad/${unidadId}`
     );
-
     return res.data;
 
 };
@@ -92,7 +95,8 @@ export {
     obtenerMateriasEstudianteRequest,
     agregarMateriaFavoritaRequest,
     quitarMateriaFavoritaRequest,
-
+    obtenerUnidadesPorMateriaEstudianteRequest,
+    
     obtenerTemasPorMateriaRequest,
     obtenerTemasPorUnidadRequest,
     agregarTemaFavoritoRequest,

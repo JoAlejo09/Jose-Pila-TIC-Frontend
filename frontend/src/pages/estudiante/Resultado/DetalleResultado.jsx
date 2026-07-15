@@ -63,8 +63,6 @@ const DetalleResultado = () => {
         );
     }
 
-
-    // NO EXISTE
     if (!resultado) {
         return (
             <div className="p-6">
@@ -180,7 +178,7 @@ const DetalleResultado = () => {
 
                     </div>
 
-                    <div className="bg-gray-200 rounded-3xlp-6 text-center">
+                    <div className="bg-gray-200 rounded-3xl p-6 text-center">
                         <h2 className="text-4xl font-bold text-gray-700">
                             {
                                 resultado.sinResponder

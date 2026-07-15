@@ -28,13 +28,13 @@ const TemasEstudiante = ()=>{
             });
         } catch (error) {
             console.log(error);
-            setError( "Error al cargar temas");
+            
+            setError( error.response?.data?.msg || "Error al cargar temas");
         } finally {
             setLoading(false);
         }
 
     };
-
 
     useEffect(()=>{
         cargarTemas();

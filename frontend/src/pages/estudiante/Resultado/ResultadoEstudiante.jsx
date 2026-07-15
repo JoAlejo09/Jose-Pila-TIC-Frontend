@@ -138,7 +138,7 @@ const ResultadoEstudiante = () =>{
                                                 ? "text-green-600": "text-red-600"
                                                }`}
                                 >
-                                    {resultado.puntaje}%
+                                    {resultado.puntaje}/10
                                 </h3>
                                 <p className="text-gray-500 mt-2">
                                     Puntaje obtenido
