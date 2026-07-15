@@ -227,7 +227,7 @@ https://github.com/
 
 **José Alejandro Pila Vizuete**
 
-Tecnólogo Superior en Desarrollo de Software
+Estudiante de Tecnología Superior en Desarrollo de Software
 
 Escuela Politécnica Nacional
 
