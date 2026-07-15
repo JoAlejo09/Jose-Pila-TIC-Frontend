@@ -8,12 +8,15 @@ const ResultadoEstudiante = () =>{
     const [loading, setLoading]= useState(true);
     const [busqueda, setBusqueda] = useState("");
     const [materiaFiltro, setMateriaFiltro]= useState("todas");
+    const [tipoFiltro, setTipoFiltro] = useState("todos");
+    const [estadoFiltro, setEstadoFiltro] = useState("todos");
 
     //Obtener resultados del estudiante
     useEffect(()=>{
         const obtenerResultados = async()=>{
             try {
                 const data = await obtenerResultadosEstudianteRequest();
+                console.log(data)
                 setResultados(data);                
             } catch (error) {
                 console.log(error)                
@@ -23,6 +26,13 @@ const ResultadoEstudiante = () =>{
         }
         obtenerResultados();
     },[]);
+
+    const tiposEvaluacion = useMemo(()=>{
+        const listaTipos = resultados.map(
+            (resultado)=> resultado.cuestionario?.tipoEvaluacion
+        );
+        return ["todos", ...new Set(listaTipos.filter(Boolean))]
+    }, [resultados]);
 
     //Obtener materias de evaluaciones dadas
     const materias = useMemo(()=>{
@@ -34,15 +44,21 @@ const ResultadoEstudiante = () =>{
         ];
     },[resultados]);
 
-    const resultadosFiltrados = resultados.filter((resultado)=>{
-        const titulo = resultado.cuestionario?.titulo?.toLowerCase() || "";
-        const materia = resultado.cuestionario?.materia?.nombre || "";
+    const resultadosFiltrados = useMemo(()=>{
+        return resultados.filter((resultado)=>{
+            const titulo = resultado.cuestionario?.titulo?.toLowerCase() || "";
+            const materia = resultado.cuestionario?.materia?.nombre || "";
+            const tipo = resultado.cuestionario?.tipoEvaluacion || "";
+            const coincideBusqueda = titulo.includes(busqueda.toLowerCase());
+            const coincideMateria = materiaFiltro === "todas" || materia === materiaFiltro;
+            const coincideTipo = tipoFiltro === "todos" || tipo === tipoFiltro;
+            const coincideEstado = estadoFiltro === "todos" ||
+            (estadoFiltro === "aprobado" && resultado.aprobado) ||
+            (estadoFiltro === "reprobado" && !resultado.aprobado);
 
-        const coincideBusqueda = titulo.includes(busqueda.toLowerCase());
-
-        const coincideMateria = materiaFiltro === "todas" || materia === materiaFiltro;
-        return(coincideBusqueda && coincideMateria)
-    });
+            return(coincideBusqueda && coincideMateria && coincideTipo && coincideEstado)
+        });
+    },[resultados, busqueda, materiaFiltro, tipoFiltro, estadoFiltro])
 
     if(loading){
         return(
@@ -67,7 +83,7 @@ const ResultadoEstudiante = () =>{
             </div>
 
             <div className="bg-white rounded-2xl shadow-sm p-6 mb-8">
-                <div className="grid md:grid-cols-2 gap-4">
+                <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-4">
                     <input type="text"
                             placeholder="Buscar evaluacion...."
                             value={busqueda}
@@ -90,6 +106,35 @@ const ResultadoEstudiante = () =>{
                             ))
                         }
                     </select>
+                    <select
+                        value={tipoFiltro}
+                        onChange={(e) => setTipoFiltro(e.target.value)}
+                        className="w-full border border-gray-300 rounded-xl px-4 py-3
+                                   focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                    { tiposEvaluacion.map((tipo, index) => (
+                        <option
+                            key={index}
+                            value={tipo}
+                        >
+                            { tipo === "todos"
+                                ? "Todos los tipos"
+                                : tipo.charAt(0).toUpperCase() + tipo.slice(1)
+                            }
+                        </option>
+                    ))
+                    }
+                </select>
+                <select 
+                    value={estadoFiltro}
+                    onChange={(e) => setEstadoFiltro(e.target.value)}
+                    className="w-full border border-gray-300 rounded-xl px-4 py-3
+                               focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                    <option value="todos"> Todos los estados </option>
+                    <option value="aprobado"> Aprobados </option> 
+                    <option value="reprobado"> Reprobados </option>
+                </select>
                 </div>
                 <div className="mt-4 text-sm text-gray-500">
                     {resultadosFiltrados.length} resultados encontrados
