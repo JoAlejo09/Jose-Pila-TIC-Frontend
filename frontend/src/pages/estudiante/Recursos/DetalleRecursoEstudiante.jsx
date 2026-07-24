@@ -118,10 +118,12 @@ const DetalleRecursoEstudiante = ()=>{
                 <div className="p-6">
                     {/* TEORIA */}
                     {recurso.tipo === "teoria" && (
-                        <div className="prose max-w-none text-slate-700 whitespace-pre-line leading-relaxed
-                        ">
-                            {recurso.contenido}
-                        </div>
+                        <div
+                            className="prose max-w-none text-slate-700 leading-relaxed"
+                            dangerouslySetInnerHTML={{
+                                __html: recurso.contenido
+                            }}
+                        />
                     )}
 
                     {/* YOUTUBE */}
@@ -147,6 +149,16 @@ const DetalleRecursoEstudiante = ()=>{
                             className="rounded-xl border"
                         />
 
+                    )}
+                    {/* IMAGEN */}
+                    {recurso.tipo === "imagen" && (
+                        <div className="flex justify-center">
+                            <img
+                                src={recurso.url}
+                                alt={recurso.titulo}
+                                className="max-w-full max-h-[700px] rounded-xl shadow-md object-contain"
+                            />
+                        </div>
                     )}
                 </div>
             </div>
