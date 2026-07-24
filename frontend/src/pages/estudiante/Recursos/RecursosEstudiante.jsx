@@ -1,14 +1,14 @@
-import { useEffect, useState } from "react";
-
+import { useEffect, useState, useMemo } from "react";
 import { ArrowLeft, BookOpen, ChevronRight, FileText, PlayCircle } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
-
 import { obtenerRecursosPorTemaRequest } from "../../../services/estudianteService.js";
 
 const RecursosEstudiante = ()=>{
 
     const navigate = useNavigate();
     const { temaId } = useParams();
+    const [buscar, setBuscar] = useState("");
+    const [filtroTipo, setFiltroTipo] = useState("");
     const [recursos,setRecursos] = useState([]);
     const [loading,setLoading] = useState(true);
     const [error,setError] = useState(null);
@@ -32,6 +32,35 @@ const RecursosEstudiante = ()=>{
         cargarRecursos();
     },[temaId]);
 
+    const tipos = useMemo(()=>{
+        return [
+            ... new Set(
+                recursos.map((recurso)=> recurso.tipo)
+            )
+        ].filter(Boolean);
+    },[recursos]);
+
+    const recursosFiltrados = useMemo(() => {
+
+        return recursos.filter((recurso) => {
+
+            const coincideBusqueda =
+                recurso.titulo
+                    ?.toLowerCase()
+                    .includes(buscar.toLowerCase());
+
+            const coincideTipo =
+                filtroTipo === "" ||
+                recurso.tipo === filtroTipo;
+
+            return (
+                coincideBusqueda &&
+                coincideTipo
+            );
+
+        });
+
+    }, [recursos, buscar, filtroTipo]);
 
     const obtenerIcono = (tipo)=>{
         if(tipo === "pdf"){
@@ -91,8 +120,7 @@ const RecursosEstudiante = ()=>{
             <button
                 onClick={()=> navigate(-1)}
                 className=" flex items-center gap-2 text-gray-600 
-                            hover:text-gray-900 mb-6 transition
-                "
+                            hover:text-gray-900 mb-6 transition"
             >
                 <ArrowLeft size={20}/>
                 Volver a temas
@@ -106,7 +134,38 @@ const RecursosEstudiante = ()=>{
                     Selecciona un recurso para visualizar su contenido.
                 </p>
             </div>
+             <div className="flex flex-col md:flex-row gap-4 mb-8">
 
+                <input
+                    type="text"
+                    placeholder="Buscar recurso..."
+                    value={buscar}
+                    onChange={(e) => setBuscar(e.target.value)}
+                    className="flex-1 border border-gray-300 rounded-xl p-3 bg-white"
+                />
+
+                <select
+                    value={filtroTipo}
+                    onChange={(e) => setFiltroTipo(e.target.value)}
+                    className="border border-gray-300 rounded-xl p-3 bg-white"
+                >
+                    <option value="">
+                        Todos los tipos
+                    </option>
+
+                    {
+                        tipos.map((tipo) => (
+                            <option
+                                key={tipo}
+                                value={tipo}
+                            >
+                                {tipo.toUpperCase()}
+                            </option>
+                        ))
+                    }
+                </select>
+
+            </div>
             {
                 recursos.length === 0
                 &&

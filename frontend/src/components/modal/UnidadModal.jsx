@@ -1,9 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  crearUnidadRequest,
-  actualizarUnidadRequest,
-} from "../../services/unidadService.js";
-
+import { crearUnidadRequest, actualizarUnidadRequest } from "../../services/unidadService.js";
 import { obtenerMateriasRequest } from "../../services/materiaService.js";
 
 const UnidadModal = ({onClose, onUnidadCreada, modo = "crear", unidadSeleccionada}) => {
@@ -17,6 +13,7 @@ const UnidadModal = ({onClose, onUnidadCreada, modo = "crear", unidadSeleccionad
 
   const [materias, setMaterias] = useState([]);
   const [error, setError] = useState("");
+  const [msg, setMsg] = useState("");
   const [loading, setLoading] = useState(false);
 
   //Para cargar materias disponibles
@@ -53,27 +50,54 @@ const UnidadModal = ({onClose, onUnidadCreada, modo = "crear", unidadSeleccionad
     });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    try {
-      setLoading(true);
-      if (!form.nombre || !form.materia) {
-        return setError("Completa los campos obligatorios");
-      }
-      if (modo === "crear") {
-        await crearUnidadRequest(form);
-      } else {
-        await actualizarUnidadRequest(unidadSeleccionada._id, form);
-      }
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  setError("");
+  setMsg("");
+
+  if (!form.nombre || !form.materia) {
+    setError("Completa los campos obligatorios");
+    setTimeout(() => {
+      setError("");
+    }, 3000);
+
+    return;
+  }
+
+  try {
+    setLoading(true);
+
+    const data =
+      modo === "crear"
+        ? await crearUnidadRequest(form)
+        : await actualizarUnidadRequest(
+            unidadSeleccionada._id,
+            form
+          );
+
+    setMsg(data.msg);
+
+    setTimeout(() => {
       onUnidadCreada();
       onClose();
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-      setError(error.response.data?.msg || "Error al guardar unidad");
-    }
-  };
+    }, 3000);
+
+  } catch (error) {
+    console.log(error);
+
+    setError(
+      error.response?.data?.msg ||
+      "Error al guardar unidad"
+    );
+
+    setTimeout(() => {
+      setError("");
+    }, 3000);
+
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
@@ -82,7 +106,16 @@ const UnidadModal = ({onClose, onUnidadCreada, modo = "crear", unidadSeleccionad
           {modo === "crear" ? "Nueva Unidad" : "Editar Unidad"}
         </h2>
 
-        {error && <p className="text-red-500 mb-4">{error}</p>}
+        {error && (
+          <div className="bg-red-100 border border-red-200 text-red-600 text-sm rounded-lg p-3 mb-4">
+            {error}
+          </div>
+        )}
+        {msg && (
+          <div className="bg-green-100 border border-green-200 text-green-700 text-sm rounded-lg p-3 mb-4">
+            {msg}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>

@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
 
 import { obtenerUnidadesRequest,cambiarEstadoUnidadRequest } from "../../services/unidadService.js";
-
 import UnidadModal from "../../components/modal/UnidadModal.jsx";
 import { obtenerMateriasRequest } from "../../services/materiaService.js";
 
 const Unidades = () => {
-
     const [unidades, setUnidades] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);

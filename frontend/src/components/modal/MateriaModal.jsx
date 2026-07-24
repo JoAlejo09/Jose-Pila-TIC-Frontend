@@ -1,17 +1,10 @@
 import { useEffect, useState } from "react";
-
 import { crearMateriaRequest, actualizarMateriaRequest } from "../../services/materiaService";
 
 import Input from "../ui/Input";
-const ModalMateria = ({
-    onClose,
-    onMateriaCreada,
-    modo = "crear",
-    materiaSeleccionada
-}) => {
 
+const ModalMateria = ({ onClose, onMateriaCreada, modo = "crear", materiaSeleccionada}) => {
     const [form,setForm] = useState({
-
         nombre:"",
         descripcion:"",
         nivelAcademico:"1ro BGU",
@@ -19,6 +12,7 @@ const ModalMateria = ({
     });
     const [error,setError] = useState("");
     const [loading,setLoading] = useState(false);
+    const [msg, setMsg] = useState("");
 
     useEffect(()=>{
         if( modo === "editar" && materiaSeleccionada ){
@@ -32,9 +26,7 @@ const ModalMateria = ({
     },[ modo, materiaSeleccionada]);
 
     const handleChange = (e)=>{
-
         const { name, value, type, checked } = e.target;
-
         setForm((prev)=>({
             ...prev,
             [name]:
@@ -47,31 +39,53 @@ const ModalMateria = ({
     const handleSubmit = async(e)=>{
         e.preventDefault();
         setError("");
+        setMsg("");
+        
         if(!form.nombre.trim()){
-            return setError( "El nombre de la materia es obligatorio" );
+            setError( "El nombre de la materia es obligatorio" );
+            setTimeout(()=>{
+                setError("");
+            },3000);
+            return;
         }
         if(!form.nivelAcademico){
-            return setError("Debe seleccionar un nivel academico");
+            setError("Debe seleccionar un nivel academico");
+            setTimeout(()=>{
+                setError("");
+            },3000);
+            return; 
         }
         if (form.descripcion.trim().length > 500) {
-            return setError("La descripción no debe superar 500 caracteres");
+            setError("La descripción no debe superar 500 caracteres");
+            setTimeout(()=>{
+                setError("");
+            },3000);
+            return;
         }
         try {
             setLoading(true);
-            if(modo === "crear"){
-                await crearMateriaRequest(form);
-            } else {
-                await actualizarMateriaRequest(
-                    materiaSeleccionada._id,
-                    form
-                );
-            }
-            onMateriaCreada();
-            onClose();
+            const data =
+                modo === "crear"
+                    ? await crearMateriaRequest(form)
+                    : await actualizarMateriaRequest(materiaSeleccionada._id, form);
+            
+            setMsg(data.msg || (
+                modo === "crear"
+                    ? "Materia creada correctamente"
+                    : "Materia actualizada correctamente"
+            ));
+            setTimeout(() => {
+                onMateriaCreada();
+                onClose();
+            }, 3000);
+
         } catch (error) {
             console.log(error);
-            setError( error.response?.data?.msg || "Error al guardar materia");
-        } finally{
+            setError(error.response?.data?.msg || "Error al guardar materia");
+            setTimeout(() => {
+                setError("");
+            }, 3000);
+        } finally {
             setLoading(false);
         }
     };
@@ -98,7 +112,11 @@ const ModalMateria = ({
                         {error}
                     </div>
                 }
-
+                {msg && (
+                    <div className="bg-green-100 border border-green-200 text-green-700 text-sm rounded-lg p-3 mb-4 ">
+                        {msg}                        
+                    </div>
+                )}
                 <form
                     onSubmit={handleSubmit}
                     className="space-y-5"

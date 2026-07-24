@@ -27,9 +27,7 @@ const ResolverCuestionario = ()=>{
         const obtenerCuestionario = async()=>{
 
             try {
-
                 const data = await obtenerCuestionarioPorIdRequest(id);
-
                 setCuestionario(data);
                 setTiempoRestante( data.tiempoLimite * 60);
                 setInicioTiempo(Date.now());
@@ -53,7 +51,6 @@ const ResolverCuestionario = ()=>{
         if(!cuestionario || resultado){
             return;
         }
-
         const intervalo = setInterval(()=>{
             setTiempoRestante((prev)=>{
                 if(prev <= 1){
@@ -275,10 +272,10 @@ const ResolverCuestionario = ()=>{
 
                         <div className="bg-blue-100 rounded-2xl p-6 text-center">
                             <h2 className="text-4xl font-bold text-blue-700">
-                                {resultado.puntaje}%
+                                {resultado.puntaje}/10
                             </h2>
                             <p className="mt-2 text-blue-700">
-                                Puntaje
+                                Nota
                             </p>
                         </div>
                     </div>

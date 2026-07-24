@@ -1,8 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import {
-  crearPreguntaRequest,
-  actualizarPreguntaRequest,
-} from "../../services/preguntaService.js";
+import { crearPreguntaRequest, actualizarPreguntaRequest} from "../../services/preguntaService.js";
 import { obtenerMateriasRequest } from "../../services/materiaService.js";
 import { obtenerUnidadesPorMateriaRequest } from "../../services/unidadService.js";
 import { obtenerTemasPorUnidadRequest } from "../../services/temaService.js";
@@ -567,8 +564,8 @@ const PreguntaModal = ({
             >
               <option value=""> Sin recurso </option>
               <option value="video"> Video </option>
-              <option value="documento"> Documento </option>
-              <option value="texto"> Texto </option>
+              <option value="pdf"> Documento </option>
+              <option value="formula"> Formula </option>
             </select>
 
             <input

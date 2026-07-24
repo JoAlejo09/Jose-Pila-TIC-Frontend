@@ -10,7 +10,7 @@ const Materias = () => {
     const [materias, setMaterias] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [msg, setMsg] = useState(null);
+    const [msg, setMsg] = useState("");
     const [buscar, setBuscar] = useState("");
     const [filtroNivelAcademico, setFiltroNivelAcademico] = useState("");
     const [modal, setModal] = useState(false);
@@ -25,8 +25,11 @@ const Materias = () => {
             setMaterias(data);
         } catch (error) {
             console.log(error);
-            setError("Error al cargar las materias");
-        } finally {
+            setError( error.response?.data?.msg || "Error al cargar las materias" );
+            setTimeout(() => {
+                setError("");
+            }, 3000);
+        }finally {
             setLoading(false);
         }
     };
@@ -76,22 +79,28 @@ const Materias = () => {
 
     // CAMBIAR ESTADO
     const handleEstado = async (id) => {
-         const confirmar = window.confirm(
+        const confirmar = window.confirm(
             "¿Está seguro de cambiar el estado de esta materia?"
         );
-        if(!confirmar) return;
-
+    if (!confirmar) return;
         try {
             setMsg("");
             setError("");
-
-            const res = await cambiarEstadoMateriaRequest(id);
-            setMsg(res.msg);
-
+            const data = await cambiarEstadoMateriaRequest(id);
+            setMsg(data.msg);
+            setTimeout(() => {
+                setMsg("");
+            }, 3000);
             await cargarMaterias();
         } catch (error) {
             console.log(error);
-            setError("Error al cambiar el estado de la materia");
+            setError(
+                error.response?.data?.msg ||
+                "Error al cambiar el estado de la materia"
+            );
+            setTimeout(() => {
+                setError("");
+            }, 3000);
         }
     };
 
@@ -131,12 +140,12 @@ const Materias = () => {
                         Gestión de Materias
                     </h1>
                     {msg && (
-                       <div className=" mb-4 rounded-lg bg-green-100 text-green-70">
+                       <div className="bg-green-100 border border-green-200 text-green-700 text-sm rounded-lg p-3 mb-4 ">
                         {msg}
                         </div>
                     )}
                     {error && (
-                        <div className="mb-4 rounded-lg bg-red-100 p-3 text-red-700">
+                        <div className="bg-red-100 border border-red-200 text-red-600 text-sm rounded-lg p-3 mb-4">
                             {error}
                         </div>
                     )}
