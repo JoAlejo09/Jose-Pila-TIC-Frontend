@@ -123,29 +123,20 @@ const CuestionarioModal = ({ onClose, recargarCuestionarios, cuestionarioEditar 
     },[ form.preguntas, form.modoGeneracion ]);
 
     // filtrar preguntas solo para materia, nivel y unidad seleccionada (si aplica)
-    const preguntasFiltradas = preguntasDisponibles.filter((pregunta)=>{
-            const coincideMateria = pregunta.materia?._id?.toString()
-                ===
-                form.materia?.toString();
-            const coincideNivel = pregunta.nivelAcademico
-                ===
-                form.nivelAcademico;
-            if( form.alcanceEvaluacion === "unidad" ){
-                const coincideUnidad = pregunta.unidad?._id?.toString()
-                    ===
-                    form.unidad?.toString();
-                return(
-                    coincideMateria &&
-                    coincideNivel &&
-                    coincideUnidad
-                );
-            }
-            return(
-                coincideMateria &&
-                coincideNivel
-            );
-        });
+    const preguntasFiltradas = preguntasDisponibles.filter((pregunta) => {
+        const coincideMateria =pregunta.materia?._id?.toString() === form.materia?.toString();
 
+        const coincideNivel = pregunta.nivelAcademico === form.nivelAcademico;
+
+        if (form.alcanceEvaluacion === "unidad") {
+            return (
+                coincideMateria &&
+                coincideNivel &&
+                pregunta.tema?.unidad?._id?.toString() === form.unidad?.toString()
+            );
+        }
+        return coincideMateria && coincideNivel;
+    });
     // Cambios de formulario
 
     const handleChange = (e)=>{

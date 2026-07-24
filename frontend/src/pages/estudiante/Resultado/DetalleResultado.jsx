@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { ArrowLeft, CheckCircle, XCircle, Clock3 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
+import ReactMarkdown from "react-markdown";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
 
 import { obtenerResultadoPorIdRequest } from "../../../services/resultadoService.js";
 
@@ -32,6 +35,14 @@ const DetalleResultado = () => {
         };
         obtenerResultado();
     }, [id]);
+
+    const renderizarLatex = (texto) => {
+        if (!texto) return "";
+
+        return texto
+            .replace(/\\\((.*?)\\\)/g, "$$$1$$")
+            .replace(/\\\[(.*?)\\\]/gs, "$$$$\n$1\n$$$$");
+    };
 
     // LOADING
     if (loading) {
@@ -138,10 +149,9 @@ const DetalleResultado = () => {
 
                 {/* ESTADISTICAS */}
                 <div className=" grid md:grid-cols-5 gap-5 mb-8 ">
-                    {/* PORCENTAJE */}
                     <div className="bg-blue-100 rounded-3xl p-6 text-center">
                         <h2 className=" text-4xl font-bold text-blue-700">
-                            {resultado.porcentaje}%
+                            {resultado.puntaje}/10
                         </h2>
 
                         <p className=" text-blue-700 mt-2">
@@ -236,10 +246,12 @@ const DetalleResultado = () => {
                                             </h2>
 
                                             <p className="text-gray-600 mt-3 leading-relaxed text-lg">
-                                                {
-                                                    respuesta.pregunta
-                                                        ?.enunciado
-                                                }
+                                                <ReactMarkdown
+                                                    remarkPlugins={[remarkMath]}
+                                                    rehypePlugins={[rehypeKatex]}
+                                                >
+                                                {renderizarLatex(respuesta.pregunta?.enunciado)}
+                                                </ReactMarkdown>
                                             </p>
                                         </div>
 
@@ -281,8 +293,7 @@ const DetalleResultado = () => {
                                                 Tu respuesta
                                             </p>
 
-                                            <div className={`rounded-2xl p-4
-                                                border
+                                            <div className={`rounded-2xl p-4 border
                                                 ${
                                                     respuesta.esCorrecta
                                                         ? "bg-green-50 border-green-200 text-green-700"
@@ -293,7 +304,14 @@ const DetalleResultado = () => {
                                             `}>
                                                 {
                                                     respuesta.respuestaUsuario
-                                                    || "No respondiste esta pregunta"
+                                                    ?(<ReactMarkdown
+                                                    remarkPlugins={[remarkMath]}
+                                                    rehypePlugins={[rehypeKatex]}
+                                                    >
+                                                        {renderizarLatex(respuesta.respuestaUsuario)}
+                                                    </ReactMarkdown>
+                                                    )
+                                                    : "No respondiste esta pregunta"
                                                 }
                                             </div>
                                         </div>
@@ -304,13 +322,13 @@ const DetalleResultado = () => {
                                                 Respuesta correcta
                                             </p>
 
-                                            <div className="bg-green-50 border border-green-200
-                                                            rounded-2xl p-4 text-green-700
-                                            ">
-                                                {
-                                                    respuesta.pregunta
-                                                        ?.respuestaCorrecta
-                                                }
+                                            <div className="bg-green-50 border border-green-200 rounded-2xl p-4 text-green-700">
+                                                <ReactMarkdown
+                                                remarkPlugins={[remarkMath]}
+                                                rehypePlugins={[rehypeKatex]}>
+                                                    {renderizarLatex(respuesta.pregunta?.respuestaCorrecta)}
+                                                </ReactMarkdown>
+
                                             </div>
                                         </div>
 
@@ -324,13 +342,12 @@ const DetalleResultado = () => {
                                                     Explicación
                                                 </p>
 
-                                                <div className="bg-blue-50 border border-blue-200 
-                                                                rounded-2xl p-5 text-gray-700 leading-relaxed
-                                                ">
-                                                    {
-                                                        respuesta.pregunta
-                                                            ?.explicacion
-                                                    }
+                                                <div className="bg-blue-50 border border-blue-200 rounded-2xl p-5 text-gray-700 leading-relaxed">
+                                                    <ReactMarkdown
+                                                    remarkPlugins={[remarkMath]}
+                                                    rehypePlugins={[rehypeKatex]}>
+                                                        {respuesta.pregunta?.explicacion}
+                                                    </ReactMarkdown>
                                                 </div>
                                             </div>
                                         }

@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import ReactMarkdown from "react-markdown";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
 
 import { obtenerResultadoAdminPorIdRequest} from "../../services/resultadoService.js";
 
@@ -26,7 +29,13 @@ const DetalleResultadoAdmin = ()=>{
         };
         obtenerResultado();
     },[id]);
-
+    const renderizarLatex = (texto) => {
+      if (!texto) return "";
+        return texto
+            .replace(/\\\((.*?)\\\)/g, "$$$1$$")
+            .replace(/\\\[(.*?)\\\]/gs, "$$$$\n$1\n$$$$");
+    };
+    
     if(loading){
         return(
             <div className=" min-h-screen bg-gray-50 p-6">
@@ -86,7 +95,7 @@ const DetalleResultadoAdmin = ()=>{
                 <div className=" grid md:grid-cols-5 gap-5 mb-8">
                     <div className="bg-blue-100 rounded-2xl p-6 text-center">
                         <h2 className="text-4xl font-bold text-blue-700">
-                            {resultado.puntaje}%
+                            {resultado.puntaje}/10
                         </h2>
 
                         <p className="text-blue-700 mt-2">
@@ -174,7 +183,17 @@ const DetalleResultadoAdmin = ()=>{
                                             </p>
 
                                             <div className="mt-2 bg-gray-100 rounded-xl p-4">
-                                                { respuesta.respuestaUsuario || "Sin responder"}
+                                                {
+                                                respuesta.respuestaUsuario ? (
+                                                    <ReactMarkdown
+                                                    remarkPlugins={[remarkMath]}
+                                                    rehypePlugins={[rehypeKatex]}
+                                                    >
+                                                        {renderizarLatex(respuesta.respuestaUsuario)}
+                                                    </ReactMarkdown>
+                                                    )
+                                                    : "Sin responder"
+                                                }
                                             </div>
                                         </div>
 
@@ -182,8 +201,13 @@ const DetalleResultadoAdmin = ()=>{
                                             <p className=" font-semibold text-gray-700">
                                                 Respuesta correcta
                                             </p>
-                                            <div className=" mt-2 bg-green-50 border border-green-200 rounded-xl p-4 text-green-700">
-                                                {respuesta.respuestaCorrecta}
+                                            <div className="mt-2 bg-green-50 border border-green-200 rounded-xl p-4 text-green-700">
+                                                <ReactMarkdown
+                                                remarkPlugins={[remarkMath]}
+                                                rehypePlugins={[rehypeKatex]}
+                                                >
+                                                    {renderizarLatex(respuesta.respuestaCorrecta)}
+                                                </ReactMarkdown>
                                             </div>
                                         </div>
 
@@ -193,7 +217,12 @@ const DetalleResultadoAdmin = ()=>{
                                                     Explicación
                                                 </p>
                                                 <div className="mt-2 bg-blue-50 border border-blue-200 rounded-xl p-4 text-gray-700 leading-relaxed">
-                                                    { respuesta.explicacion}
+                                                    <ReactMarkdown
+                                                    remarkPlugins={[remarkMath]}
+                                                    rehypePlugins={[rehypeKatex]}
+                                                    >
+                                                        {renderizarLatex(respuesta.explicacion)}
+                                                    </ReactMarkdown>
                                                 </div>
                                             </div>
                                         }
